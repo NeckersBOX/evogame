@@ -1,0 +1,33 @@
+{
+  "name": "evogame",
+  "version": "1.0.0",
+  "description": "A tiny experiment",
+  "main": "js/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "gulp watch"
+  },
+  "author": "Davide Francesco Merico",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.2",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-react-optimize": "^1.0.1",
+    "eslint": "^4.11.0",
+    "gulp-minify": "^2.1.0",
+    "gulp-sass": "^3.1.0",
+    "react": "^16.1.1",
+    "webpack-stream": "^4.0.0"
+  },
+  "dependencies": {
+    "decko": "^1.2.0",
+    "preact": "^8.2.6",
+    "preact-redux": "^2.0.3",
+    "redux": "^3.7.2"
+  }
+}
