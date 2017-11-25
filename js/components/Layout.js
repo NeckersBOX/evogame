@@ -2,10 +2,9 @@ import { h, Component } from 'preact'
 import Container from 'preact-mui/lib/container'
 import Row from 'preact-mui/lib/row';
 import Col from 'preact-mui/lib/col';
-import Tabs from 'preact-mui/lib/tabs'
 import Panel from 'preact-mui/lib/panel'
-import Tab from 'preact-mui/lib/tab'
 
+import { PanelHeader } from './extra-mui/panel'
 import Events from './Events'
 import GeneralInfo from './GeneralInfo'
 import Logger from './Logger'
@@ -22,19 +21,23 @@ class Layout extends Component {
         <Container fluid={true}>
           <Row>
             <Col md="3">
-              <Events />
-              <GeneralInfo />
+              <Panel>
+                <PanelHeader label="Event" />
+                <Events />
+              </Panel>
+              <Panel>
+                <PanelHeader label="General Info" />
+                <GeneralInfo />
+              </Panel>
             </Col>
             <Col md="9">
               <Panel>
-                <Tabs justified={true}>
-                  <Tab selected={true} value="pane-parameters" label="Parameters">
-                    <Parameters />
-                  </Tab>
-                  <Tab value="pane-logger" label="Logger">
-                    <Logger />
-                  </Tab>
-                </Tabs>
+                <PanelHeader label="Logger" />
+                <Logger />
+              </Panel>
+              <Panel>
+                <PanelHeader label="Parameters" />
+                <Parameters />
               </Panel>
             </Col>
           </Row>

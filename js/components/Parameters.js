@@ -7,7 +7,7 @@ class Parameters extends Component {
 
   render() {
     return (
-      <div id="evogame-parameters">
+      <div>
         <h1>Parameters</h1>
       </div>
     );

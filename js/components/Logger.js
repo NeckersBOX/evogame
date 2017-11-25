@@ -7,7 +7,7 @@ class Logger extends Component {
 
   render() {
     return (
-      <div id="evogame-info">
+      <div>
         Not initialized...
       </div>
     );
