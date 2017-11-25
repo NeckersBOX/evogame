@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1080,6 +1080,176 @@ module.exports = g;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.panel = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Panel Module
+   * @module preact/panel
+   */
+
+  /**
+   * @name Panel
+   */
+
+  var Panel = function (_Component) {
+    inherits(Panel, _Component);
+
+    function Panel() {
+      classCallCheck(this, Panel);
+      return possibleConstructorReturn(this, (Panel.__proto__ || Object.getPrototypeOf(Panel)).apply(this, arguments));
+    }
+
+    createClass(Panel, [{
+      key: 'render',
+      value: function render(_ref) {
+        var children = _ref.children,
+            props = objectWithoutProperties(_ref, ['children']);
+
+        return preact.h('div', _extends({ 'class': 'mui-panel' }, props), children);
+      }
+    }]);
+    return Panel;
+  }(preact.Component);
+
+  return Panel;
+});
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
 Object.defineProperty(exports, "__esModule", {
@@ -1091,7 +1261,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 var _preact = __webpack_require__(0);
 
-var _redux = __webpack_require__(3);
+var _redux = __webpack_require__(4);
 
 var Children = {
   only: function only(children) {
@@ -2290,7 +2460,7 @@ exports.default = index;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2301,27 +2471,27 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
 
-var _createStore = __webpack_require__(4);
+var _createStore = __webpack_require__(5);
 
 var _createStore2 = _interopRequireDefault(_createStore);
 
-var _combineReducers = __webpack_require__(22);
+var _combineReducers = __webpack_require__(23);
 
 var _combineReducers2 = _interopRequireDefault(_combineReducers);
 
-var _bindActionCreators = __webpack_require__(23);
+var _bindActionCreators = __webpack_require__(24);
 
 var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 
-var _applyMiddleware = __webpack_require__(24);
+var _applyMiddleware = __webpack_require__(25);
 
 var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 
-var _compose = __webpack_require__(8);
+var _compose = __webpack_require__(9);
 
 var _compose2 = _interopRequireDefault(_compose);
 
-var _warning = __webpack_require__(7);
+var _warning = __webpack_require__(8);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -2344,7 +2514,7 @@ exports.applyMiddleware = _applyMiddleware2.default;
 exports.compose = _compose2.default;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2359,11 +2529,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = createStore;
 
-var _isPlainObject = __webpack_require__(5);
+var _isPlainObject = __webpack_require__(6);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-var _symbolObservable = __webpack_require__(18);
+var _symbolObservable = __webpack_require__(19);
 
 var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 
@@ -2616,7 +2786,7 @@ var ActionTypes = exports.ActionTypes = {
 }
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2626,15 +2796,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _baseGetTag = __webpack_require__(10);
+var _baseGetTag = __webpack_require__(11);
 
 var _baseGetTag2 = _interopRequireDefault(_baseGetTag);
 
-var _getPrototype = __webpack_require__(15);
+var _getPrototype = __webpack_require__(16);
 
 var _getPrototype2 = _interopRequireDefault(_getPrototype);
 
-var _isObjectLike = __webpack_require__(17);
+var _isObjectLike = __webpack_require__(18);
 
 var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
 
@@ -2699,7 +2869,7 @@ function isPlainObject(value) {
 exports.default = isPlainObject;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2709,7 +2879,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _root = __webpack_require__(11);
+var _root = __webpack_require__(12);
 
 var _root2 = _interopRequireDefault(_root);
 
@@ -2721,7 +2891,7 @@ var _Symbol = _root2.default.Symbol;
 exports.default = _Symbol;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2754,7 +2924,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2798,7 +2968,7 @@ function compose() {
 }
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2806,13 +2976,13 @@ function compose() {
 
 var _preact = __webpack_require__(0);
 
-var _preactRedux = __webpack_require__(2);
+var _preactRedux = __webpack_require__(3);
 
-var _Layout = __webpack_require__(25);
+var _Layout = __webpack_require__(26);
 
 var _Layout2 = _interopRequireDefault(_Layout);
 
-var _store = __webpack_require__(30);
+var _store = __webpack_require__(41);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2827,7 +2997,7 @@ window.addEventListener('load', function (event) {
 });
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2837,15 +3007,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(6);
+var _Symbol2 = __webpack_require__(7);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
-var _getRawTag = __webpack_require__(13);
+var _getRawTag = __webpack_require__(14);
 
 var _getRawTag2 = _interopRequireDefault(_getRawTag);
 
-var _objectToString = __webpack_require__(14);
+var _objectToString = __webpack_require__(15);
 
 var _objectToString2 = _interopRequireDefault(_objectToString);
 
@@ -2875,7 +3045,7 @@ function baseGetTag(value) {
 exports.default = baseGetTag;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2887,7 +3057,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _freeGlobal = __webpack_require__(12);
+var _freeGlobal = __webpack_require__(13);
 
 var _freeGlobal2 = _interopRequireDefault(_freeGlobal);
 
@@ -2902,7 +3072,7 @@ var root = _freeGlobal2.default || freeSelf || Function('return this')();
 exports.default = root;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2921,7 +3091,7 @@ exports.default = freeGlobal;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2931,7 +3101,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(6);
+var _Symbol2 = __webpack_require__(7);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
@@ -2983,7 +3153,7 @@ function getRawTag(value) {
 exports.default = getRawTag;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3016,7 +3186,7 @@ function objectToString(value) {
 exports.default = objectToString;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3026,7 +3196,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _overArg = __webpack_require__(16);
+var _overArg = __webpack_require__(17);
 
 var _overArg2 = _interopRequireDefault(_overArg);
 
@@ -3038,7 +3208,7 @@ var getPrototype = (0, _overArg2.default)(Object.getPrototypeOf, Object);
 exports.default = getPrototype;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3064,7 +3234,7 @@ function overArg(func, transform) {
 exports.default = overArg;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3107,16 +3277,16 @@ function isObjectLike(value) {
 exports.default = isObjectLike;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(19);
+module.exports = __webpack_require__(20);
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3126,7 +3296,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _ponyfill = __webpack_require__(21);
+var _ponyfill = __webpack_require__(22);
 
 var _ponyfill2 = _interopRequireDefault(_ponyfill);
 
@@ -3150,10 +3320,10 @@ if (typeof self !== 'undefined') {
 
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(20)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(21)(module)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3183,7 +3353,7 @@ module.exports = function (module) {
 };
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3212,7 +3382,7 @@ function symbolObservablePonyfill(root) {
 };
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3223,13 +3393,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = combineReducers;
 
-var _createStore = __webpack_require__(4);
+var _createStore = __webpack_require__(5);
 
-var _isPlainObject = __webpack_require__(5);
+var _isPlainObject = __webpack_require__(6);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-var _warning = __webpack_require__(7);
+var _warning = __webpack_require__(8);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -3363,7 +3533,7 @@ function combineReducers(reducers) {
 }
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3425,7 +3595,7 @@ function bindActionCreators(actionCreators, dispatch) {
 }
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3436,7 +3606,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = applyMiddleware;
 
-var _compose = __webpack_require__(8);
+var _compose = __webpack_require__(9);
 
 var _compose2 = _interopRequireDefault(_compose);
 
@@ -3498,7 +3668,7 @@ function applyMiddleware() {
 }
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3512,19 +3682,43 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
-var _Events = __webpack_require__(26);
+var _container = __webpack_require__(27);
+
+var _container2 = _interopRequireDefault(_container);
+
+var _row = __webpack_require__(28);
+
+var _row2 = _interopRequireDefault(_row);
+
+var _col = __webpack_require__(29);
+
+var _col2 = _interopRequireDefault(_col);
+
+var _tabs = __webpack_require__(30);
+
+var _tabs2 = _interopRequireDefault(_tabs);
+
+var _panel = __webpack_require__(2);
+
+var _panel2 = _interopRequireDefault(_panel);
+
+var _tab = __webpack_require__(31);
+
+var _tab2 = _interopRequireDefault(_tab);
+
+var _Events = __webpack_require__(32);
 
 var _Events2 = _interopRequireDefault(_Events);
 
-var _GeneralInfo = __webpack_require__(27);
+var _GeneralInfo = __webpack_require__(38);
 
 var _GeneralInfo2 = _interopRequireDefault(_GeneralInfo);
 
-var _Logger = __webpack_require__(28);
+var _Logger = __webpack_require__(39);
 
 var _Logger2 = _interopRequireDefault(_Logger);
 
-var _Parameters = __webpack_require__(29);
+var _Parameters = __webpack_require__(40);
 
 var _Parameters2 = _interopRequireDefault(_Parameters);
 
@@ -3551,20 +3745,40 @@ var Layout = function (_Component) {
       return (0, _preact.h)(
         'div',
         null,
-        (0, _preact.h)(_Events2.default, null),
         (0, _preact.h)(
-          'div',
-          { id: 'evogame-container' },
+          _container2.default,
+          { fluid: true },
           (0, _preact.h)(
-            'div',
-            { id: 'evogame-left-area' },
-            (0, _preact.h)(_GeneralInfo2.default, null)
-          ),
-          (0, _preact.h)(
-            'div',
-            { id: 'evogame-right-area' },
-            (0, _preact.h)(_Logger2.default, null),
-            (0, _preact.h)(_Parameters2.default, null)
+            _row2.default,
+            null,
+            (0, _preact.h)(
+              _col2.default,
+              { md: '3' },
+              (0, _preact.h)(_Events2.default, null),
+              (0, _preact.h)(_GeneralInfo2.default, null)
+            ),
+            (0, _preact.h)(
+              _col2.default,
+              { md: '9' },
+              (0, _preact.h)(
+                _panel2.default,
+                null,
+                (0, _preact.h)(
+                  _tabs2.default,
+                  { justified: true },
+                  (0, _preact.h)(
+                    _tab2.default,
+                    { selected: true, value: 'pane-parameters', label: 'Parameters' },
+                    (0, _preact.h)(_Parameters2.default, null)
+                  ),
+                  (0, _preact.h)(
+                    _tab2.default,
+                    { value: 'pane-logger', label: 'Logger' },
+                    (0, _preact.h)(_Logger2.default, null)
+                  )
+                )
+              )
+            )
           )
         )
       );
@@ -3577,7 +3791,907 @@ var Layout = function (_Component) {
 exports.default = Layout;
 
 /***/ }),
-/* 26 */
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.container = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Container Module
+   * @module preact/container
+   */
+
+  /**
+   * @name Container
+   */
+
+  var Container = function (_Component) {
+    inherits(Container, _Component);
+
+    function Container() {
+      classCallCheck(this, Container);
+      return possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).apply(this, arguments));
+    }
+
+    createClass(Container, [{
+      key: 'render',
+      value: function render(_ref) {
+        var fluid = _ref.fluid,
+            children = _ref.children,
+            props = objectWithoutProperties(_ref, ['fluid', 'children']);
+
+        return preact.h('div', _extends({
+          'class': fluid ? 'mui-container-fluid' : 'mui-container'
+        }, props), children);
+      }
+    }]);
+    return Container;
+  }(preact.Component);
+
+  return Container;
+});
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.row = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Row Module
+   * @module preact/row
+   */
+
+  /**
+   * @name Row
+   */
+
+  var Row = function (_Component) {
+    inherits(Row, _Component);
+
+    function Row() {
+      classCallCheck(this, Row);
+      return possibleConstructorReturn(this, (Row.__proto__ || Object.getPrototypeOf(Row)).apply(this, arguments));
+    }
+
+    createClass(Row, [{
+      key: 'render',
+      value: function render(_ref) {
+        var children = _ref.children,
+            props = objectWithoutProperties(_ref, ['children']);
+
+        return preact.h('div', _extends({ 'class': 'mui-row' }, props), children);
+      }
+    }]);
+    return Row;
+  }(preact.Component);
+
+  return Row;
+});
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.col = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Col Module
+   * @module preact/col
+   */
+  /**
+   * @name Col
+   */
+
+  var Col = function (_Component) {
+    inherits(Col, _Component);
+
+    function Col() {
+      classCallCheck(this, Col);
+      return possibleConstructorReturn(this, (Col.__proto__ || Object.getPrototypeOf(Col)).apply(this, arguments));
+    }
+
+    createClass(Col, [{
+      key: 'render',
+      value: function render(_ref) {
+        var children = _ref.children,
+            xs = _ref.xs,
+            xsOffset = _ref.xsOffset,
+            sm = _ref.sm,
+            smOffset = _ref.smOffset,
+            md = _ref.md,
+            mdOffset = _ref.mdOffset,
+            lg = _ref.lg,
+            lgOffset = _ref.lgOffset,
+            xl = _ref.xl,
+            xlOffset = _ref.xlOffset,
+            props = objectWithoutProperties(_ref, ['children', 'xs', 'xsOffset', 'sm', 'smOffset', 'md', 'mdOffset', 'lg', 'lgOffset', 'xl', 'xlOffset']);
+
+        var colMdClass = md ? 'mui-col-md-' + md : '',
+            colXsClass = xs ? 'mui-col-xs-' + xs : '',
+            colSmClass = sm ? 'mui-col-sm-' + sm : '',
+            colLgClass = lg ? 'mui-col-lg-' + lg : '',
+            colXlClass = xl ? 'mui-col-xs-' + xl : '',
+            xsOffsetClass = xsOffset ? 'mui-col-xs-offset-' + xsOffset : '',
+            smOffsetClass = smOffset ? 'mui-col-sm-offset-' + smOffset : '',
+            mdOffsetClass = mdOffset ? 'mui-col-md-offset-' + mdOffset : '',
+            lgOffsetClass = lgOffset ? 'mui-col-lg-offset-' + lgOffset : '',
+            xlOffsetClass = xlOffset ? 'mui-col-xl-offset-' + xlOffset : '',
+            className = (colXsClass + ' ' + colSmClass + ' ' + colMdClass + ' ' + colLgClass + ' ' + colXlClass + ' ' + xsOffsetClass + ' ' + smOffsetClass + ' ' + mdOffsetClass + ' ' + lgOffsetClass + ' ' + xlOffsetClass).trim();
+
+        return preact.h('div', _extends({ 'class': className }, props), children);
+      }
+    }]);
+    return Col;
+  }(preact.Component);
+
+  return Col;
+});
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.tabs = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Tabs Module
+   * @module preact/tabs
+   */
+  /**
+   * @name Tabs
+   */
+
+  var Tabs = function (_Component) {
+    inherits(Tabs, _Component);
+
+    function Tabs() {
+      classCallCheck(this, Tabs);
+      return possibleConstructorReturn(this, (Tabs.__proto__ || Object.getPrototypeOf(Tabs)).apply(this, arguments));
+    }
+
+    createClass(Tabs, [{
+      key: 'render',
+      value: function render(_ref) {
+        var children = _ref.children,
+            justified = _ref.justified,
+            initialSelectedIndex = _ref.initialSelectedIndex,
+            props = objectWithoutProperties(_ref, ['children', 'justified', 'initialSelectedIndex']);
+
+        var className = justified ? 'mui-tabs__bar mui-tabs__bar--justified' : 'mui-tabs__bar';
+        return preact.h('ul', _extends({ 'class': className }, props), children);
+      }
+    }]);
+    return Tabs;
+  }(preact.Component);
+
+  return Tabs;
+});
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.tab = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Tab Module
+   * @module preact/tab
+   */
+
+  function renderTabMuiChildren(props) {
+    var div = document.createElement('div');
+    div.classList.add('mui-tabs__pane');
+    div.id = props.value;
+    if (props.selected === true) {
+      div.classList.add('mui--is-active');
+    }
+    div.appendChild(preact.render(props.children[0]));
+    return div;
+  }
+  /**
+   * @name Tab
+   */
+
+  var Tab = function (_Component) {
+    inherits(Tab, _Component);
+
+    function Tab() {
+      classCallCheck(this, Tab);
+      return possibleConstructorReturn(this, (Tab.__proto__ || Object.getPrototypeOf(Tab)).apply(this, arguments));
+    }
+
+    createClass(Tab, [{
+      key: 'componentDidUpdate',
+      value: function componentDidUpdate() {
+        var div = renderTabMuiChildren(this.props);
+        this.base.parentElement.insertAdjacentElement('afterend', div);
+      }
+    }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        var div = renderTabMuiChildren(this.props);
+        this.base.parentElement.insertAdjacentElement('afterend', div);
+      }
+    }, {
+      key: 'render',
+      value: function render(_ref) {
+        var value = _ref.value,
+            selected = _ref.selected,
+            label = _ref.label,
+            props = objectWithoutProperties(_ref, ['value', 'selected', 'label']);
+
+        return preact.h('li', _extends({}, props, { 'class': selected ? 'mui--is-active' : null }), preact.h('a', { 'data-mui-toggle': 'tab', 'data-mui-controls': value }, ' ', label, ' '));
+      }
+    }]);
+    return Tab;
+  }(preact.Component);
+
+  return Tab;
+});
+
+/***/ }),
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3590,6 +4704,32 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _preact = __webpack_require__(0);
+
+var _form = __webpack_require__(33);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _select = __webpack_require__(34);
+
+var _select2 = _interopRequireDefault(_select);
+
+var _option = __webpack_require__(35);
+
+var _option2 = _interopRequireDefault(_option);
+
+var _input = __webpack_require__(36);
+
+var _input2 = _interopRequireDefault(_input);
+
+var _button = __webpack_require__(37);
+
+var _button2 = _interopRequireDefault(_button);
+
+var _panel = __webpack_require__(2);
+
+var _panel2 = _interopRequireDefault(_panel);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3607,37 +4747,31 @@ var Events = function (_Component) {
   }
 
   _createClass(Events, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return (0, _preact.h)(
-        "form",
-        { id: "evogame-controls" },
+        _panel2.default,
+        null,
         (0, _preact.h)(
-          "label",
-          { htmlFor: "evogame-event" },
-          "Event"
+          'div',
+          { className: 'mui--text-title' },
+          'Event'
         ),
         (0, _preact.h)(
-          "select",
-          { id: "evogame-event" },
+          _form2.default,
+          null,
           (0, _preact.h)(
-            "option",
-            { value: "sahara" },
-            "Sahara"
+            _select2.default,
+            { name: 'evogame-event', label: 'Event Type', defaultValue: 'todo' },
+            (0, _preact.h)(_option2.default, { value: 'todo', label: 'To think about it' })
+          ),
+          (0, _preact.h)(_input2.default, { label: 'Last for .. days', type: 'number', floatingLabel: true }),
+          (0, _preact.h)(
+            _button2.default,
+            { color: 'primary', raised: true },
+            'Send Event'
           )
-        ),
-        (0, _preact.h)(
-          "label",
-          { htmlFor: "evogame-event-time" },
-          "last for"
-        ),
-        (0, _preact.h)("input", { id: "evogame-event-time", type: "number", min: "1", value: "1" }),
-        (0, _preact.h)(
-          "label",
-          { htmlFor: "evogame-event-time" },
-          "days"
-        ),
-        (0, _preact.h)("input", { type: "submit", value: "Send Event" })
+        )
       );
     }
   }]);
@@ -3648,7 +4782,895 @@ var Events = function (_Component) {
 exports.default = Events;
 
 /***/ }),
-/* 27 */
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.form = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Form module
+   * @module preact/form
+   */
+
+  /**
+   * @name Form
+   */
+
+  var Form = function (_Component) {
+    inherits(Form, _Component);
+
+    function Form() {
+      classCallCheck(this, Form);
+      return possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).apply(this, arguments));
+    }
+
+    createClass(Form, [{
+      key: 'render',
+      value: function render(_ref) {
+        var legend = _ref.legend,
+            children = _ref.children,
+            inline = _ref.inline,
+            props = objectWithoutProperties(_ref, ['legend', 'children', 'inline']);
+
+        return preact.h('form', _extends({
+          'class': inline ? 'mui-form--inline' : null
+        }, props), legend ? preact.h('legend', null, legend) : null, children);
+      }
+    }]);
+    return Form;
+  }(preact.Component);
+
+  return Form;
+});
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.select = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Select Module
+   * @module preact/select
+   */
+
+  /**
+   * @name Select
+   */
+
+  var Select = function (_Component) {
+    inherits(Select, _Component);
+
+    function Select() {
+      classCallCheck(this, Select);
+      return possibleConstructorReturn(this, (Select.__proto__ || Object.getPrototypeOf(Select)).apply(this, arguments));
+    }
+
+    createClass(Select, [{
+      key: 'render',
+      value: function render(_ref) {
+        var style = _ref.style,
+            children = _ref.children,
+            label = _ref.label,
+            _ref$defaultValue = _ref.defaultValue,
+            defaultValue = _ref$defaultValue === undefined ? false : _ref$defaultValue,
+            _ref$disabled = _ref.disabled,
+            disabled = _ref$disabled === undefined ? false : _ref$disabled,
+            props = objectWithoutProperties(_ref, ['style', 'children', 'label', 'defaultValue', 'disabled']);
+
+        return preact.h('div', { 'class': 'mui-select', style: style }, preact.h('select', _extends({}, props, { disabled: disabled, value: defaultValue }), label ? preact.h('label', null, label) : null, children));
+      }
+    }]);
+    return Select;
+  }(preact.Component);
+
+  return Select;
+});
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.option = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Option Module
+   * @module preact/option
+   */
+
+  /**
+   * @name Option
+   */
+
+  var Option = function (_Component) {
+    inherits(Option, _Component);
+
+    function Option() {
+      classCallCheck(this, Option);
+      return possibleConstructorReturn(this, (Option.__proto__ || Object.getPrototypeOf(Option)).apply(this, arguments));
+    }
+
+    createClass(Option, [{
+      key: 'render',
+      value: function render(_ref) {
+        var label = _ref.label,
+            value = _ref.value,
+            props = objectWithoutProperties(_ref, ['label', 'value']);
+
+        return preact.h('option', _extends({}, props, { value: value }), label);
+      }
+    }]);
+    return Option;
+  }(preact.Component);
+
+  return Option;
+});
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.input = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Input Module
+   * @module preact/input
+   */
+
+  /**
+   * @name Input
+   */
+
+  var Input = function (_Component) {
+    inherits(Input, _Component);
+
+    function Input() {
+      classCallCheck(this, Input);
+      return possibleConstructorReturn(this, (Input.__proto__ || Object.getPrototypeOf(Input)).apply(this, arguments));
+    }
+
+    createClass(Input, [{
+      key: 'render',
+      value: function render(_ref) {
+        var style = _ref.style,
+            hint = _ref.hint,
+            label = _ref.label,
+            _ref$type = _ref.type,
+            type = _ref$type === undefined ? 'text' : _ref$type,
+            required = _ref.required,
+            defaultValue = _ref.defaultValue,
+            floatingLabel = _ref.floatingLabel,
+            props = objectWithoutProperties(_ref, ['style', 'hint', 'label', 'type', 'required', 'defaultValue', 'floatingLabel']);
+
+        var floatingLabelClass = floatingLabel ? ' mui-textfield--float-label' : '';
+        var className = ('mui-textfield ' + floatingLabelClass).trim();
+        return preact.h('div', {
+          'class': className,
+          style: style ? style : null
+        }, preact.h('input', _extends({
+          type: type,
+          placeholder: hint,
+          value: defaultValue ? defaultValue : null,
+          required: required ? required : null
+        }, props)), label ? preact.h('label', null, label) : null);
+      }
+    }]);
+    return Input;
+  }(preact.Component);
+
+  return Input;
+});
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory(__webpack_require__(0)) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.button = factory(global.Preact);
+})(undefined, function (preact) {
+  'use strict';
+
+  var classCallCheck = function classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  var createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  var get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
+  var inherits = function inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+    var target = {};
+
+    for (var i in obj) {
+      if (keys.indexOf(i) >= 0) continue;
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+      target[i] = obj[i];
+    }
+
+    return target;
+  };
+
+  var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  };
+
+  var set = function set(object, property, value, receiver) {
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent !== null) {
+        set(parent, property, value, receiver);
+      }
+    } else if ("value" in desc && desc.writable) {
+      desc.value = value;
+    } else {
+      var setter = desc.set;
+
+      if (setter !== undefined) {
+        setter.call(receiver, value);
+      }
+    }
+
+    return value;
+  };
+
+  /**
+   * MUI Preact Button Module
+   * @module preact/button
+   */
+  /**
+   * @name Button
+   */
+
+  var Button = function (_Component) {
+    inherits(Button, _Component);
+
+    function Button() {
+      classCallCheck(this, Button);
+      return possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).apply(this, arguments));
+    }
+
+    createClass(Button, [{
+      key: 'render',
+      value: function render(_ref) {
+        var color = _ref.color,
+            variant = _ref.variant,
+            children = _ref.children,
+            disabled = _ref.disabled,
+            size = _ref.size,
+            props = objectWithoutProperties(_ref, ['color', 'variant', 'children', 'disabled', 'size']);
+
+        var variantClass = variant ? 'mui-btn--' + variant : '',
+            colorClass = color ? 'mui-btn--' + color : '',
+            sizeClass = size ? 'mui-btn--' + size : '',
+            className = ('mui-btn ' + variantClass + ' ' + colorClass + ' ' + sizeClass).trim();
+        return preact.h('button', _extends({
+          'class': className,
+          disabled: disabled ? 'disabled' : ''
+        }, props), children);
+      }
+    }]);
+    return Button;
+  }(preact.Component);
+
+  return Button;
+});
+
+/***/ }),
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3662,7 +5684,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
-var _preactRedux = __webpack_require__(2);
+var _preactRedux = __webpack_require__(3);
+
+var _panel = __webpack_require__(2);
+
+var _panel2 = _interopRequireDefault(_panel);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3683,11 +5711,11 @@ var GeneralInfo = function (_Component) {
     key: 'render',
     value: function render() {
       return (0, _preact.h)(
-        'div',
-        { id: 'evogame-status' },
+        _panel2.default,
+        null,
         (0, _preact.h)(
-          'h1',
-          null,
+          'div',
+          { className: 'mui--text-title' },
           'General Status'
         ),
         (0, _preact.h)(
@@ -3734,8 +5762,7 @@ var GeneralInfo = function (_Component) {
             null,
             this.props.day
           )
-        ),
-        (0, _preact.h)('hr', null)
+        )
       );
     }
   }]);
@@ -3748,7 +5775,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(GeneralInfo);
 
 /***/ }),
-/* 28 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3794,7 +5821,7 @@ var Logger = function (_Component) {
 exports.default = Logger;
 
 /***/ }),
-/* 29 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3844,7 +5871,7 @@ var Parameters = function (_Component) {
 exports.default = Parameters;
 
 /***/ }),
-/* 30 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3854,9 +5881,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(3);
+var _redux = __webpack_require__(4);
 
-var _reducer = __webpack_require__(31);
+var _reducer = __webpack_require__(42);
 
 var _reducer2 = _interopRequireDefault(_reducer);
 
@@ -3865,7 +5892,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = (0, _redux.createStore)(_reducer2.default);
 
 /***/ }),
-/* 31 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

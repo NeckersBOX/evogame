@@ -1,4 +1,10 @@
 import { h, Component } from 'preact'
+import Form from 'preact-mui/lib/form'
+import Select from 'preact-mui/lib/select'
+import Option from 'preact-mui/lib/option'
+import Input from 'preact-mui/lib/input'
+import Button from 'preact-mui/lib/button'
+import Panel from 'preact-mui/lib/panel'
 
 class Events extends Component {
   constructor(props) {
@@ -7,16 +13,16 @@ class Events extends Component {
 
   render() {
     return (
-      <form id="evogame-controls">
-        <label htmlFor="evogame-event">Event</label>
-        <select id="evogame-event">
-          <option value="sahara">Sahara</option>
-        </select>
-        <label htmlFor="evogame-event-time">last for</label>
-        <input id="evogame-event-time" type="number" min="1" value="1" />
-        <label htmlFor="evogame-event-time">days</label>
-        <input type="submit" value="Send Event" />
-      </form>
+      <Panel>
+        <div className="mui--text-title">Event</div>
+        <Form>
+          <Select name="evogame-event" label="Event Type" defaultValue="todo">
+            <Option value="todo" label="To think about it" />
+          </Select>
+          <Input label="Last for .. days" type="number" floatingLabel={true} />
+          <Button color="primary" raised={true}>Send Event</Button>
+        </Form>
+      </Panel>
     );
   }
 }
