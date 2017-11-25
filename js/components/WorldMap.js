@@ -1,6 +1,6 @@
 import { h, Component } from 'preact'
 
-class Logger extends Component {
+class WorldMap extends Component {
   constructor(props) {
     super(props);
   }
@@ -14,4 +14,4 @@ class Logger extends Component {
   }
 }
 
-export default Logger;
+export default WorldMap;

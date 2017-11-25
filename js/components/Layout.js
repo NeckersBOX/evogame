@@ -7,7 +7,7 @@ import Panel from 'preact-mui/lib/panel'
 import { PanelHeader } from './extra-mui/panel'
 import Events from './Events'
 import GeneralInfo from './GeneralInfo'
-import Logger from './Logger'
+import WorldMap from './WorldMap'
 import Parameters from './Parameters'
 
 class Layout extends Component {
@@ -32,8 +32,8 @@ class Layout extends Component {
             </Col>
             <Col md="9">
               <Panel>
-                <PanelHeader label="Logger" />
-                <Logger />
+                <PanelHeader label="World Map" />
+                <WorldMap />
               </Panel>
               <Panel>
                 <PanelHeader label="Parameters" />
