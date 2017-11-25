@@ -6,7 +6,10 @@ const webpackStream = require ('webpack-stream');
 
 const files = {
   js: 'js/**/*.js',
-  sass: 'sass/**/*.sass'
+  sass: [
+    'sass/**/*.sass',
+    'bower_components/mui/src/sass/**/*.scss'
+  ]
 };
 
 
