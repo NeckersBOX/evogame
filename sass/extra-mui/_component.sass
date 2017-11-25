@@ -1,0 +1,48 @@
+@import "../../bower_components/mui/src/sass/mui/colors"
+@import "../../bower_components/mui/src/sass/mui/variables"
+@import "../../bower_components/mui/src/sass/mui/mixins"
+
+.muiextra--panel-header
+  color: $mui-primary-color
+  font-weight: 700
+  text-transform: uppercase
+  height: $mui-btn-height
+  padding: 0 $mui-btn-padding-horizontal
+  border: none
+  background-image: none
+  text-align: center
+  line-height: $mui-btn-height
+  vertical-align: middle
+  white-space: nowrap
+  user-select: none
+  font-size: $mui-base-font-size
+  font-family: $mui-base-font-family
+  letter-spacing: 0.03em
+  position: relative
+  overflow: hidden
+  border-bottom: 1px solid $mui-primary-color
+  margin-bottom: $mui-form-group-margin-bottom
+
+.muiextra--list
+  width: 100%
+
+  .muiextra--list-item
+    vertical-align: middle
+    font-family: $mui-base-font-family
+    font-size: $mui-base-font-size
+    position: relative
+    overflow: hidden
+    white-space: nowrap
+    color: $mui-base-font-color
+
+    .muiextra--list-item-title, .muiextra--list-item-value
+      padding-bottom: #{$mui-panel-padding / 2}
+      width: 50%
+
+    .muiextra--list-item-title
+      text-align: left
+      font-weight: 700
+
+    .muiextra--list-item-value
+      text-align: right
+      width: 50%
