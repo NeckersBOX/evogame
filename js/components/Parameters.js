@@ -12,13 +12,13 @@ class Parameters extends Component {
   }
 
   @bind
-  changeParameter (event, label) {
+  changeParameter (event, key) {
     event.preventDefault();
 
     this.props.dispatch({
       type: 'SET_PARAMETERS',
       data: {
-        label,
+        key,
         value: event.target.value
       }
     });
@@ -31,7 +31,7 @@ class Parameters extends Component {
           {this.props.parameters.map(property =>
             <Col md="3" sm="6">
               <Input {...property} type="number" floatingLabel={true}
-                onChange={e => this.changeParameter(e, property.label)} />
+                onChange={e => this.changeParameter(e, property.key)} />
             </Col>
           )}
         </Row>
@@ -40,4 +40,4 @@ class Parameters extends Component {
   }
 }
 
-export default connect(state => state)(Parameters);;
+export default connect(state => state)(Parameters);

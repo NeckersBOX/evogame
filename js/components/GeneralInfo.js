@@ -11,7 +11,7 @@ class GeneralInfo extends Component {
     return (
       <List>
         <ListItem label="Generation">{this.props.generation}</ListItem>
-        <ListItem label="Solutions">{this.props.solutions}</ListItem>
+        <ListItem label="Solutions">{this.props.solutions.length}</ListItem>
         <ListItem label="Day">{this.props.day}</ListItem>
       </List>
     );

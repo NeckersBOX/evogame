@@ -1,0 +1,19 @@
+$worldmap-border-color: #aaa
+
+.evogame--worldmap
+  width: 100%
+
+  .evogame--worldmap-row
+    .evogame--worldmap-col
+      box-sizing: border-box
+      display: inline-block
+      border: 1px solid $worldmap-border-color
+      border-left-width: 0
+      border-top-width: 0
+
+      &:first-child
+        border-left-width: 1px
+
+    &:first-child
+      .evogame--worldmap-col
+        border-top-width: 1px

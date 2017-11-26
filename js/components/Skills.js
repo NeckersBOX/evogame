@@ -12,13 +12,13 @@ class Skills extends Component {
   }
 
   @bind
-  changeParameter (event, label) {
+  changeParameter (event, key) {
     event.preventDefault();
 
     this.props.dispatch({
       type: 'SET_SKILLS',
       data: {
-        label,
+        key,
         value: event.target.value
       }
     });
@@ -31,7 +31,7 @@ class Skills extends Component {
           {this.props.skills.map(property =>
             <Col md="3" sm="6">
               <Input {...property} type="number" floatingLabel={true}
-                onChange={e => this.changeParameter(e, property.label)} />
+                onChange={e => this.changeParameter(e, property.key)} />
             </Col>
           )}
         </Row>

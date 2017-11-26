@@ -5536,7 +5536,7 @@ var GeneralInfo = function (_Component) {
         (0, _preact.h)(
           _list.ListItem,
           { label: 'Solutions' },
-          this.props.solutions
+          this.props.solutions.length
         ),
         (0, _preact.h)(
           _list.ListItem,
@@ -5612,6 +5612,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
+var _preactRedux = __webpack_require__(1);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -5630,10 +5632,25 @@ var WorldMap = function (_Component) {
   _createClass(WorldMap, [{
     key: 'render',
     value: function render() {
+      var width = this.props.parameters.find(function (p) {
+        return p.key == 'world-width';
+      }).value || 1,
+          height = this.props.parameters.find(function (p) {
+        return p.key == 'world-height';
+      }).value || 1;
+
+
       return (0, _preact.h)(
         'div',
-        null,
-        'Not initialized...'
+        { className: 'evogame--worldmap' },
+        new Array(height).fill((0, _preact.h)(
+          'div',
+          { className: 'evogame--worldmap-row' },
+          new Array(width).fill((0, _preact.h)('div', { className: 'evogame--worldmap-col', style: {
+              width: 100 / width + '%',
+              paddingBottom: 100 / width + '%'
+            } }))
+        ))
       );
     }
   }]);
@@ -5641,7 +5658,9 @@ var WorldMap = function (_Component) {
   return WorldMap;
 }(_preact.Component);
 
-exports.default = WorldMap;
+exports.default = (0, _preactRedux.connect)(function (state) {
+  return state;
+})(WorldMap);
 
 /***/ }),
 /* 42 */
@@ -5726,13 +5745,13 @@ var Parameters = (_class = function (_Component) {
 
   _createClass(Parameters, [{
     key: 'changeParameter',
-    value: function changeParameter(event, label) {
+    value: function changeParameter(event, key) {
       event.preventDefault();
 
       this.props.dispatch({
         type: 'SET_PARAMETERS',
         data: {
-          label: label,
+          key: key,
           value: event.target.value
         }
       });
@@ -5754,7 +5773,7 @@ var Parameters = (_class = function (_Component) {
               { md: '3', sm: '6' },
               (0, _preact.h)(_input2.default, _extends({}, property, { type: 'number', floatingLabel: true,
                 onChange: function onChange(e) {
-                  return _this2.changeParameter(e, property.label);
+                  return _this2.changeParameter(e, property.key);
                 } }))
             );
           })
@@ -5768,7 +5787,6 @@ var Parameters = (_class = function (_Component) {
 exports.default = (0, _preactRedux.connect)(function (state) {
   return state;
 })(Parameters);
-;
 
 /***/ }),
 /* 43 */
@@ -5853,13 +5871,13 @@ var Skills = (_class = function (_Component) {
 
   _createClass(Skills, [{
     key: 'changeParameter',
-    value: function changeParameter(event, label) {
+    value: function changeParameter(event, key) {
       event.preventDefault();
 
       this.props.dispatch({
         type: 'SET_SKILLS',
         data: {
-          label: label,
+          key: key,
           value: event.target.value
         }
       });
@@ -5881,7 +5899,7 @@ var Skills = (_class = function (_Component) {
               { md: '3', sm: '6' },
               (0, _preact.h)(_input2.default, _extends({}, property, { type: 'number', floatingLabel: true,
                 onChange: function onChange(e) {
-                  return _this2.changeParameter(e, property.label);
+                  return _this2.changeParameter(e, property.key);
                 } }))
             );
           })
@@ -5935,7 +5953,7 @@ var _skills = __webpack_require__(47);
 
 var initialState = {
   generation: 0,
-  solutions: 0,
+  solutions: [],
   day: 0,
   parameters: _parameters.parameters,
   skills: _skills.skills
@@ -5943,10 +5961,10 @@ var initialState = {
 
 var reducerLookup = {
   SET_PARAMETERS: function SET_PARAMETERS(state, data) {
-    return (0, _parameters.paramReducer)(state, data.label, +data.value);
+    return (0, _parameters.paramReducer)(state, data.key, +data.value);
   },
   SET_SKILLS: function SET_SKILLS(state, data) {
-    return (0, _skills.skillReducer)(state, data.label, +data.value);
+    return (0, _skills.skillReducer)(state, data.key, +data.value);
   }
 };
 
@@ -5972,33 +5990,55 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var parameters = [{
+  key: 'solutions',
   label: 'Solutions',
   min: '1',
   defaultValue: '16',
   value: 16
 }, {
-  label: 'Days per generation',
+  key: 'days_per_generation',
+  label: 'Generation duration [ days ]',
   min: '1',
   defaultValue: '365',
   value: 365
 }, {
+  key: 'mutability',
   label: 'Mutability [ % ]',
   min: '0',
   max: '100',
   defaultValue: '2',
   value: 2
 }, {
+  key: 'reproductivity',
   label: 'Reproductivity [ % ]',
   min: '0',
   max: '100',
   defaultValue: '0',
   value: 0
+}, {
+  key: 'world-width',
+  label: 'World Width [ cell ]',
+  min: '1',
+  defaultValue: '32',
+  value: 32
+}, {
+  key: 'world-height',
+  label: 'World Height [ cell ]',
+  min: '1',
+  defaultValue: '12',
+  value: 12
+}, {
+  key: 'day_time',
+  label: 'Day duration [ ms ]',
+  min: '10',
+  defaultValue: '500',
+  value: 500
 }];
 
-var paramReducer = function paramReducer(state, label, value) {
+var paramReducer = function paramReducer(state, key, value) {
   return _extends({}, state, {
     parameters: parameters.map(function (p) {
-      return p.label != label ? p : _extends({}, p, { value: value });
+      return p.key != key ? p : _extends({}, p, { value: value });
     })
   });
 };
@@ -6020,31 +6060,35 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var skills = [{
+  key: 'cold',
   label: 'Cold Resistance [ °C ]',
   min: '-273',
   defaultValue: '-25',
   value: -25
 }, {
+  key: 'heat',
   label: 'Heat Resistance [ °C ]',
   min: '-273',
   defaultValue: '45',
   value: 45
 }, {
+  key: 'water',
   label: 'Water Resistance [ m ]',
   min: '0',
   defaultValue: '8',
   value: 8
 }, {
+  key: 'wind',
   label: 'Wind Resistance [ km/h ]',
   min: '0',
   defaultValue: '90',
   value: 90
 }];
 
-var skillReducer = function skillReducer(state, label, value) {
+var skillReducer = function skillReducer(state, key, value) {
   return _extends({}, state, {
     skills: skills.map(function (p) {
-      return p.label != label ? p : _extends({}, p, { value: value });
+      return p.key != key ? p : _extends({}, p, { value: value });
     })
   });
 };
