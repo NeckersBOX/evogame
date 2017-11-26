@@ -5748,6 +5748,12 @@ var Parameters = (_class = function (_Component) {
     value: function changeParameter(event, key) {
       event.preventDefault();
 
+      if (this.props.running && this.props.parameters.find(function (p) {
+        return p.key == key;
+      }).dynamic) {
+        return;
+      }
+
       this.props.dispatch({
         type: 'SET_PARAMETERS',
         data: {
@@ -5771,12 +5777,24 @@ var Parameters = (_class = function (_Component) {
             return (0, _preact.h)(
               _col2.default,
               { md: '3', sm: '6' },
-              (0, _preact.h)(_input2.default, _extends({}, property, { type: 'number', floatingLabel: true,
+              (0, _preact.h)(_input2.default, _extends({}, _extends({}, property, {
+                label: (property.dynamic ? '' : '* ') + property.label
+              }), { type: 'number', floatingLabel: true,
                 onChange: function onChange(e) {
                   return _this2.changeParameter(e, property.key);
                 } }))
             );
           })
+        ),
+        (0, _preact.h)(
+          'div',
+          { className: 'muiextra--note' },
+          (0, _preact.h)(
+            'b',
+            null,
+            '*'
+          ),
+          ' Need restart to be applied'
         )
       );
     }
@@ -5991,18 +6009,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var parameters = [{
   key: 'solutions',
+  dynamic: false,
   label: 'Solutions',
   min: '1',
   defaultValue: '16',
   value: 16
 }, {
   key: 'days_per_generation',
+  dynamic: true,
   label: 'Generation duration [ days ]',
   min: '1',
   defaultValue: '365',
   value: 365
 }, {
   key: 'mutability',
+  dynamic: true,
   label: 'Mutability [ % ]',
   min: '0',
   max: '100',
@@ -6010,6 +6031,7 @@ var parameters = [{
   value: 2
 }, {
   key: 'reproductivity',
+  dynamic: true,
   label: 'Reproductivity [ % ]',
   min: '0',
   max: '100',
@@ -6017,22 +6039,32 @@ var parameters = [{
   value: 0
 }, {
   key: 'world-width',
+  dynamic: false,
   label: 'World Width [ cell ]',
   min: '1',
   defaultValue: '32',
   value: 32
 }, {
   key: 'world-height',
+  dynamic: false,
   label: 'World Height [ cell ]',
   min: '1',
   defaultValue: '12',
   value: 12
 }, {
   key: 'day_time',
+  dynamic: true,
   label: 'Day duration [ ms ]',
   min: '10',
   defaultValue: '500',
   value: 500
+}, {
+  key: 'reproduction-area',
+  dynamic: true,
+  label: 'Reproduction Area [ cell ]',
+  min: '1',
+  defaultValue: '6',
+  value: 6
 }];
 
 var paramReducer = function paramReducer(state, key, value) {

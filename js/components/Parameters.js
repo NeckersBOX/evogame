@@ -15,6 +15,10 @@ class Parameters extends Component {
   changeParameter (event, key) {
     event.preventDefault();
 
+    if ( this.props.running && this.props.parameters.find(p => p.key == key).dynamic ) {
+      return;
+    }
+
     this.props.dispatch({
       type: 'SET_PARAMETERS',
       data: {
@@ -30,11 +34,15 @@ class Parameters extends Component {
         <Row>
           {this.props.parameters.map(property =>
             <Col md="3" sm="6">
-              <Input {...property} type="number" floatingLabel={true}
+              <Input {...{
+                ...property,
+                label: (property.dynamic ? '' : '* ') + property.label
+              }} type="number" floatingLabel={true}
                 onChange={e => this.changeParameter(e, property.key)} />
             </Col>
           )}
         </Row>
+        <div className="muiextra--note"><b>*</b> Need restart to be applied</div>
       </div>
     );
   }

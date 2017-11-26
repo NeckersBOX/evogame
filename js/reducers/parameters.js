@@ -1,6 +1,7 @@
 const parameters = [
   {
     key: 'solutions',
+    dynamic: false,
     label: 'Solutions',
     min: '1',
     defaultValue: '16',
@@ -8,6 +9,7 @@ const parameters = [
   },
   {
     key: 'days_per_generation',
+    dynamic: true,
     label: 'Generation duration [ days ]',
     min: '1',
     defaultValue: '365',
@@ -15,6 +17,7 @@ const parameters = [
   },
   {
     key: 'mutability',
+    dynamic: true,
     label: 'Mutability [ % ]',
     min: '0',
     max: '100',
@@ -23,6 +26,7 @@ const parameters = [
   },
   {
     key: 'reproductivity',
+    dynamic: true,
     label: 'Reproductivity [ % ]',
     min: '0',
     max: '100',
@@ -31,6 +35,7 @@ const parameters = [
   },
   {
     key: 'world-width',
+    dynamic: false,
     label: 'World Width [ cell ]',
     min: '1',
     defaultValue: '32',
@@ -38,6 +43,7 @@ const parameters = [
   },
   {
     key: 'world-height',
+    dynamic: false,
     label: 'World Height [ cell ]',
     min: '1',
     defaultValue: '12',
@@ -45,16 +51,25 @@ const parameters = [
   },
   {
     key: 'day_time',
+    dynamic: true,
     label: 'Day duration [ ms ]',
     min: '10',
     defaultValue: '500',
     value: 500
+  },
+  {
+    key: 'reproduction-area',
+    dynamic: true,
+    label: 'Reproduction Area [ cell ]',
+    min: '1',
+    defaultValue: '6',
+    value: 6
   }
 ];
 
 const paramReducer = (state, key, value) => ({
   ...state,
-  parameters: parameters.map(p => (p.key != key) ? p : {...p, value})
+  parameters: parameters.map(p => (p.key != key ) ? p : {...p, value})
 });
 
 export { parameters, paramReducer };
