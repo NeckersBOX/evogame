@@ -47,6 +47,45 @@
       text-align: right
       width: 50%
 
+.muiextra--tabs
+  >ul
+    list-style: none
+    padding-left: 0
+    margin-bottom: 20px
+    background-color: transparent
+    white-space: nowrap
+    overflow-x: auto
+    display: table
+    width: 100%
+    table-layout: fixed
+    background-color: #fafafa
+
+    >li
+      display: table-cell
+
+      &.selected
+        border-bottom: 2px solid $mui-tab-border-color-active
+
+        >a
+          color: $mui-tab-font-color-active
+          cursor: default
+
+      >a
+        text-align: center
+        display: block
+        white-space: nowrap
+        text-transform: uppercase
+        font-weight: 700
+        font-size: 14px
+        color: $mui-tab-font-color
+        cursor: pointer
+        height: 48px
+        line-height: 48px
+        padding-left: 24px
+        padding-right: 24px
+        text-decoration: none !important
+        user-select: none
+
 @media screen and (min-width: #{$mui-screen-md-min})
   .muiextra--min-height-md
     min-height: 239px

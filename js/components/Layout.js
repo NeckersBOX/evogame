@@ -5,10 +5,13 @@ import Col from 'preact-mui/lib/col';
 import Panel from 'preact-mui/lib/panel'
 
 import { PanelHeader } from './extra-mui/panel'
+import { Tabs, Tab } from './extra-mui/tab'
+
 import Events from './Events'
 import GeneralInfo from './GeneralInfo'
 import WorldMap from './WorldMap'
 import Parameters from './Parameters'
+import Skills from './Skills'
 
 class Layout extends Component {
   constructor(props) {
@@ -36,8 +39,14 @@ class Layout extends Component {
                 <WorldMap />
               </Panel>
               <Panel>
-                <PanelHeader label="Parameters" />
-                <Parameters />
+                <Tabs>
+                  <Tab selected={true} label="Parameters">
+                    <Parameters />
+                  </Tab>
+                  <Tab label="Skills">
+                    <Skills />
+                  </Tab>
+                </Tabs>
               </Panel>
             </Col>
           </Row>

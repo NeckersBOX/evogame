@@ -29,7 +29,9 @@ gulp.task ('webpack', (cb) =>
             plugins: [
               ['transform-react-jsx', {
                 pragma: 'h'
-              }]
+              }],
+              'transform-object-rest-spread',
+              'babel-plugin-transform-decorators-legacy'
             ]
           }
         }]

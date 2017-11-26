@@ -6,7 +6,7 @@ import Input from 'preact-mui/lib/input'
 import Row from 'preact-mui/lib/row'
 import Col from 'preact-mui/lib/col'
 
-class Parameters extends Component {
+class Skills extends Component {
   constructor(props) {
     super(props);
   }
@@ -16,7 +16,7 @@ class Parameters extends Component {
     event.preventDefault();
 
     this.props.dispatch({
-      type: 'SET_PARAMETERS',
+      type: 'SET_SKILLS',
       data: {
         label,
         value: event.target.value
@@ -28,7 +28,7 @@ class Parameters extends Component {
     return (
       <div>
         <Row>
-          {this.props.parameters.map(property =>
+          {this.props.skills.map(property =>
             <Col md="3" sm="6">
               <Input {...property} type="number" floatingLabel={true}
                 onChange={e => this.changeParameter(e, property.label)} />
@@ -40,4 +40,4 @@ class Parameters extends Component {
   }
 }
 
-export default connect(state => state)(Parameters);;
+export default connect(state => state)(Skills);;
