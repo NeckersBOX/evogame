@@ -3426,7 +3426,7 @@ var _Layout = __webpack_require__(29);
 
 var _Layout2 = _interopRequireDefault(_Layout);
 
-var _store = __webpack_require__(44);
+var _store = __webpack_require__(46);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -4166,6 +4166,10 @@ var _Skills = __webpack_require__(43);
 
 var _Skills2 = _interopRequireDefault(_Skills);
 
+var _Controller = __webpack_require__(44);
+
+var _Controller2 = _interopRequireDefault(_Controller);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4198,6 +4202,7 @@ var Layout = function (_Component) {
             (0, _preact.h)(
               _col2.default,
               { md: '3' },
+              (0, _preact.h)(_Controller2.default, null),
               (0, _preact.h)(
                 _panel2.default,
                 null,
@@ -5921,6 +5926,11 @@ var Skills = (_class = function (_Component) {
                 } }))
             );
           })
+        ),
+        (0, _preact.h)(
+          'div',
+          { className: 'muiextra--note' },
+          'This settings will be applied only for the first generation'
         )
       );
     }
@@ -5944,15 +5954,60 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(6);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _reducer = __webpack_require__(45);
+var _preact = __webpack_require__(0);
 
-var _reducer2 = _interopRequireDefault(_reducer);
+var _preactRedux = __webpack_require__(1);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _buttonsGroup = __webpack_require__(45);
 
-exports.default = (0, _redux.createStore)(_reducer2.default);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Controller = function (_Component) {
+  _inherits(Controller, _Component);
+
+  function Controller(props) {
+    _classCallCheck(this, Controller);
+
+    return _possibleConstructorReturn(this, (Controller.__proto__ || Object.getPrototypeOf(Controller)).call(this, props));
+  }
+
+  _createClass(Controller, [{
+    key: 'render',
+    value: function render() {
+      return (0, _preact.h)(
+        _buttonsGroup.ButtonsGroup,
+        null,
+        (0, _preact.h)(
+          _buttonsGroup.ButtonItem,
+          { active: this.props.status == 'play' },
+          (0, _preact.h)('i', { className: 'fa fa-play' })
+        ),
+        (0, _preact.h)(
+          _buttonsGroup.ButtonItem,
+          { active: this.props.status == 'pause' },
+          (0, _preact.h)('i', { className: 'fa fa-pause' })
+        ),
+        (0, _preact.h)(
+          _buttonsGroup.ButtonItem,
+          { active: this.props.status == 'stop' },
+          (0, _preact.h)('i', { className: 'fa fa-stop' })
+        )
+      );
+    }
+  }]);
+
+  return Controller;
+}(_preact.Component);
+
+exports.default = (0, _preactRedux.connect)(function (state) {
+  return state;
+})(Controller);
 
 /***/ }),
 /* 45 */
@@ -5964,15 +6019,70 @@ exports.default = (0, _redux.createStore)(_reducer2.default);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.ButtonItem = exports.ButtonsGroup = undefined;
 
-var _parameters = __webpack_require__(46);
+var _preact = __webpack_require__(0);
 
-var _skills = __webpack_require__(47);
+var ButtonsGroup = function ButtonsGroup(props) {
+  return (0, _preact.h)(
+    'div',
+    { className: 'muiextra--buttons' },
+    props.children
+  );
+};
+
+var ButtonItem = function ButtonItem(props) {
+  return (0, _preact.h)(
+    'div',
+    { className: 'muiextra--button-item' + (props.active ? ' selected' : '') },
+    props.children
+  );
+};
+
+exports.ButtonsGroup = ButtonsGroup;
+exports.ButtonItem = ButtonItem;
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _redux = __webpack_require__(6);
+
+var _reducer = __webpack_require__(47);
+
+var _reducer2 = _interopRequireDefault(_reducer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = (0, _redux.createStore)(_reducer2.default);
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _parameters = __webpack_require__(48);
+
+var _skills = __webpack_require__(49);
 
 var initialState = {
   generation: 0,
   solutions: [],
   day: 0,
+  status: 'stop',
   parameters: _parameters.parameters,
   skills: _skills.skills
 };
@@ -5995,7 +6105,7 @@ var reducer = function reducer() {
 exports.default = reducer;
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6079,7 +6189,7 @@ exports.parameters = parameters;
 exports.paramReducer = paramReducer;
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -35,6 +35,7 @@ class Skills extends Component {
             </Col>
           )}
         </Row>
+        <div className="muiextra--note">This settings will be applied only for the first generation</div>
       </div>
     );
   }

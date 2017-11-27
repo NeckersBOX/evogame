@@ -91,6 +91,33 @@
   font-size: 12px
   color: #777
 
+.muiextra--buttons
+  width: 100%
+  display: flex
+  flex-direction: row
+
+  .muiextra--button-item
+    width: 100%
+    text-align: center
+    background-color: $mui-btn-primary-bg-color
+    color: $mui-btn-primary-font-color
+    padding: 15px
+    margin-bottom: 20px
+
+    &:first-of-type
+      border-top-left-radius: $mui-border-radius-default
+      border-bottom-left-radius: $mui-border-radius-default
+
+    &:last-of-type
+      border-top-right-radius: $mui-border-radius-default
+      border-bottom-right-radius: $mui-border-radius-default
+
+    &:hover
+      background-color: lighten($mui-btn-primary-bg-color, 5%)
+
+    &.selected
+      background-color: darken($mui-btn-primary-bg-color, 5%)
+
 @media screen and (min-width: #{$mui-screen-md-min})
   .muiextra--min-height-md
     min-height: 239px

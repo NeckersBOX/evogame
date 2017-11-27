@@ -5,6 +5,7 @@ const initialState = {
   generation: 0,
   solutions: [],
   day: 0,
+  status: 'stop',
   parameters,
   skills
 };

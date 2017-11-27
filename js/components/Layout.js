@@ -12,6 +12,7 @@ import GeneralInfo from './GeneralInfo'
 import WorldMap from './WorldMap'
 import Parameters from './Parameters'
 import Skills from './Skills'
+import Controller from './Controller'
 
 class Layout extends Component {
   constructor(props) {
@@ -24,6 +25,7 @@ class Layout extends Component {
         <Container fluid={true}>
           <Row>
             <Col md="3">
+              <Controller />
               <Panel>
                 <PanelHeader label="Event" />
                 <Events />
