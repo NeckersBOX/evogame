@@ -6228,14 +6228,14 @@ var parameters = [{
   value: 0
 }, {
   key: 'world-width',
-  dynamic: false,
+  dynamic: true,
   label: 'World Width [ cell ]',
   min: '1',
   defaultValue: '32',
   value: 32
 }, {
   key: 'world-height',
-  dynamic: false,
+  dynamic: true,
   label: 'World Height [ cell ]',
   min: '1',
   defaultValue: '12',
@@ -6254,6 +6254,14 @@ var parameters = [{
   min: '1',
   defaultValue: '6',
   value: 6
+}, {
+  key: 'initial-range',
+  dynamic: false,
+  label: 'Initial Mutability Range [ % ]',
+  min: '0',
+  max: '100',
+  defaultValue: '20',
+  value: 20
 }];
 
 var paramReducer = function paramReducer(state, key, value) {
@@ -6285,25 +6293,29 @@ var skills = [{
   label: 'Cold Resistance [ °C ]',
   min: '-273',
   defaultValue: '-25',
-  value: -25
+  value: -25,
+  fitness: 0
 }, {
   key: 'heat',
   label: 'Heat Resistance [ °C ]',
   min: '-273',
   defaultValue: '45',
-  value: 45
+  value: 45,
+  fitness: 0
 }, {
   key: 'water',
   label: 'Water Resistance [ m ]',
   min: '0',
   defaultValue: '8',
-  value: 8
+  value: 8,
+  fitness: 0
 }, {
   key: 'wind',
   label: 'Wind Resistance [ km/h ]',
   min: '0',
   defaultValue: '90',
-  value: 90
+  value: 90,
+  fitness: 0
 }];
 
 var skillReducer = function skillReducer(state, key, value) {
@@ -6333,6 +6345,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _generics = __webpack_require__(51);
 
+var _solutions = __webpack_require__(52);
+
 var playGame = exports.playGame = function playGame(state) {
   if (state.status == 'play') {
     return state;
@@ -6350,13 +6364,18 @@ var playGame = exports.playGame = function playGame(state) {
     return p.key == 'world-width';
   }).value, state.parameters.find(function (p) {
     return p.key == 'world-height';
-  }).value],
+  }).value, state.parameters.find(function (p) {
+    return p.key == 'initial-range';
+  }).value / 100],
       maxSolutions = _ref[0],
       worldWidth = _ref[1],
-      worldHeight = _ref[2];
+      worldHeight = _ref[2],
+      initialRange = _ref[3];
 
 
   maxSolutions = Math.min(worldWidth * worldHeight, maxSolutions);
+
+  /* Generate solutions */
 
   var _loop = function _loop(j) {
     var _ref2 = [(0, _generics.getRandomInt)(0, worldHeight - 1), (0, _generics.getRandomInt)(0, worldWidth - 1)],
@@ -6372,10 +6391,10 @@ var playGame = exports.playGame = function playGame(state) {
       col = _ref3[1];
     }
 
+    var skills = (0, _solutions.buildRandomSolutionSkill)(state.skills, initialRange);
+
     nextState.solutions.push({
-      skills: state.skills.map(function (skill) {
-        return { key: skill.key, value: skill.value };
-      }),
+      skills: skills,
       row: row,
       col: col
     });
@@ -6385,7 +6404,10 @@ var playGame = exports.playGame = function playGame(state) {
     _loop(j);
   }
 
-  /* TODO timers */
+  nextState.solutions = (0, _solutions.evaluateSolutionsFitness)(nextState.solutions);
+
+  /* TODO colors, timers */
+
   return nextState;
 };
 
@@ -6433,6 +6455,73 @@ var getRandomInt = exports.getRandomInt = function getRandomInt(min, max) {
   max = _ref[1];
 
   return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var getSkillRange = function getSkillRange(skill, solutions) {
+  var min = undefined,
+      max = undefined;
+
+
+  for (var i in solutions) {
+    var currSkillValue = solutions[i].skills.find(function (s) {
+      return s.key == skill;
+    }).value;
+    if (min == undefined || currSkillValue < min) {
+      min = currSkillValue;
+    }
+
+    if (max == undefined || currSkillValue > max) {
+      max = currSkillValue;
+    }
+  }
+
+  return { min: min, max: max };
+};
+
+var buildRandomSolutionSkill = exports.buildRandomSolutionSkill = function buildRandomSolutionSkill(skills, range) {
+  return skills.map(function (skill) {
+    return {
+      key: skill.key,
+      value: skill.value * range
+    };
+  });
+};
+
+var evaluateSolutionsFitness = exports.evaluateSolutionsFitness = function evaluateSolutionsFitness(skills, solutions) {
+  var ranges = skills.map(function (skill) {
+    return _extends({}, getSkillRange(skill.key, solutions), {
+      skill: skill.key
+    });
+  });
+
+  return solutions.map(function (solution) {
+    return _extends({}, solution, {
+      skills: solution.skills.map(function (skill) {
+        return _extends({}, skill, {
+          fitness: skill.value * 100 / ranges.find(function (r) {
+            return r.skill == skill.key;
+          }).max
+        });
+      })
+    });
+  });
+};
+
+var generateSolutionColor = exports.generateSolutionColor = function generateSolutionColor(skills) {
+  return '#ff0000';
 };
 
 /***/ })
