@@ -14,16 +14,21 @@ class WorldMap extends Component {
 
     return (
       <div className="evogame--worldmap">
-        {new Array(height).fill(
+        {new Array(height).fill().map((e, row) => (
           <div className="evogame--worldmap-row">
-            {new Array(width).fill(
-              <div className="evogame--worldmap-col" style={{
-                width: (100 / width) + '%',
-                paddingBottom: (100 / width) + '%'
-              }} />
+            {new Array(width).fill().map((e, col) => (
+                <div className="evogame--worldmap-col" style={{
+                    width: (100 / width) + '%',
+                    paddingBottom: (100 / width) + '%'
+                  }}>
+                  { this.props.solutions.find(s => s.col == col && s.row == row) !== undefined ? (
+                    <div className="evogame--worldmap-solution" />
+                  ) : '' }
+                </div>
+              )
             )}
           </div>
-        )}
+        ))}
       </div>
     );
   }

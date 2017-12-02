@@ -7,7 +7,7 @@ const ButtonsGroup = props => (
 );
 
 const ButtonItem = props => (
-  <div className={'muiextra--button-item' + (props.active ? ' selected' : '')}>
+  <div onClick={props.onClick} className={'muiextra--button-item' + (props.active ? ' selected' : '')}>
     {props.children}
   </div>
 );

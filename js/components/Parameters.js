@@ -1,6 +1,6 @@
 import { h, Component } from 'preact'
 import { connect } from 'preact-redux'
-import { bind } from 'decko';
+import { bind } from 'decko'
 
 import Input from 'preact-mui/lib/input'
 import Row from 'preact-mui/lib/row'

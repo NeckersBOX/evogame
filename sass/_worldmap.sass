@@ -10,6 +10,7 @@ $worldmap-border-color: #aaa
       border: 1px solid $worldmap-border-color
       border-left-width: 0
       border-top-width: 0
+      position: relative
 
       &:first-child
         border-left-width: 1px
@@ -17,3 +18,12 @@ $worldmap-border-color: #aaa
     &:first-child
       .evogame--worldmap-col
         border-top-width: 1px
+
+.evogame--worldmap-solution
+  background-color: red
+  width: 90%
+  height: 90%
+  position: absolute
+  border-radius: 50%
+  left: 5%
+  top: 5%

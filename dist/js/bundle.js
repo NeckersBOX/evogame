@@ -1061,7 +1061,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 var _preact = __webpack_require__(0);
 
-var _redux = __webpack_require__(6);
+var _redux = __webpack_require__(7);
 
 var Children = {
   only: function only(children) {
@@ -2842,6 +2842,72 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== 'undefined') {
+    factory(exports);
+  } else {
+    var mod = { exports: {} };factory(mod.exports);global.decko = mod.exports;
+  }
+})(undefined, function (exports) {
+  'use strict';
+  exports.__esModule = true;var EMPTY = {};var HOP = Object.prototype.hasOwnProperty;var fns = { memoize: function memoize(fn) {
+      var opt = arguments.length <= 1 || arguments[1] === undefined ? EMPTY : arguments[1];var cache = opt.cache || {};return function () {
+        for (var _len = arguments.length, a = Array(_len), _key = 0; _key < _len; _key++) {
+          a[_key] = arguments[_key];
+        }var k = String(a[0]);if (opt.caseSensitive === false) k = k.toLowerCase();return HOP.call(cache, k) ? cache[k] : cache[k] = fn.apply(this, a);
+      };
+    }, debounce: function debounce(fn, opts) {
+      if (typeof opts === 'function') {
+        var p = fn;fn = opts;opts = p;
+      }var delay = opts && opts.delay || opts || 0,
+          args = undefined,
+          context = undefined,
+          timer = undefined;return function () {
+        for (var _len2 = arguments.length, a = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          a[_key2] = arguments[_key2];
+        }args = a;context = this;if (!timer) timer = setTimeout(function () {
+          fn.apply(context, args);args = context = timer = null;
+        }, delay);
+      };
+    }, bind: function bind(target, key, _ref) {
+      var fn = _ref.value;return { configurable: true, get: function get() {
+          var value = fn.bind(this);Object.defineProperty(this, key, { value: value, configurable: true, writable: true });return value;
+        } };
+    } };var memoize = multiMethod(fns.memoize),
+      debounce = multiMethod(fns.debounce),
+      bind = multiMethod(function (f, c) {
+    return f.bind(c);
+  }, function () {
+    return fns.bind;
+  });exports.memoize = memoize;exports.debounce = debounce;exports.bind = bind;exports['default'] = { memoize: memoize, debounce: debounce, bind: bind };function multiMethod(inner, deco) {
+    deco = deco || inner.decorate || decorator(inner);var d = deco();return function () {
+      for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        args[_key3] = arguments[_key3];
+      }var l = args.length;return (l < 2 ? deco : l > 2 ? d : inner).apply(undefined, args);
+    };
+  }function decorator(fn) {
+    return function (opt) {
+      return typeof opt === 'function' ? fn(opt) : function (target, key, desc) {
+        desc.value = fn(desc.value, opt, target, key, desc);
+      };
+    };
+  }
+});
+
+//# sourceMappingURL=decko.js.map
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -2849,7 +2915,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
 
-var _createStore = __webpack_require__(7);
+var _createStore = __webpack_require__(8);
 
 var _createStore2 = _interopRequireDefault(_createStore);
 
@@ -2865,11 +2931,11 @@ var _applyMiddleware = __webpack_require__(28);
 
 var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 
-var _compose = __webpack_require__(11);
+var _compose = __webpack_require__(12);
 
 var _compose2 = _interopRequireDefault(_compose);
 
-var _warning = __webpack_require__(10);
+var _warning = __webpack_require__(11);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -2892,7 +2958,7 @@ exports.applyMiddleware = _applyMiddleware2.default;
 exports.compose = _compose2.default;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2907,7 +2973,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = createStore;
 
-var _isPlainObject = __webpack_require__(8);
+var _isPlainObject = __webpack_require__(9);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
@@ -3164,7 +3230,7 @@ var ActionTypes = exports.ActionTypes = {
 }
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3247,7 +3313,7 @@ function isPlainObject(value) {
 exports.default = isPlainObject;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3269,7 +3335,7 @@ var _Symbol = _root2.default.Symbol;
 exports.default = _Symbol;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3302,7 +3368,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3346,72 +3412,6 @@ function compose() {
 }
 
 /***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
-
-(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== 'undefined') {
-    factory(exports);
-  } else {
-    var mod = { exports: {} };factory(mod.exports);global.decko = mod.exports;
-  }
-})(undefined, function (exports) {
-  'use strict';
-  exports.__esModule = true;var EMPTY = {};var HOP = Object.prototype.hasOwnProperty;var fns = { memoize: function memoize(fn) {
-      var opt = arguments.length <= 1 || arguments[1] === undefined ? EMPTY : arguments[1];var cache = opt.cache || {};return function () {
-        for (var _len = arguments.length, a = Array(_len), _key = 0; _key < _len; _key++) {
-          a[_key] = arguments[_key];
-        }var k = String(a[0]);if (opt.caseSensitive === false) k = k.toLowerCase();return HOP.call(cache, k) ? cache[k] : cache[k] = fn.apply(this, a);
-      };
-    }, debounce: function debounce(fn, opts) {
-      if (typeof opts === 'function') {
-        var p = fn;fn = opts;opts = p;
-      }var delay = opts && opts.delay || opts || 0,
-          args = undefined,
-          context = undefined,
-          timer = undefined;return function () {
-        for (var _len2 = arguments.length, a = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          a[_key2] = arguments[_key2];
-        }args = a;context = this;if (!timer) timer = setTimeout(function () {
-          fn.apply(context, args);args = context = timer = null;
-        }, delay);
-      };
-    }, bind: function bind(target, key, _ref) {
-      var fn = _ref.value;return { configurable: true, get: function get() {
-          var value = fn.bind(this);Object.defineProperty(this, key, { value: value, configurable: true, writable: true });return value;
-        } };
-    } };var memoize = multiMethod(fns.memoize),
-      debounce = multiMethod(fns.debounce),
-      bind = multiMethod(function (f, c) {
-    return f.bind(c);
-  }, function () {
-    return fns.bind;
-  });exports.memoize = memoize;exports.debounce = debounce;exports.bind = bind;exports['default'] = { memoize: memoize, debounce: debounce, bind: bind };function multiMethod(inner, deco) {
-    deco = deco || inner.decorate || decorator(inner);var d = deco();return function () {
-      for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        args[_key3] = arguments[_key3];
-      }var l = args.length;return (l < 2 ? deco : l > 2 ? d : inner).apply(undefined, args);
-    };
-  }function decorator(fn) {
-    return function (opt) {
-      return typeof opt === 'function' ? fn(opt) : function (target, key, desc) {
-        desc.value = fn(desc.value, opt, target, key, desc);
-      };
-    };
-  }
-});
-
-//# sourceMappingURL=decko.js.map
-
-/***/ }),
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3451,7 +3451,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(9);
+var _Symbol2 = __webpack_require__(10);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
@@ -3545,7 +3545,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(9);
+var _Symbol2 = __webpack_require__(10);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
@@ -3837,13 +3837,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = combineReducers;
 
-var _createStore = __webpack_require__(7);
+var _createStore = __webpack_require__(8);
 
-var _isPlainObject = __webpack_require__(8);
+var _isPlainObject = __webpack_require__(9);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-var _warning = __webpack_require__(10);
+var _warning = __webpack_require__(11);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -4050,7 +4050,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = applyMiddleware;
 
-var _compose = __webpack_require__(11);
+var _compose = __webpack_require__(12);
 
 var _compose2 = _interopRequireDefault(_compose);
 
@@ -5637,6 +5637,8 @@ var WorldMap = function (_Component) {
   _createClass(WorldMap, [{
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var width = this.props.parameters.find(function (p) {
         return p.key == 'world-width';
       }).value || 1,
@@ -5648,14 +5650,24 @@ var WorldMap = function (_Component) {
       return (0, _preact.h)(
         'div',
         { className: 'evogame--worldmap' },
-        new Array(height).fill((0, _preact.h)(
-          'div',
-          { className: 'evogame--worldmap-row' },
-          new Array(width).fill((0, _preact.h)('div', { className: 'evogame--worldmap-col', style: {
-              width: 100 / width + '%',
-              paddingBottom: 100 / width + '%'
-            } }))
-        ))
+        new Array(height).fill().map(function (e, row) {
+          return (0, _preact.h)(
+            'div',
+            { className: 'evogame--worldmap-row' },
+            new Array(width).fill().map(function (e, col) {
+              return (0, _preact.h)(
+                'div',
+                { className: 'evogame--worldmap-col', style: {
+                    width: 100 / width + '%',
+                    paddingBottom: 100 / width + '%'
+                  } },
+                _this2.props.solutions.find(function (s) {
+                  return s.col == col && s.row == row;
+                }) !== undefined ? (0, _preact.h)('div', { className: 'evogame--worldmap-solution' }) : ''
+              );
+            })
+          );
+        })
       );
     }
   }]);
@@ -5688,7 +5700,7 @@ var _preact = __webpack_require__(0);
 
 var _preactRedux = __webpack_require__(1);
 
-var _decko = __webpack_require__(12);
+var _decko = __webpack_require__(6);
 
 var _input = __webpack_require__(5);
 
@@ -5832,7 +5844,7 @@ var _preact = __webpack_require__(0);
 
 var _preactRedux = __webpack_require__(1);
 
-var _decko = __webpack_require__(12);
+var _decko = __webpack_require__(6);
 
 var _input = __webpack_require__(5);
 
@@ -5956,11 +5968,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _desc, _value, _class;
+
 var _preact = __webpack_require__(0);
 
 var _preactRedux = __webpack_require__(1);
 
 var _buttonsGroup = __webpack_require__(45);
+
+var _decko = __webpack_require__(6);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -5968,7 +5984,36 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Controller = function (_Component) {
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
+
+var Controller = (_class = function (_Component) {
   _inherits(Controller, _Component);
 
   function Controller(props) {
@@ -5978,6 +6023,30 @@ var Controller = function (_Component) {
   }
 
   _createClass(Controller, [{
+    key: 'play',
+    value: function play() {
+      this.props.dispatch({
+        type: 'PLAY_GAME',
+        data: null
+      });
+    }
+  }, {
+    key: 'pause',
+    value: function pause() {
+      this.props.dispatch({
+        type: 'PAUSE_GAME',
+        data: null
+      });
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      this.props.dispatch({
+        type: 'STOP_GAME',
+        data: null
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return (0, _preact.h)(
@@ -5985,17 +6054,17 @@ var Controller = function (_Component) {
         null,
         (0, _preact.h)(
           _buttonsGroup.ButtonItem,
-          { active: this.props.status == 'play' },
+          { active: this.props.status == 'play', onClick: this.play },
           (0, _preact.h)('i', { className: 'fa fa-play' })
         ),
         (0, _preact.h)(
           _buttonsGroup.ButtonItem,
-          { active: this.props.status == 'pause' },
+          { active: this.props.status == 'pause', onClick: this.pause },
           (0, _preact.h)('i', { className: 'fa fa-pause' })
         ),
         (0, _preact.h)(
           _buttonsGroup.ButtonItem,
-          { active: this.props.status == 'stop' },
+          { active: this.props.status == 'stop', onClick: this.stop },
           (0, _preact.h)('i', { className: 'fa fa-stop' })
         )
       );
@@ -6003,8 +6072,7 @@ var Controller = function (_Component) {
   }]);
 
   return Controller;
-}(_preact.Component);
-
+}(_preact.Component), (_applyDecoratedDescriptor(_class.prototype, 'play', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'play'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'pause', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'pause'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'stop', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'stop'), _class.prototype)), _class);
 exports.default = (0, _preactRedux.connect)(function (state) {
   return state;
 })(Controller);
@@ -6034,7 +6102,7 @@ var ButtonsGroup = function ButtonsGroup(props) {
 var ButtonItem = function ButtonItem(props) {
   return (0, _preact.h)(
     'div',
-    { className: 'muiextra--button-item' + (props.active ? ' selected' : '') },
+    { onClick: props.onClick, className: 'muiextra--button-item' + (props.active ? ' selected' : '') },
     props.children
   );
 };
@@ -6053,7 +6121,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(6);
+var _redux = __webpack_require__(7);
 
 var _reducer = __webpack_require__(47);
 
@@ -6078,6 +6146,8 @@ var _parameters = __webpack_require__(48);
 
 var _skills = __webpack_require__(49);
 
+var _controls = __webpack_require__(50);
+
 var initialState = {
   generation: 0,
   solutions: [],
@@ -6088,11 +6158,20 @@ var initialState = {
 };
 
 var reducerLookup = {
+  PAUSE_GAME: function PAUSE_GAME(state, data) {
+    return (0, _controls.pauseGame)(state);
+  },
+  PLAY_GAME: function PLAY_GAME(state, data) {
+    return (0, _controls.playGame)(state);
+  },
   SET_PARAMETERS: function SET_PARAMETERS(state, data) {
     return (0, _parameters.paramReducer)(state, data.key, +data.value);
   },
   SET_SKILLS: function SET_SKILLS(state, data) {
     return (0, _skills.skillReducer)(state, data.key, +data.value);
+  },
+  STOP_GAME: function STOP_GAME(state, data) {
+    return (0, _controls.stopGame)(state);
   }
 };
 
@@ -6237,6 +6316,124 @@ var skillReducer = function skillReducer(state, key, value) {
 
 exports.skills = skills;
 exports.skillReducer = skillReducer;
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.stopGame = exports.pauseGame = exports.playGame = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _generics = __webpack_require__(51);
+
+var playGame = exports.playGame = function playGame(state) {
+  if (state.status == 'play') {
+    return state;
+  }
+
+  var nextState = _extends({}, state, {
+    status: 'play',
+    generation: 1,
+    day: 1
+  });
+
+  var _ref = [state.parameters.find(function (p) {
+    return p.key == 'solutions';
+  }).value, state.parameters.find(function (p) {
+    return p.key == 'world-width';
+  }).value, state.parameters.find(function (p) {
+    return p.key == 'world-height';
+  }).value],
+      maxSolutions = _ref[0],
+      worldWidth = _ref[1],
+      worldHeight = _ref[2];
+
+
+  maxSolutions = Math.min(worldWidth * worldHeight, maxSolutions);
+
+  var _loop = function _loop(j) {
+    var _ref2 = [(0, _generics.getRandomInt)(0, worldHeight - 1), (0, _generics.getRandomInt)(0, worldWidth - 1)],
+        row = _ref2[0],
+        col = _ref2[1];
+
+
+    while (state.solutions.find(function (s) {
+      return s.row == row && s.col == col;
+    }) !== undefined) {
+      var _ref3 = [(0, _generics.getRandomInt)(0, worldHeight - 1), (0, _generics.getRandomInt)(0, worldWidth - 1)];
+      row = _ref3[0];
+      col = _ref3[1];
+    }
+
+    nextState.solutions.push({
+      skills: state.skills.map(function (skill) {
+        return { key: skill.key, value: skill.value };
+      }),
+      row: row,
+      col: col
+    });
+  };
+
+  for (var j = 0; j < maxSolutions; j++) {
+    _loop(j);
+  }
+
+  /* TODO timers */
+  return nextState;
+};
+
+var pauseGame = exports.pauseGame = function pauseGame(state) {
+  if (state.status != 'play') {
+    return state;
+  }
+
+  var nextState = state;
+
+  /* TODO timers */
+  return nextState;
+};
+
+var stopGame = exports.stopGame = function stopGame(state) {
+  if (state.status == 'stop') {
+    return state;
+  }
+
+  var nextState = _extends({}, state, {
+    solutions: [],
+    status: 'stop',
+    generation: 0,
+    day: 0
+  });
+
+  /* TODO timers */
+
+  return nextState;
+};
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var getRandomInt = exports.getRandomInt = function getRandomInt(min, max) {
+  var _ref = [Math.ceil(min), Math.floor(max)];
+  min = _ref[0];
+  max = _ref[1];
+
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 /***/ })
 /******/ ]);
