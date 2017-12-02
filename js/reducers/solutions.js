@@ -38,6 +38,7 @@ export const evaluateSolutionsFitness = (skills, solutions) => {
     ...solution,
     skills: solution.skills.map(skill => ({
       ...skill,
+      /* TODO: I'm not sure of this.. mmmh */
       fitness: 1 - (skill.value / ranges.find(r => r.skill == skill.key).max)
     }))
   }));
