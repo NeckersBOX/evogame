@@ -5,7 +5,8 @@ const skills = [
     min: '-273',
     defaultValue: '-25',
     value: -25,
-    fitness: 0
+    fitness: 0,
+    color: '#AFE3D6'
   },
   {
     key: 'heat',
@@ -13,7 +14,8 @@ const skills = [
     min: '-273',
     defaultValue: '45',
     value: 45,
-    fitness: 0
+    fitness: 0,
+    color: '#6E2620'
   },
   {
     key: 'water',
@@ -21,7 +23,8 @@ const skills = [
     min: '0',
     defaultValue: '8',
     value: 8,
-    fitness: 0
+    fitness: 0,
+    color: '#2A6790'
   },
   {
     key: 'wind',
@@ -29,7 +32,8 @@ const skills = [
     min: '0',
     defaultValue: '90',
     value: 90,
-    fitness: 0
+    fitness: 0,
+    color: '#6833CC'
   }
 ];
 

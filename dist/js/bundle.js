@@ -6294,28 +6294,32 @@ var skills = [{
   min: '-273',
   defaultValue: '-25',
   value: -25,
-  fitness: 0
+  fitness: 0,
+  color: '#AFE3D6'
 }, {
   key: 'heat',
   label: 'Heat Resistance [ °C ]',
   min: '-273',
   defaultValue: '45',
   value: 45,
-  fitness: 0
+  fitness: 0,
+  color: '#6E2620'
 }, {
   key: 'water',
   label: 'Water Resistance [ m ]',
   min: '0',
   defaultValue: '8',
   value: 8,
-  fitness: 0
+  fitness: 0,
+  color: '#2A6790'
 }, {
   key: 'wind',
   label: 'Wind Resistance [ km/h ]',
   min: '0',
   defaultValue: '90',
   value: 90,
-  fitness: 0
+  fitness: 0,
+  color: '#6833CC'
 }];
 
 var skillReducer = function skillReducer(state, key, value) {
@@ -6405,8 +6409,13 @@ var playGame = exports.playGame = function playGame(state) {
   }
 
   nextState.solutions = (0, _solutions.evaluateSolutionsFitness)(nextState.solutions);
+  nextState.solutions = nextState.solutions.map(function (solutions) {
+    return _extends({}, solution, {
+      color: (0, _solutions.generateSolutionColor)(solution.skills)
+    });
+  });
 
-  /* TODO colors, timers */
+  /* TODO timers */
 
   return nextState;
 };
@@ -6511,7 +6520,7 @@ var evaluateSolutionsFitness = exports.evaluateSolutionsFitness = function evalu
     return _extends({}, solution, {
       skills: solution.skills.map(function (skill) {
         return _extends({}, skill, {
-          fitness: skill.value * 100 / ranges.find(function (r) {
+          fitness: skill.value / ranges.find(function (r) {
             return r.skill == skill.key;
           }).max
         });
@@ -6521,7 +6530,30 @@ var evaluateSolutionsFitness = exports.evaluateSolutionsFitness = function evalu
 };
 
 var generateSolutionColor = exports.generateSolutionColor = function generateSolutionColor(skills) {
-  return '#ff0000';
+  var values = skills.map(function (s) {
+    return s.fitness;
+  });
+  var _ref = [Math.min(values), Math.max(values)],
+      min = _ref[0],
+      max = _ref[1];
+
+  var colorRanges = skills.map(function (skill) {
+    return {
+      color: skill.color,
+      value: skill.fitness / max * 100
+    };
+  });
+
+  var colors = [];
+  for (var i in colorRanges) {
+    if (i == 0) {
+      colors.push(colorRanges[i].color);
+    } else {
+      colors.push(colorRanges[i].color + ' ' + colorRanges[i - 1].value);
+    }
+  }
+
+  return 'background: radial-gradient(' + colors.join(',') + ')';
 };
 
 /***/ })

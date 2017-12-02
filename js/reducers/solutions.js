@@ -30,9 +30,28 @@ export const evaluateSolutionsFitness = (skills, solutions) => {
     ...solution,
     skills: solution.skills.map(skill => ({
       ...skill,
-      fitness: skill.value * 100 / ranges.find(r => r.skill == skill.key).max
+      fitness: skill.value / ranges.find(r => r.skill == skill.key).max
     }))
   }));
 };
 
-export const generateSolutionColor = skills => '#ff0000';
+export const generateSolutionColor = skills => {
+  let values = skills.map(s => s.fitness);
+  let [ min, max ] = [ Math.min(values), Math.max(values) ];
+  let colorRanges = skills.map(skill => ({
+    color: skill.color,
+    value: (skill.fitness / max) * 100
+  }));
+
+  let colors = [];
+  for ( let i in colorRanges ) {
+    if ( i == 0 ) {
+      colors.push(colorRanges[i].color);
+    }
+    else {
+      colors.push(colorRanges[i].color + ' ' + colorRanges[i - 1].value);
+    }
+  }
+
+  return 'background: radial-gradient(' + colors.join(',') + ')';
+};

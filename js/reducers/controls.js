@@ -44,8 +44,12 @@ export const playGame = state => {
   }
 
   nextState.solutions = evaluateSolutionsFitness(nextState.solutions);
+  nextState.solutions = nextState.solutions.map(solutions => ({
+    ...solution,
+    color: generateSolutionColor(solution.skills)
+  }));
 
-  /* TODO colors, timers */
+  /* TODO timers */
 
   return nextState;
 }
