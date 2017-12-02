@@ -43,8 +43,10 @@ export const playGame = state => {
     });
   }
 
-  nextState.solutions = evaluateSolutionsFitness(nextState.solutions);
-  nextState.solutions = nextState.solutions.map(solutions => ({
+  nextState.solutions = evaluateSolutionsFitness(state.skills, nextState.solutions);
+  console.log(nextState.solutions);
+  
+  nextState.solutions = nextState.solutions.map(solution => ({
     ...solution,
     color: generateSolutionColor(solution.skills)
   }));

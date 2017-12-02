@@ -22,7 +22,9 @@ class WorldMap extends Component {
                     paddingBottom: (100 / width) + '%'
                   }}>
                   { this.props.solutions.find(s => s.col == col && s.row == row) !== undefined ? (
-                    <div className="evogame--worldmap-solution" />
+                    <div className="evogame--worldmap-solution" style={{
+                      background: this.props.solutions.find(s => s.col == col && s.row == row ).color
+                    }} />
                   ) : '' }
                 </div>
               )
