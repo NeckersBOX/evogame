@@ -35,7 +35,7 @@ const parameters = [
   },
   {
     key: 'world-width',
-    dynamic: false,
+    dynamic: true,
     label: 'World Width [ cell ]',
     min: '1',
     defaultValue: '32',
@@ -43,7 +43,7 @@ const parameters = [
   },
   {
     key: 'world-height',
-    dynamic: false,
+    dynamic: true,
     label: 'World Height [ cell ]',
     min: '1',
     defaultValue: '12',
@@ -64,6 +64,15 @@ const parameters = [
     min: '1',
     defaultValue: '6',
     value: 6
+  },
+  {
+    key: 'initial-range',
+    dynamic: false,
+    label: 'Initial Mutability Range [ % ]',
+    min: '0',
+    max: '100',
+    defaultValue: '20',
+    value: 20
   }
 ];
 

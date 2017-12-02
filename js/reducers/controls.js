@@ -1,4 +1,9 @@
 import { getRandomInt } from './generics'
+import {
+  buildRandomSolutionSkill,
+  generateSolutionColor,
+  evaluateSolutionsFitness
+} from './solutions'
 
 export const playGame = state => {
   if ( state.status == 'play' ) {
@@ -12,14 +17,16 @@ export const playGame = state => {
     day: 1
   };
 
-  let [ maxSolutions, worldWidth, worldHeight] = [
+  let [ maxSolutions, worldWidth, worldHeight, initialRange] = [
     state.parameters.find(p => p.key == 'solutions').value,
     state.parameters.find(p => p.key == 'world-width').value,
-    state.parameters.find(p => p.key == 'world-height').value
+    state.parameters.find(p => p.key == 'world-height').value,
+    state.parameters.find(p => p.key == 'initial-range').value / 100
   ];
 
   maxSolutions = Math.min(worldWidth * worldHeight, maxSolutions);
 
+  /* Generate solutions */
   for ( let j = 0; j < maxSolutions; j++ ) {
     let [ row, col ] = [ getRandomInt(0, worldHeight - 1), getRandomInt(0, worldWidth - 1) ];
 
@@ -27,14 +34,19 @@ export const playGame = state => {
       [ row, col ] = [ getRandomInt(0, worldHeight - 1), getRandomInt(0, worldWidth - 1) ];
     }
 
+    let skills = buildRandomSolutionSkill(state.skills, initialRange);
+
     nextState.solutions.push({
-      skills: state.skills.map(skill => ({ key: skill.key, value: skill.value })),
+      skills,
       row,
       col
     });
   }
 
-  /* TODO timers */
+  nextState.solutions = evaluateSolutionsFitness(nextState.solutions);
+
+  /* TODO colors, timers */
+
   return nextState;
 }
 
