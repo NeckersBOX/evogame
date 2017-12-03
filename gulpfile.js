@@ -39,7 +39,8 @@ gulp.task ('webpack', (cb) =>
       plugins: [
         new webpack.DefinePlugin ({
           'process.env': {
-            NODE_ENV: process.env.NODE_ENV || '"production"'
+            NODE_ENV: process.env.NODE_ENV || '"production"',
+            loglevel: process.env.loglevel || '"silent"'
           }
         })
       ],

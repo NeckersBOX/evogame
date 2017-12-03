@@ -1,10 +1,21 @@
 import { getRandomInt } from './generics'
+import log from 'loglevel'
+import prefix from 'loglevel-plugin-prefix'
+import prefixTemplate from '../loglevel-prefix-template'
+
+prefix.apply(log, prefixTemplate);
+const logger = log.getLogger('solutionsReducer');
 
 const getSkillRange = (skill, solutions) => {
+  const logPrefix = ':getSkillRange] ';
+  logger.info(logPrefix, '-->');
+
   let [ min, max ] = [ undefined, undefined ];
 
   for ( let i in solutions ) {
     let currSkillValue = solutions[i].skills.find(s => s.key == skill).value;
+    logger.debug(logPrefix, 'currSkillValue:', currSkillValue, 'at Index:', i);
+
     if ( min == undefined || currSkillValue < min ) {
       min = currSkillValue;
     }
@@ -14,13 +25,20 @@ const getSkillRange = (skill, solutions) => {
     }
   }
 
+  logger.info(logPrefix, '<--');
   return { min, max };
 }
 
 export const buildRandomSolutionSkill = (skills, range) => skills.map(skill => {
+  const logPrefix = ':buildRandomSolutionSkill] ';
+  logger.info(logPrefix, '-->');
+
   let rangeValue = range * skill.value;
   let value = skill.value + getRandomInt(-rangeValue, +rangeValue);
 
+  logger.debug(logPrefix, 'rangeValue:', rangeValue, 'value:', value);
+
+  logger.info(logPrefix, '<--');
   return {
     key: skill.key,
     value: Math.min(Math.max(value, skill.min ? +skill.min : value), skill.max ? +skill.max : value),
@@ -29,32 +47,45 @@ export const buildRandomSolutionSkill = (skills, range) => skills.map(skill => {
 });
 
 export const evaluateSolutionsFitness = (skills, solutions) => {
+  const logPrefix = ':evaluateSolutionsFitness] ';
+  logger.info(logPrefix, '-->');
+
   const ranges = skills.map(skill => ({
     ...getSkillRange(skill.key, solutions),
     skill: skill.key
   }));
 
+  logger.debug(logPrefix, 'ranges:', ranges);
+
+  logger.info(logPrefix, '<--');
   return solutions.map(solution => ({
     ...solution,
     skills: solution.skills.map(skill => ({
       ...skill,
-      /* TODO: I'm not sure of this.. mmmh */
       fitness: 1 - (skill.value / ranges.find(r => r.skill == skill.key).max)
     }))
   }));
 };
 
 export const generateSolutionColor = skills => {
+  const logPrefix = ':generateSolutionColor] ';
+  logger.info(logPrefix, '-->');
+
   let values = skills.map(s => s.fitness);
   let [ min, max ] = [
     values.reduce((v, prev) => v < prev ? v : prev),
     values.reduce((v, prev) => v > prev ? v : prev)
   ];
 
+  logger.debug(logPrefix, 'values:', values);
+  logger.debug(logPrefix, 'min:', min, 'max:', max);
+
   let colorRanges = skills.map(skill => ({
     color: skill.color,
     value: (skill.fitness / max) * 100
   }));
+
+  logger.debug(logPrefix, 'colorRanges:', colorRanges);
 
   let colors = [];
   for ( let i in colorRanges ) {
@@ -66,5 +97,8 @@ export const generateSolutionColor = skills => {
     }
   }
 
+  logger.debug(logPrefix, 'colors:', colors);
+
+  logger.info(logPrefix, '<--');
   return 'radial-gradient(' + colors.join(',') + ')';
 };

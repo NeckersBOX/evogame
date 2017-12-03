@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1050,6 +1050,427 @@ exports.default = preact;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*
+* loglevel - https://github.com/pimterry/loglevel
+*
+* Copyright (c) 2013 Tim Perry
+* Licensed under the MIT license.
+*/
+(function (root, definition) {
+    "use strict";
+
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_FACTORY__ = (definition),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+        module.exports = definition();
+    } else {
+        root.log = definition();
+    }
+})(undefined, function () {
+    "use strict";
+
+    // Slightly dubious tricks to cut down minimized file size
+
+    var noop = function noop() {};
+    var undefinedType = "undefined";
+
+    var logMethods = ["trace", "debug", "info", "warn", "error"];
+
+    // Cross-browser bind equivalent that works at least back to IE6
+    function bindMethod(obj, methodName) {
+        var method = obj[methodName];
+        if (typeof method.bind === 'function') {
+            return method.bind(obj);
+        } else {
+            try {
+                return Function.prototype.bind.call(method, obj);
+            } catch (e) {
+                // Missing bind shim or IE8 + Modernizr, fallback to wrapping
+                return function () {
+                    return Function.prototype.apply.apply(method, [obj, arguments]);
+                };
+            }
+        }
+    }
+
+    // Build the best logging method possible for this env
+    // Wherever possible we want to bind, not wrap, to preserve stack traces
+    function realMethod(methodName) {
+        if (methodName === 'debug') {
+            methodName = 'log';
+        }
+
+        if ((typeof console === 'undefined' ? 'undefined' : _typeof(console)) === undefinedType) {
+            return false; // No method possible, for now - fixed later by enableLoggingWhenConsoleArrives
+        } else if (console[methodName] !== undefined) {
+            return bindMethod(console, methodName);
+        } else if (console.log !== undefined) {
+            return bindMethod(console, 'log');
+        } else {
+            return noop;
+        }
+    }
+
+    // These private functions always need `this` to be set properly
+
+    function replaceLoggingMethods(level, loggerName) {
+        /*jshint validthis:true */
+        for (var i = 0; i < logMethods.length; i++) {
+            var methodName = logMethods[i];
+            this[methodName] = i < level ? noop : this.methodFactory(methodName, level, loggerName);
+        }
+
+        // Define log.log as an alias for log.debug
+        this.log = this.debug;
+    }
+
+    // In old IE versions, the console isn't present until you first open it.
+    // We build realMethod() replacements here that regenerate logging methods
+    function enableLoggingWhenConsoleArrives(methodName, level, loggerName) {
+        return function () {
+            if ((typeof console === 'undefined' ? 'undefined' : _typeof(console)) !== undefinedType) {
+                replaceLoggingMethods.call(this, level, loggerName);
+                this[methodName].apply(this, arguments);
+            }
+        };
+    }
+
+    // By default, we use closely bound real methods wherever possible, and
+    // otherwise we wait for a console to appear, and then try again.
+    function defaultMethodFactory(methodName, level, loggerName) {
+        /*jshint validthis:true */
+        return realMethod(methodName) || enableLoggingWhenConsoleArrives.apply(this, arguments);
+    }
+
+    function Logger(name, defaultLevel, factory) {
+        var self = this;
+        var currentLevel;
+        var storageKey = "loglevel";
+        if (name) {
+            storageKey += ":" + name;
+        }
+
+        function persistLevelIfPossible(levelNum) {
+            var levelName = (logMethods[levelNum] || 'silent').toUpperCase();
+
+            if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === undefinedType) return;
+
+            // Use localStorage if available
+            try {
+                window.localStorage[storageKey] = levelName;
+                return;
+            } catch (ignore) {}
+
+            // Use session cookie as fallback
+            try {
+                window.document.cookie = encodeURIComponent(storageKey) + "=" + levelName + ";";
+            } catch (ignore) {}
+        }
+
+        function getPersistedLevel() {
+            var storedLevel;
+
+            if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === undefinedType) return;
+
+            try {
+                storedLevel = window.localStorage[storageKey];
+            } catch (ignore) {}
+
+            // Fallback to cookies if local storage gives us nothing
+            if ((typeof storedLevel === 'undefined' ? 'undefined' : _typeof(storedLevel)) === undefinedType) {
+                try {
+                    var cookie = window.document.cookie;
+                    var location = cookie.indexOf(encodeURIComponent(storageKey) + "=");
+                    if (location !== -1) {
+                        storedLevel = /^([^;]+)/.exec(cookie.slice(location))[1];
+                    }
+                } catch (ignore) {}
+            }
+
+            // If the stored level is not valid, treat it as if nothing was stored.
+            if (self.levels[storedLevel] === undefined) {
+                storedLevel = undefined;
+            }
+
+            return storedLevel;
+        }
+
+        /*
+         *
+         * Public logger API - see https://github.com/pimterry/loglevel for details
+         *
+         */
+
+        self.name = name;
+
+        self.levels = { "TRACE": 0, "DEBUG": 1, "INFO": 2, "WARN": 3,
+            "ERROR": 4, "SILENT": 5 };
+
+        self.methodFactory = factory || defaultMethodFactory;
+
+        self.getLevel = function () {
+            return currentLevel;
+        };
+
+        self.setLevel = function (level, persist) {
+            if (typeof level === "string" && self.levels[level.toUpperCase()] !== undefined) {
+                level = self.levels[level.toUpperCase()];
+            }
+            if (typeof level === "number" && level >= 0 && level <= self.levels.SILENT) {
+                currentLevel = level;
+                if (persist !== false) {
+                    // defaults to true
+                    persistLevelIfPossible(level);
+                }
+                replaceLoggingMethods.call(self, level, name);
+                if ((typeof console === 'undefined' ? 'undefined' : _typeof(console)) === undefinedType && level < self.levels.SILENT) {
+                    return "No console available for logging";
+                }
+            } else {
+                throw "log.setLevel() called with invalid level: " + level;
+            }
+        };
+
+        self.setDefaultLevel = function (level) {
+            if (!getPersistedLevel()) {
+                self.setLevel(level, false);
+            }
+        };
+
+        self.enableAll = function (persist) {
+            self.setLevel(self.levels.TRACE, persist);
+        };
+
+        self.disableAll = function (persist) {
+            self.setLevel(self.levels.SILENT, persist);
+        };
+
+        // Initialize with the right level
+        var initialLevel = getPersistedLevel();
+        if (initialLevel == null) {
+            initialLevel = defaultLevel == null ? "WARN" : defaultLevel;
+        }
+        self.setLevel(initialLevel, false);
+    }
+
+    /*
+     *
+     * Top-level API
+     *
+     */
+
+    var defaultLogger = new Logger();
+
+    var _loggersByName = {};
+    defaultLogger.getLogger = function getLogger(name) {
+        if (typeof name !== "string" || name === "") {
+            throw new TypeError("You must supply a name when creating a logger.");
+        }
+
+        var logger = _loggersByName[name];
+        if (!logger) {
+            logger = _loggersByName[name] = new Logger(name, defaultLogger.getLevel(), defaultLogger.methodFactory);
+        }
+        return logger;
+    };
+
+    // Grab the current global log variable in case of overwrite
+    var _log = (typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== undefinedType ? window.log : undefined;
+    defaultLogger.noConflict = function () {
+        if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== undefinedType && window.log === defaultLogger) {
+            window.log = _log;
+        }
+
+        return defaultLogger;
+    };
+
+    defaultLogger.getLoggers = function getLoggers() {
+        return _loggersByName;
+    };
+
+    return defaultLogger;
+});
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    module.exports = factory();
+  } else {
+    root.prefix = factory(root);
+  }
+})(undefined, function (root) {
+  'use strict';
+
+  var merge = function merge(target) {
+    var i = 1;
+    var length = arguments.length;
+    var key;
+    for (; i < length; i++) {
+      for (key in arguments[i]) {
+        if (Object.prototype.hasOwnProperty.call(arguments[i], key)) {
+          target[key] = arguments[i][key];
+        }
+      }
+    }
+    return target;
+  };
+
+  var defaults = {
+    template: '[%t] %l:',
+    timestampFormatter: function timestampFormatter(date) {
+      return date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
+    },
+    levelFormatter: function levelFormatter(level) {
+      return level.toUpperCase();
+    },
+    nameFormatter: function nameFormatter(name) {
+      return name || 'root';
+    }
+  };
+
+  var loglevel;
+  var originalFactory;
+  var pluginFactory;
+
+  var apply = function apply(logger, options) {
+    if (!logger || !logger.getLogger) {
+      throw new TypeError('Argument is not a root loglevel object');
+    }
+
+    if (loglevel && pluginFactory !== logger.methodFactory) {
+      throw new Error("You can't reassign a plugin after appling another plugin");
+    }
+
+    loglevel = logger;
+
+    options = merge({}, defaults, options);
+
+    originalFactory = originalFactory || logger.methodFactory;
+
+    pluginFactory = function methodFactory(methodName, logLevel, loggerName) {
+      var rawMethod = originalFactory(methodName, logLevel, loggerName);
+
+      var hasTimestamp = options.template.indexOf('%t') !== -1;
+      var hasLevel = options.template.indexOf('%l') !== -1;
+      var hasName = options.template.indexOf('%n') !== -1;
+
+      return function () {
+        var content = options.template;
+
+        var length = arguments.length;
+        var args = Array(length);
+        var key = 0;
+        for (; key < length; key++) {
+          args[key] = arguments[key];
+        }
+
+        if (hasTimestamp) content = content.replace(/%t/, options.timestampFormatter(new Date()));
+        if (hasLevel) content = content.replace(/%l/, options.levelFormatter(methodName));
+        if (hasName) content = content.replace(/%n/, options.nameFormatter(loggerName));
+
+        if (args.length && typeof args[0] === 'string') {
+          // concat prefix with first argument to support string substitutions
+          args[0] = '' + content + ' ' + args[0];
+        } else {
+          args.unshift(content);
+        }
+
+        rawMethod.apply(undefined, args);
+      };
+    };
+
+    logger.methodFactory = pluginFactory;
+    logger.setLevel(logger.getLevel());
+    return logger;
+  };
+
+  var disable = function disable() {
+    if (!loglevel) {
+      throw new Error("You can't disable a not appled plugin");
+    }
+
+    if (pluginFactory !== loglevel.methodFactory) {
+      throw new Error("You can't disable a plugin after appling another plugin");
+    }
+
+    loglevel.methodFactory = originalFactory;
+    loglevel.setLevel(loglevel.getLevel());
+    originalFactory = undefined;
+    loglevel = undefined;
+  };
+
+  var api = {
+    apply: apply,
+    disable: disable
+  };
+
+  var save;
+  if (root) {
+    save = root.prefix;
+    api.noConflict = function () {
+      if (root.prefix === api) {
+        root.prefix = save;
+      }
+      return api;
+    };
+  }
+
+  return api;
+});
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var f2 = function f2(n) {
+  return (n + '').length < 2 ? '0' + n : (n + '').length > 2 ? (n + '').substr(-2) : n;
+};
+var f3 = function f3(n) {
+  return (n + '').length < 2 ? '00' + n : (n + '').length < 3 ? '0' + n : n;
+};
+
+var prefixTemplate = {
+  template: '[%t] [%l] [%n',
+  timestampFormatter: function timestampFormatter(date) {
+    return f2(date.getDate()) + '/' + f2(date.getMonth() + 1) + '/' + f2(date.getFullYear()) + ' ' + f2(date.getHours()) + ':' + f2(date.getMinutes()) + ':' + f2(date.getSeconds()) + ':' + f3(date.getMilliseconds());
+  }
+};
+
+exports.default = prefixTemplate;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
 Object.defineProperty(exports, "__esModule", {
@@ -1061,7 +1482,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 var _preact = __webpack_require__(0);
 
-var _redux = __webpack_require__(7);
+var _redux = __webpack_require__(10);
 
 var Children = {
   only: function only(children) {
@@ -2257,10 +2678,10 @@ exports.connect = connect;
 exports.connectAdvanced = connectAdvanced;
 exports.default = index;
 //# sourceMappingURL=preact-redux.esm.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 2 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2290,7 +2711,7 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2460,7 +2881,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 4 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2651,7 +3072,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2838,7 +3259,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 6 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2904,7 +3325,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 //# sourceMappingURL=decko.js.map
 
 /***/ }),
-/* 7 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2915,27 +3336,27 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
 
-var _createStore = __webpack_require__(8);
+var _createStore = __webpack_require__(11);
 
 var _createStore2 = _interopRequireDefault(_createStore);
 
-var _combineReducers = __webpack_require__(27);
+var _combineReducers = __webpack_require__(30);
 
 var _combineReducers2 = _interopRequireDefault(_combineReducers);
 
-var _bindActionCreators = __webpack_require__(28);
+var _bindActionCreators = __webpack_require__(31);
 
 var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 
-var _applyMiddleware = __webpack_require__(29);
+var _applyMiddleware = __webpack_require__(32);
 
 var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 
-var _compose = __webpack_require__(12);
+var _compose = __webpack_require__(15);
 
 var _compose2 = _interopRequireDefault(_compose);
 
-var _warning = __webpack_require__(11);
+var _warning = __webpack_require__(14);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -2958,7 +3379,7 @@ exports.applyMiddleware = _applyMiddleware2.default;
 exports.compose = _compose2.default;
 
 /***/ }),
-/* 8 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2973,11 +3394,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = createStore;
 
-var _isPlainObject = __webpack_require__(9);
+var _isPlainObject = __webpack_require__(12);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-var _symbolObservable = __webpack_require__(23);
+var _symbolObservable = __webpack_require__(26);
 
 var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 
@@ -3230,7 +3651,7 @@ var ActionTypes = exports.ActionTypes = {
 }
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3240,15 +3661,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _baseGetTag = __webpack_require__(15);
+var _baseGetTag = __webpack_require__(18);
 
 var _baseGetTag2 = _interopRequireDefault(_baseGetTag);
 
-var _getPrototype = __webpack_require__(20);
+var _getPrototype = __webpack_require__(23);
 
 var _getPrototype2 = _interopRequireDefault(_getPrototype);
 
-var _isObjectLike = __webpack_require__(22);
+var _isObjectLike = __webpack_require__(25);
 
 var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
 
@@ -3313,7 +3734,7 @@ function isPlainObject(value) {
 exports.default = isPlainObject;
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3323,7 +3744,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _root = __webpack_require__(16);
+var _root = __webpack_require__(19);
 
 var _root2 = _interopRequireDefault(_root);
 
@@ -3335,7 +3756,7 @@ var _Symbol = _root2.default.Symbol;
 exports.default = _Symbol;
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3368,7 +3789,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3412,7 +3833,7 @@ function compose() {
 }
 
 /***/ }),
-/* 13 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3421,6 +3842,25 @@ function compose() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.getRandomInt = undefined;
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('generics');
+
 var getRandomInt = exports.getRandomInt = function getRandomInt(min, max) {
   var _ref = [Math.ceil(min), Math.floor(max)];
   min = _ref[0];
@@ -3430,7 +3870,7 @@ var getRandomInt = exports.getRandomInt = function getRandomInt(min, max) {
 };
 
 /***/ }),
-/* 14 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3438,28 +3878,48 @@ var getRandomInt = exports.getRandomInt = function getRandomInt(min, max) {
 
 var _preact = __webpack_require__(0);
 
-var _preactRedux = __webpack_require__(1);
+var _preactRedux = __webpack_require__(4);
 
-var _Layout = __webpack_require__(30);
+var _Layout = __webpack_require__(33);
 
 var _Layout2 = _interopRequireDefault(_Layout);
 
-var _store = __webpack_require__(47);
+var _store = __webpack_require__(50);
 
 var _store2 = _interopRequireDefault(_store);
 
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+(0, _loglevel.setLevel)("debug" || 'info');
+
 window.addEventListener('load', function (event) {
+  var logPrefix = ':loadEvent] ';
+  _loglevel2.default.info(logPrefix, '-->');
+
   (0, _preact.render)((0, _preact.h)(
     _preactRedux.Provider,
     { store: _store2.default },
     (0, _preact.h)(_Layout2.default, null)
   ), document.getElementById('container'));
+
+  _loglevel2.default.info(logPrefix, '<--');
 });
 
 /***/ }),
-/* 15 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3469,15 +3929,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(10);
+var _Symbol2 = __webpack_require__(13);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
-var _getRawTag = __webpack_require__(18);
+var _getRawTag = __webpack_require__(21);
 
 var _getRawTag2 = _interopRequireDefault(_getRawTag);
 
-var _objectToString = __webpack_require__(19);
+var _objectToString = __webpack_require__(22);
 
 var _objectToString2 = _interopRequireDefault(_objectToString);
 
@@ -3507,7 +3967,7 @@ function baseGetTag(value) {
 exports.default = baseGetTag;
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3519,7 +3979,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _freeGlobal = __webpack_require__(17);
+var _freeGlobal = __webpack_require__(20);
 
 var _freeGlobal2 = _interopRequireDefault(_freeGlobal);
 
@@ -3534,7 +3994,7 @@ var root = _freeGlobal2.default || freeSelf || Function('return this')();
 exports.default = root;
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3550,10 +4010,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var freeGlobal = (typeof global === 'undefined' ? 'undefined' : _typeof(global)) == 'object' && global && global.Object === Object && global;
 
 exports.default = freeGlobal;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3563,7 +4023,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(10);
+var _Symbol2 = __webpack_require__(13);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
@@ -3615,7 +4075,7 @@ function getRawTag(value) {
 exports.default = getRawTag;
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3648,7 +4108,7 @@ function objectToString(value) {
 exports.default = objectToString;
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3658,7 +4118,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _overArg = __webpack_require__(21);
+var _overArg = __webpack_require__(24);
 
 var _overArg2 = _interopRequireDefault(_overArg);
 
@@ -3670,7 +4130,7 @@ var getPrototype = (0, _overArg2.default)(Object.getPrototypeOf, Object);
 exports.default = getPrototype;
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3696,7 +4156,7 @@ function overArg(func, transform) {
 exports.default = overArg;
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3739,16 +4199,16 @@ function isObjectLike(value) {
 exports.default = isObjectLike;
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(24);
+module.exports = __webpack_require__(27);
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3758,7 +4218,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _ponyfill = __webpack_require__(26);
+var _ponyfill = __webpack_require__(29);
 
 var _ponyfill2 = _interopRequireDefault(_ponyfill);
 
@@ -3782,10 +4242,10 @@ if (typeof self !== 'undefined') {
 
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(25)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(28)(module)))
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3815,7 +4275,7 @@ module.exports = function (module) {
 };
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3844,7 +4304,7 @@ function symbolObservablePonyfill(root) {
 };
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3855,13 +4315,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = combineReducers;
 
-var _createStore = __webpack_require__(8);
+var _createStore = __webpack_require__(11);
 
-var _isPlainObject = __webpack_require__(9);
+var _isPlainObject = __webpack_require__(12);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-var _warning = __webpack_require__(11);
+var _warning = __webpack_require__(14);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -3995,7 +4455,7 @@ function combineReducers(reducers) {
 }
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4057,7 +4517,7 @@ function bindActionCreators(actionCreators, dispatch) {
 }
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4068,7 +4528,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = applyMiddleware;
 
-var _compose = __webpack_require__(12);
+var _compose = __webpack_require__(15);
 
 var _compose2 = _interopRequireDefault(_compose);
 
@@ -4130,7 +4590,7 @@ function applyMiddleware() {
 }
 
 /***/ }),
-/* 30 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4144,47 +4604,47 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
-var _container = __webpack_require__(31);
+var _container = __webpack_require__(34);
 
 var _container2 = _interopRequireDefault(_container);
 
-var _row = __webpack_require__(3);
+var _row = __webpack_require__(6);
 
 var _row2 = _interopRequireDefault(_row);
 
-var _col = __webpack_require__(4);
+var _col = __webpack_require__(7);
 
 var _col2 = _interopRequireDefault(_col);
 
-var _panel = __webpack_require__(32);
+var _panel = __webpack_require__(35);
 
 var _panel2 = _interopRequireDefault(_panel);
 
-var _panel3 = __webpack_require__(33);
+var _panel3 = __webpack_require__(36);
 
-var _tab = __webpack_require__(34);
+var _tab = __webpack_require__(37);
 
-var _Events = __webpack_require__(35);
+var _Events = __webpack_require__(38);
 
 var _Events2 = _interopRequireDefault(_Events);
 
-var _GeneralInfo = __webpack_require__(40);
+var _GeneralInfo = __webpack_require__(43);
 
 var _GeneralInfo2 = _interopRequireDefault(_GeneralInfo);
 
-var _WorldMap = __webpack_require__(42);
+var _WorldMap = __webpack_require__(45);
 
 var _WorldMap2 = _interopRequireDefault(_WorldMap);
 
-var _Parameters = __webpack_require__(43);
+var _Parameters = __webpack_require__(46);
 
 var _Parameters2 = _interopRequireDefault(_Parameters);
 
-var _Skills = __webpack_require__(44);
+var _Skills = __webpack_require__(47);
 
 var _Skills2 = _interopRequireDefault(_Skills);
 
-var _Controller = __webpack_require__(45);
+var _Controller = __webpack_require__(48);
 
 var _Controller2 = _interopRequireDefault(_Controller);
 
@@ -4274,7 +4734,7 @@ var Layout = function (_Component) {
 exports.default = Layout;
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4447,7 +4907,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 32 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4617,7 +5077,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 33 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4641,7 +5101,7 @@ var PanelHeader = function PanelHeader(props) {
 exports.PanelHeader = PanelHeader;
 
 /***/ }),
-/* 34 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4733,7 +5193,7 @@ exports.Tabs = Tabs;
 exports.Tab = Tab;
 
 /***/ }),
-/* 35 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4747,23 +5207,23 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
-var _form = __webpack_require__(36);
+var _form = __webpack_require__(39);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _select = __webpack_require__(37);
+var _select = __webpack_require__(40);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _option = __webpack_require__(38);
+var _option = __webpack_require__(41);
 
 var _option2 = _interopRequireDefault(_option);
 
-var _input = __webpack_require__(5);
+var _input = __webpack_require__(8);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _button = __webpack_require__(39);
+var _button = __webpack_require__(42);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -4811,7 +5271,7 @@ var Events = function (_Component) {
 exports.default = Events;
 
 /***/ }),
-/* 36 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4985,7 +5445,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 37 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5161,7 +5621,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 38 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5332,7 +5792,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 39 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5512,7 +5972,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 40 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5526,9 +5986,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
-var _preactRedux = __webpack_require__(1);
+var _preactRedux = __webpack_require__(4);
 
-var _list = __webpack_require__(41);
+var _list = __webpack_require__(44);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -5578,7 +6038,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(GeneralInfo);
 
 /***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5621,7 +6081,7 @@ var ListItem = exports.ListItem = function ListItem(props) {
 };
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5635,7 +6095,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
-var _preactRedux = __webpack_require__(1);
+var _preactRedux = __webpack_require__(4);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -5702,7 +6162,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(WorldMap);
 
 /***/ }),
-/* 43 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5720,19 +6180,19 @@ var _desc, _value, _class;
 
 var _preact = __webpack_require__(0);
 
-var _preactRedux = __webpack_require__(1);
+var _preactRedux = __webpack_require__(4);
 
-var _decko = __webpack_require__(6);
+var _decko = __webpack_require__(9);
 
-var _input = __webpack_require__(5);
+var _input = __webpack_require__(8);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _row = __webpack_require__(3);
+var _row = __webpack_require__(6);
 
 var _row2 = _interopRequireDefault(_row);
 
-var _col = __webpack_require__(4);
+var _col = __webpack_require__(7);
 
 var _col2 = _interopRequireDefault(_col);
 
@@ -5846,7 +6306,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(Parameters);
 
 /***/ }),
-/* 44 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5864,19 +6324,19 @@ var _desc, _value, _class;
 
 var _preact = __webpack_require__(0);
 
-var _preactRedux = __webpack_require__(1);
+var _preactRedux = __webpack_require__(4);
 
-var _decko = __webpack_require__(6);
+var _decko = __webpack_require__(9);
 
-var _input = __webpack_require__(5);
+var _input = __webpack_require__(8);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _row = __webpack_require__(3);
+var _row = __webpack_require__(6);
 
 var _row2 = _interopRequireDefault(_row);
 
-var _col = __webpack_require__(4);
+var _col = __webpack_require__(7);
 
 var _col2 = _interopRequireDefault(_col);
 
@@ -5978,7 +6438,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 ;
 
 /***/ }),
-/* 45 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5994,11 +6454,11 @@ var _desc, _value, _class;
 
 var _preact = __webpack_require__(0);
 
-var _preactRedux = __webpack_require__(1);
+var _preactRedux = __webpack_require__(4);
 
-var _buttonsGroup = __webpack_require__(46);
+var _buttonsGroup = __webpack_require__(49);
 
-var _decko = __webpack_require__(6);
+var _decko = __webpack_require__(9);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6100,7 +6560,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(Controller);
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6133,7 +6593,7 @@ exports.ButtonsGroup = ButtonsGroup;
 exports.ButtonItem = ButtonItem;
 
 /***/ }),
-/* 47 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6143,9 +6603,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(7);
+var _redux = __webpack_require__(10);
 
-var _reducer = __webpack_require__(48);
+var _reducer = __webpack_require__(51);
 
 var _reducer2 = _interopRequireDefault(_reducer);
 
@@ -6154,7 +6614,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = (0, _redux.createStore)(_reducer2.default);
 
 /***/ }),
-/* 48 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6164,11 +6624,28 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _parameters = __webpack_require__(49);
+var _parameters = __webpack_require__(52);
 
-var _skills = __webpack_require__(50);
+var _skills = __webpack_require__(53);
 
-var _controls = __webpack_require__(51);
+var _controls = __webpack_require__(54);
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('reducer');
 
 var initialState = {
   generation: 0,
@@ -6200,13 +6677,21 @@ var reducerLookup = {
 var reducer = function reducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
-  return reducerLookup.hasOwnProperty(action.type) ? reducerLookup[action.type](state, action.data) : state;
+
+  var logPrefix = ':reducer] ';
+  logger.info(logPrefix, '-->');
+
+  logger.info(logPrefix, 'type:', action.type, 'data:', action.data);
+  var nextState = reducerLookup.hasOwnProperty(action.type) ? reducerLookup[action.type](state, action.data) : state;
+
+  logger.info(logPrefix, '<--');
+  return nextState;
 };
 
 exports.default = reducer;
 
 /***/ }),
-/* 49 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6215,8 +6700,26 @@ exports.default = reducer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.paramReducer = exports.parameters = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('parameters');
 
 var parameters = [{
   key: 'solutions',
@@ -6287,6 +6790,12 @@ var parameters = [{
 }];
 
 var paramReducer = function paramReducer(state, key, value) {
+  var logPrefix = ':paramReducer] ';
+  logger.info(logPrefix, '-->');
+
+  logger.debug(logPrefix, 'key:', key, 'value:', value);
+
+  logger.info(logPrefix, '<--');
   return _extends({}, state, {
     parameters: parameters.map(function (p) {
       return p.key != key ? p : _extends({}, p, { value: value });
@@ -6298,7 +6807,7 @@ exports.parameters = parameters;
 exports.paramReducer = paramReducer;
 
 /***/ }),
-/* 50 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6307,8 +6816,26 @@ exports.paramReducer = paramReducer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.skillReducer = exports.skills = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('skills');
 
 var skills = [{
   key: 'cold',
@@ -6345,6 +6872,12 @@ var skills = [{
 }];
 
 var skillReducer = function skillReducer(state, key, value) {
+  var logPrefix = ':skillReducer] ';
+  logger.info(logPrefix, '-->');
+
+  logger.debug(logPrefix, 'key:', key, 'value:', value);
+
+  logger.info(logPrefix, '<--');
   return _extends({}, state, {
     skills: skills.map(function (p) {
       return p.key != key ? p : _extends({}, p, { value: value });
@@ -6356,7 +6889,7 @@ exports.skills = skills;
 exports.skillReducer = skillReducer;
 
 /***/ }),
-/* 51 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6369,12 +6902,33 @@ exports.stopGame = exports.pauseGame = exports.playGame = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _generics = __webpack_require__(13);
+var _generics = __webpack_require__(16);
 
-var _solutions = __webpack_require__(52);
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+var _solutions = __webpack_require__(55);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('controls');
 
 var playGame = exports.playGame = function playGame(state) {
+  var logPrefix = ':playGame] ';
+  logger.info(logPrefix, '-->');
+
   if (state.status == 'play') {
+    logger.info(logPrefix, '<--');
     return state;
   }
 
@@ -6398,12 +6952,16 @@ var playGame = exports.playGame = function playGame(state) {
       worldHeight = _ref[2],
       initialRange = _ref[3];
 
+  logger.debug(logPrefix, 'worldWidth:', worldWidth, 'worldHeight:', worldHeight);
+  logger.debug(logPrefix, 'initialRange:', initialRange);
 
   maxSolutions = Math.min(worldWidth * worldHeight, maxSolutions);
+  logger.info(logPrefix, 'Generating ' + maxSolutions + ' solutions');
 
-  /* Generate solutions */
+  /* Generating solution */
 
   var _loop = function _loop(j) {
+    logger.debug(logPrefix, '> Generating solution ' + j);
     var _ref2 = [(0, _generics.getRandomInt)(0, worldHeight - 1), (0, _generics.getRandomInt)(0, worldWidth - 1)],
         row = _ref2[0],
         col = _ref2[1];
@@ -6416,8 +6974,10 @@ var playGame = exports.playGame = function playGame(state) {
       row = _ref3[0];
       col = _ref3[1];
     }
+    logger.debug(logPrefix, '- founded free spot in row ' + row + ' and col ' + col);
 
     var skills = (0, _solutions.buildRandomSolutionSkill)(state.skills, initialRange);
+    logger.debug(logPrefix, '- solution skills:', skills);
 
     nextState.solutions.push({
       skills: skills,
@@ -6430,9 +6990,10 @@ var playGame = exports.playGame = function playGame(state) {
     _loop(j);
   }
 
+  logger.info(logPrefix, 'Evaluating solutions fitness');
   nextState.solutions = (0, _solutions.evaluateSolutionsFitness)(state.skills, nextState.solutions);
-  console.log(nextState.solutions);
 
+  logger.info(logPrefix, 'Generating solutions colors');
   nextState.solutions = nextState.solutions.map(function (solution) {
     return _extends({}, solution, {
       color: (0, _solutions.generateSolutionColor)(solution.skills)
@@ -6441,25 +7002,38 @@ var playGame = exports.playGame = function playGame(state) {
 
   /* TODO timers */
 
+  logger.info(logPrefix, '<--');
   return nextState;
 };
 
 var pauseGame = exports.pauseGame = function pauseGame(state) {
+  var logPrefix = ':pauseGame] ';
+  logger.info(logPrefix, '-->');
+
   if (state.status != 'play') {
+    logger.info(logPrefix, '<--');
     return state;
   }
 
-  var nextState = state;
+  logger.info(logPrefix, 'Perform pause');
+  var nextState = _extends({}, state, { status: 'pause' });
 
   /* TODO timers */
+
+  logger.info(logPrefix, '<--');
   return nextState;
 };
 
 var stopGame = exports.stopGame = function stopGame(state) {
+  var logPrefix = ':stopGame] ';
+  logger.info(logPrefix, '-->');
+
   if (state.status == 'stop') {
+    logger.info(logPrefix, '<--');
     return state;
   }
 
+  logger.info(logPrefix, 'Resetting worldmap and info');
   var nextState = _extends({}, state, {
     solutions: [],
     status: 'stop',
@@ -6469,11 +7043,12 @@ var stopGame = exports.stopGame = function stopGame(state) {
 
   /* TODO timers */
 
+  logger.info(logPrefix, '<--');
   return nextState;
 };
 
 /***/ }),
-/* 52 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6486,9 +7061,29 @@ exports.generateSolutionColor = exports.evaluateSolutionsFitness = exports.build
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _generics = __webpack_require__(13);
+var _generics = __webpack_require__(16);
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('solutionsReducer');
 
 var getSkillRange = function getSkillRange(skill, solutions) {
+  var logPrefix = ':getSkillRange] ';
+  logger.info(logPrefix, '-->');
+
   var min = undefined,
       max = undefined;
 
@@ -6497,6 +7092,8 @@ var getSkillRange = function getSkillRange(skill, solutions) {
     var currSkillValue = solutions[i].skills.find(function (s) {
       return s.key == skill;
     }).value;
+    logger.debug(logPrefix, 'currSkillValue:', currSkillValue, 'at Index:', i);
+
     if (min == undefined || currSkillValue < min) {
       min = currSkillValue;
     }
@@ -6506,14 +7103,21 @@ var getSkillRange = function getSkillRange(skill, solutions) {
     }
   }
 
+  logger.info(logPrefix, '<--');
   return { min: min, max: max };
 };
 
 var buildRandomSolutionSkill = exports.buildRandomSolutionSkill = function buildRandomSolutionSkill(skills, range) {
   return skills.map(function (skill) {
+    var logPrefix = ':buildRandomSolutionSkill] ';
+    logger.info(logPrefix, '-->');
+
     var rangeValue = range * skill.value;
     var value = skill.value + (0, _generics.getRandomInt)(-rangeValue, +rangeValue);
 
+    logger.debug(logPrefix, 'rangeValue:', rangeValue, 'value:', value);
+
+    logger.info(logPrefix, '<--');
     return {
       key: skill.key,
       value: Math.min(Math.max(value, skill.min ? +skill.min : value), skill.max ? +skill.max : value),
@@ -6523,12 +7127,18 @@ var buildRandomSolutionSkill = exports.buildRandomSolutionSkill = function build
 };
 
 var evaluateSolutionsFitness = exports.evaluateSolutionsFitness = function evaluateSolutionsFitness(skills, solutions) {
+  var logPrefix = ':evaluateSolutionsFitness] ';
+  logger.info(logPrefix, '-->');
+
   var ranges = skills.map(function (skill) {
     return _extends({}, getSkillRange(skill.key, solutions), {
       skill: skill.key
     });
   });
 
+  logger.debug(logPrefix, 'ranges:', ranges);
+
+  logger.info(logPrefix, '<--');
   return solutions.map(function (solution) {
     return _extends({}, solution, {
       skills: solution.skills.map(function (skill) {
@@ -6543,6 +7153,9 @@ var evaluateSolutionsFitness = exports.evaluateSolutionsFitness = function evalu
 };
 
 var generateSolutionColor = exports.generateSolutionColor = function generateSolutionColor(skills) {
+  var logPrefix = ':generateSolutionColor] ';
+  logger.info(logPrefix, '-->');
+
   var values = skills.map(function (s) {
     return s.fitness;
   });
@@ -6555,12 +7168,17 @@ var generateSolutionColor = exports.generateSolutionColor = function generateSol
       max = _ref[1];
 
 
+  logger.debug(logPrefix, 'values:', values);
+  logger.debug(logPrefix, 'min:', min, 'max:', max);
+
   var colorRanges = skills.map(function (skill) {
     return {
       color: skill.color,
       value: skill.fitness / max * 100
     };
   });
+
+  logger.debug(logPrefix, 'colorRanges:', colorRanges);
 
   var colors = [];
   for (var i in colorRanges) {
@@ -6571,6 +7189,9 @@ var generateSolutionColor = exports.generateSolutionColor = function generateSol
     }
   }
 
+  logger.debug(logPrefix, 'colors:', colors);
+
+  logger.info(logPrefix, '<--');
   return 'radial-gradient(' + colors.join(',') + ')';
 };
 

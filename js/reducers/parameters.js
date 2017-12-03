@@ -1,3 +1,10 @@
+import log from 'loglevel'
+import prefix from 'loglevel-plugin-prefix'
+import prefixTemplate from '../loglevel-prefix-template'
+
+prefix.apply(log, prefixTemplate);
+const logger = log.getLogger('parameters');
+
 const parameters = [
   {
     key: 'solutions',
@@ -76,9 +83,17 @@ const parameters = [
   }
 ];
 
-const paramReducer = (state, key, value) => ({
-  ...state,
-  parameters: parameters.map(p => (p.key != key ) ? p : {...p, value})
-});
+const paramReducer = (state, key, value) => {
+  const logPrefix = ':paramReducer] ';
+  logger.info(logPrefix, '-->');
+
+  logger.debug(logPrefix, 'key:', key, 'value:', value);
+
+  logger.info(logPrefix, '<--');
+  return ({
+    ...state,
+    parameters: parameters.map(p => (p.key != key ) ? p : {...p, value})
+  });
+};
 
 export { parameters, paramReducer };

@@ -1,6 +1,12 @@
 import { parameters, paramReducer } from './parameters'
 import { skills, skillReducer } from './skills'
 import { playGame, pauseGame, stopGame } from './controls'
+import log from 'loglevel'
+import prefix from 'loglevel-plugin-prefix'
+import prefixTemplate from '../loglevel-prefix-template'
+
+prefix.apply(log, prefixTemplate);
+const logger = log.getLogger('reducer');
 
 const initialState = {
   generation: 0,
@@ -19,7 +25,15 @@ const reducerLookup = {
        STOP_GAME: (state, data) => stopGame(state)
 };
 
-const reducer = (state = initialState, action) =>
-  reducerLookup.hasOwnProperty(action.type) ? reducerLookup[action.type](state, action.data) : state;
+const reducer = (state = initialState, action) => {
+  const logPrefix = ':reducer] ';
+  logger.info(logPrefix, '-->');
+
+  logger.info(logPrefix, 'type:', action.type, 'data:', action.data);
+  let nextState = reducerLookup.hasOwnProperty(action.type) ? reducerLookup[action.type](state, action.data) : state;
+
+  logger.info(logPrefix, '<--');
+  return nextState;
+};
 
 export default reducer;

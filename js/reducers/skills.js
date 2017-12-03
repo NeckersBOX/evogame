@@ -1,3 +1,10 @@
+import log from 'loglevel'
+import prefix from 'loglevel-plugin-prefix'
+import prefixTemplate from '../loglevel-prefix-template'
+
+prefix.apply(log, prefixTemplate);
+const logger = log.getLogger('skills');
+
 const skills = [
   {
     key: 'cold',
@@ -37,9 +44,17 @@ const skills = [
   }
 ];
 
-const skillReducer = (state, key, value) => ({
-  ...state,
-  skills: skills.map(p => (p.key != key) ? p : {...p, value})
-});
+const skillReducer = (state, key, value) => {
+  const logPrefix = ':skillReducer] ';
+  logger.info(logPrefix, '-->');
+
+  logger.debug(logPrefix, 'key:', key, 'value:', value);
+
+  logger.info(logPrefix, '<--');
+  return ({
+    ...state,
+    skills: skills.map(p => (p.key != key) ? p : {...p, value})
+  });
+};
 
 export { skills, skillReducer };
