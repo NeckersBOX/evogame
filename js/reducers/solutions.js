@@ -50,6 +50,7 @@ export const evaluateSolutionsFitness = (skills, solutions) => {
   const logPrefix = ':evaluateSolutionsFitness] ';
   logger.info(logPrefix, '-->');
 
+  logger.info(logPrefix, 'Elaborating skills ranges');
   const ranges = skills.map(skill => ({
     ...getSkillRange(skill.key, solutions),
     skill: skill.key
@@ -60,10 +61,19 @@ export const evaluateSolutionsFitness = (skills, solutions) => {
   logger.info(logPrefix, '<--');
   return solutions.map(solution => ({
     ...solution,
-    skills: solution.skills.map(skill => ({
-      ...skill,
-      fitness: 1 - (skill.value / ranges.find(r => r.skill == skill.key).max)
-    }))
+    skills: solution.skills.map(skill => {
+      logger.info(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
+
+      let fitness = (skill.value / ranges.find(r => r.skill == skill.key).max);
+
+      logger.debug(logPrefix, 'skill value:', skill.value);
+      logger.debug(logPrefix, 'fitness:', fitness);
+
+      return {
+        ...skill,
+        fitness
+      };
+    })
   }));
 };
 

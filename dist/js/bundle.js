@@ -7130,6 +7130,7 @@ var evaluateSolutionsFitness = exports.evaluateSolutionsFitness = function evalu
   var logPrefix = ':evaluateSolutionsFitness] ';
   logger.info(logPrefix, '-->');
 
+  logger.info(logPrefix, 'Elaborating skills ranges');
   var ranges = skills.map(function (skill) {
     return _extends({}, getSkillRange(skill.key, solutions), {
       skill: skill.key
@@ -7142,10 +7143,17 @@ var evaluateSolutionsFitness = exports.evaluateSolutionsFitness = function evalu
   return solutions.map(function (solution) {
     return _extends({}, solution, {
       skills: solution.skills.map(function (skill) {
+        logger.info(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
+
+        var fitness = skill.value / ranges.find(function (r) {
+          return r.skill == skill.key;
+        }).max;
+
+        logger.debug(logPrefix, 'skill value:', skill.value);
+        logger.debug(logPrefix, 'fitness:', fitness);
+
         return _extends({}, skill, {
-          fitness: 1 - skill.value / ranges.find(function (r) {
-            return r.skill == skill.key;
-          }).max
+          fitness: fitness
         });
       })
     });
