@@ -13,7 +13,8 @@ const skills = [
     defaultValue: '-25',
     value: -25,
     fitness: 0,
-    color: '#AFE3D6'
+    color: '#AFE3D6',
+    generateFitness: (skill, min, max) => ({...skill, fitness: (max - skill.value) / Math.abs(max - min)})
   },
   {
     key: 'heat',
@@ -22,7 +23,8 @@ const skills = [
     defaultValue: '45',
     value: 45,
     fitness: 0,
-    color: '#6E2620'
+    color: '#6E2620',
+    generateFitness: (skill, min, max) => ({...skill, fitness: (skill.value - min) / Math.abs(max - min)})
   },
   {
     key: 'water',
@@ -31,7 +33,8 @@ const skills = [
     defaultValue: '8',
     value: 8,
     fitness: 0,
-    color: '#2A6790'
+    color: '#2A6790',
+    generateFitness: (skill, min, max) => ({...skill, fitness: (skill.value - min) / Math.abs(max - min)})
   },
   {
     key: 'wind',
@@ -40,7 +43,8 @@ const skills = [
     defaultValue: '90',
     value: 90,
     fitness: 0,
-    color: '#6833CC'
+    color: '#6833CC',
+    generateFitness: (skill, min, max) => ({...skill, fitness: (skill.value - min) / Math.abs(max - min)})
   }
 ];
 

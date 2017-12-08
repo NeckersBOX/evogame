@@ -41,7 +41,7 @@ export const playGame = state => {
 
   /* Generating solution */
   for ( let j = 0; j < maxSolutions; j++ ) {
-    logger.debug(logPrefix, '> Generating solution ' + j);
+    logger.info(logPrefix, '> Generating solution ' + j);
     let [ row, col ] = [ getRandomInt(0, worldHeight - 1), getRandomInt(0, worldWidth - 1) ];
 
     while ( state.solutions.find(s => s.row == row && s.col == col) !== undefined ) {
@@ -61,7 +61,8 @@ export const playGame = state => {
 
   logger.info(logPrefix, 'Evaluating solutions fitness');
   nextState.solutions = evaluateSolutionsFitness(state.skills, nextState.solutions);
-
+  logger.debug(logPrefix, 'Current solutions:', nextState.solutions);
+  
   logger.info(logPrefix, 'Generating solutions colors');
   nextState.solutions = nextState.solutions.map(solution => ({
     ...solution,

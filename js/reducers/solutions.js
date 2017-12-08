@@ -4,11 +4,12 @@ import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../loglevel-prefix-template'
 
 prefix.apply(log, prefixTemplate);
-const logger = log.getLogger('solutionsReducer');
+const logger = log.getLogger('solutions');
 
 const getSkillRange = (skill, solutions) => {
   const logPrefix = ':getSkillRange] ';
-  logger.info(logPrefix, '-->');
+  logger.debug(logPrefix, '-->');
+  logger.debug(logPrefix, 'Skill key:', skill);
 
   let [ min, max ] = [ undefined, undefined ];
 
@@ -25,24 +26,25 @@ const getSkillRange = (skill, solutions) => {
     }
   }
 
-  logger.info(logPrefix, '<--');
+  logger.debug(logPrefix, '<--');
   return { min, max };
 }
 
 export const buildRandomSolutionSkill = (skills, range) => skills.map(skill => {
   const logPrefix = ':buildRandomSolutionSkill] ';
-  logger.info(logPrefix, '-->');
+  logger.debug(logPrefix, '-->');
 
   let rangeValue = range * skill.value;
   let value = skill.value + getRandomInt(-rangeValue, +rangeValue);
 
   logger.debug(logPrefix, 'rangeValue:', rangeValue, 'value:', value);
 
-  logger.info(logPrefix, '<--');
+  logger.debug(logPrefix, '<--');
   return {
     key: skill.key,
     value: Math.min(Math.max(value, skill.min ? +skill.min : value), skill.max ? +skill.max : value),
-    color: skill.color
+    color: skill.color,
+    generateFitness: skill.generateFitness
   };
 });
 
@@ -57,24 +59,26 @@ export const evaluateSolutionsFitness = (skills, solutions) => {
   }));
 
   logger.debug(logPrefix, 'ranges:', ranges);
+  logger.info(logPrefix, 'Generate fitness for each solution skill');
+
+  let nextSolutions = solutions.map((solution, idx) => {
+    logger.debug(logPrefix, 'Current solution index:', idx);
+
+    return {
+      ...solution,
+      skills: solution.skills.map(skill => {
+        logger.debug(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
+        let currSkillRange = ranges.find(r => r.skill == skill.key);
+
+        return {
+          ...skill.generateFitness(skill, currSkillRange.min, currSkillRange.max)
+        };
+      })
+    };
+  });
 
   logger.info(logPrefix, '<--');
-  return solutions.map(solution => ({
-    ...solution,
-    skills: solution.skills.map(skill => {
-      logger.info(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
-
-      let fitness = (skill.value / ranges.find(r => r.skill == skill.key).max);
-
-      logger.debug(logPrefix, 'skill value:', skill.value);
-      logger.debug(logPrefix, 'fitness:', fitness);
-
-      return {
-        ...skill,
-        fitness
-      };
-    })
-  }));
+  return nextSolutions;
 };
 
 export const generateSolutionColor = skills => {

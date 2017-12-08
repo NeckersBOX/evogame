@@ -6844,7 +6844,10 @@ var skills = [{
   defaultValue: '-25',
   value: -25,
   fitness: 0,
-  color: '#AFE3D6'
+  color: '#AFE3D6',
+  generateFitness: function generateFitness(skill, min, max) {
+    return _extends({}, skill, { fitness: (max - skill.value) / Math.abs(max - min) });
+  }
 }, {
   key: 'heat',
   label: 'Heat Resistance [ °C ]',
@@ -6852,7 +6855,10 @@ var skills = [{
   defaultValue: '45',
   value: 45,
   fitness: 0,
-  color: '#6E2620'
+  color: '#6E2620',
+  generateFitness: function generateFitness(skill, min, max) {
+    return _extends({}, skill, { fitness: (skill.value - min) / Math.abs(max - min) });
+  }
 }, {
   key: 'water',
   label: 'Water Resistance [ m ]',
@@ -6860,7 +6866,10 @@ var skills = [{
   defaultValue: '8',
   value: 8,
   fitness: 0,
-  color: '#2A6790'
+  color: '#2A6790',
+  generateFitness: function generateFitness(skill, min, max) {
+    return _extends({}, skill, { fitness: (skill.value - min) / Math.abs(max - min) });
+  }
 }, {
   key: 'wind',
   label: 'Wind Resistance [ km/h ]',
@@ -6868,7 +6877,10 @@ var skills = [{
   defaultValue: '90',
   value: 90,
   fitness: 0,
-  color: '#6833CC'
+  color: '#6833CC',
+  generateFitness: function generateFitness(skill, min, max) {
+    return _extends({}, skill, { fitness: (skill.value - min) / Math.abs(max - min) });
+  }
 }];
 
 var skillReducer = function skillReducer(state, key, value) {
@@ -6961,7 +6973,7 @@ var playGame = exports.playGame = function playGame(state) {
   /* Generating solution */
 
   var _loop = function _loop(j) {
-    logger.debug(logPrefix, '> Generating solution ' + j);
+    logger.info(logPrefix, '> Generating solution ' + j);
     var _ref2 = [(0, _generics.getRandomInt)(0, worldHeight - 1), (0, _generics.getRandomInt)(0, worldWidth - 1)],
         row = _ref2[0],
         col = _ref2[1];
@@ -6992,6 +7004,7 @@ var playGame = exports.playGame = function playGame(state) {
 
   logger.info(logPrefix, 'Evaluating solutions fitness');
   nextState.solutions = (0, _solutions.evaluateSolutionsFitness)(state.skills, nextState.solutions);
+  logger.debug(logPrefix, 'Current solutions:', nextState.solutions);
 
   logger.info(logPrefix, 'Generating solutions colors');
   nextState.solutions = nextState.solutions.map(function (solution) {
@@ -7078,11 +7091,12 @@ var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('solutionsReducer');
+var logger = _loglevel2.default.getLogger('solutions');
 
 var getSkillRange = function getSkillRange(skill, solutions) {
   var logPrefix = ':getSkillRange] ';
-  logger.info(logPrefix, '-->');
+  logger.debug(logPrefix, '-->');
+  logger.debug(logPrefix, 'Skill key:', skill);
 
   var min = undefined,
       max = undefined;
@@ -7103,25 +7117,26 @@ var getSkillRange = function getSkillRange(skill, solutions) {
     }
   }
 
-  logger.info(logPrefix, '<--');
+  logger.debug(logPrefix, '<--');
   return { min: min, max: max };
 };
 
 var buildRandomSolutionSkill = exports.buildRandomSolutionSkill = function buildRandomSolutionSkill(skills, range) {
   return skills.map(function (skill) {
     var logPrefix = ':buildRandomSolutionSkill] ';
-    logger.info(logPrefix, '-->');
+    logger.debug(logPrefix, '-->');
 
     var rangeValue = range * skill.value;
     var value = skill.value + (0, _generics.getRandomInt)(-rangeValue, +rangeValue);
 
     logger.debug(logPrefix, 'rangeValue:', rangeValue, 'value:', value);
 
-    logger.info(logPrefix, '<--');
+    logger.debug(logPrefix, '<--');
     return {
       key: skill.key,
       value: Math.min(Math.max(value, skill.min ? +skill.min : value), skill.max ? +skill.max : value),
-      color: skill.color
+      color: skill.color,
+      generateFitness: skill.generateFitness
     };
   });
 };
@@ -7138,26 +7153,25 @@ var evaluateSolutionsFitness = exports.evaluateSolutionsFitness = function evalu
   });
 
   logger.debug(logPrefix, 'ranges:', ranges);
+  logger.info(logPrefix, 'Generate fitness for each solution skill');
 
-  logger.info(logPrefix, '<--');
-  return solutions.map(function (solution) {
+  var nextSolutions = solutions.map(function (solution, idx) {
+    logger.debug(logPrefix, 'Current solution index:', idx);
+
     return _extends({}, solution, {
       skills: solution.skills.map(function (skill) {
-        logger.info(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
-
-        var fitness = skill.value / ranges.find(function (r) {
+        logger.debug(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
+        var currSkillRange = ranges.find(function (r) {
           return r.skill == skill.key;
-        }).max;
-
-        logger.debug(logPrefix, 'skill value:', skill.value);
-        logger.debug(logPrefix, 'fitness:', fitness);
-
-        return _extends({}, skill, {
-          fitness: fitness
         });
+
+        return _extends({}, skill.generateFitness(skill, currSkillRange.min, currSkillRange.max));
       })
     });
   });
+
+  logger.info(logPrefix, '<--');
+  return nextSolutions;
 };
 
 var generateSolutionColor = exports.generateSolutionColor = function generateSolutionColor(skills) {
