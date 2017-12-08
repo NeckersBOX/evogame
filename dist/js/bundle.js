@@ -6846,7 +6846,9 @@ var skills = [{
   fitness: 0,
   color: '#AFE3D6',
   generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, { fitness: (max - skill.value) / Math.abs(max - min) });
+    return _extends({}, skill, {
+      fitness: max == min ? 1 : (max - skill.value) / Math.abs(max - min)
+    });
   }
 }, {
   key: 'heat',
@@ -6857,7 +6859,9 @@ var skills = [{
   fitness: 0,
   color: '#6E2620',
   generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, { fitness: (skill.value - min) / Math.abs(max - min) });
+    return _extends({}, skill, {
+      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
+    });
   }
 }, {
   key: 'water',
@@ -6868,7 +6872,9 @@ var skills = [{
   fitness: 0,
   color: '#2A6790',
   generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, { fitness: (skill.value - min) / Math.abs(max - min) });
+    return _extends({}, skill, {
+      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
+    });
   }
 }, {
   key: 'wind',
@@ -6879,7 +6885,9 @@ var skills = [{
   fitness: 0,
   color: '#6833CC',
   generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, { fitness: (skill.value - min) / Math.abs(max - min) });
+    return _extends({}, skill, {
+      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
+    });
   }
 }];
 
@@ -7181,40 +7189,58 @@ var generateSolutionColor = exports.generateSolutionColor = function generateSol
   var values = skills.map(function (s) {
     return s.fitness;
   });
-  var _ref = [values.reduce(function (v, prev) {
-    return v < prev ? v : prev;
-  }), values.reduce(function (v, prev) {
-    return v > prev ? v : prev;
-  })],
-      min = _ref[0],
-      max = _ref[1];
-
+  var minVal = values.reduce(function (prev, curr) {
+    return curr < prev && curr > 0 || !prev ? curr : prev;
+  });
 
   logger.debug(logPrefix, 'values:', values);
-  logger.debug(logPrefix, 'min:', min, 'max:', max);
+  logger.debug(logPrefix, 'minVal:', minVal);
 
-  var colorRanges = skills.map(function (skill) {
+  var valuesRanges = new Array(values.length).fill(1 / values.length);
+  if (minVal != 0) {
+    var ranges = values.map(function (v) {
+      return v / minVal;
+    });
+    logger.debug(logPrefix, 'values parts:', ranges);
+
+    var totRanges = ranges.reduce(function (a, b) {
+      return a + b;
+    }, 0);
+    logger.debug(logPrefix, 'totRanges:', totRanges);
+
+    valuesRanges = ranges.map(function (r) {
+      return r / totRanges;
+    });
+  }
+
+  logger.debug(logPrefix, 'valuesRanges:', valuesRanges, 'tot:', valuesRanges.reduce(function (p, c) {
+    return p + c;
+  }));
+
+  var colorRanges = skills.map(function (skill, idx) {
     return {
       color: skill.color,
-      value: skill.fitness / max * 100
+      value: valuesRanges[idx] * 100
     };
+  }).filter(function (c) {
+    return c.value > 0;
+  }).sort(function (a, b) {
+    return a.value - b.value;
   });
 
   logger.debug(logPrefix, 'colorRanges:', colorRanges);
 
-  var colors = [];
-  for (var i in colorRanges) {
-    if (i == 0) {
-      colors.push(colorRanges[i].color);
-    } else {
-      colors.push(colorRanges[i].color + ' ' + colorRanges[i - 1].value + '%');
-    }
+  var gradientColors = [];
+  var percentage = 0;
+  for (var idx in colorRanges) {
+    gradientColors.push(colorRanges[idx].color + ' ' + percentage + '%');
+    percentage += colorRanges[idx].value;
   }
 
-  logger.debug(logPrefix, 'colors:', colors);
+  logger.debug(logPrefix, 'gradientColors:', gradientColors);
 
   logger.info(logPrefix, '<--');
-  return 'radial-gradient(' + colors.join(',') + ')';
+  return 'linear-gradient(' + gradientColors.join(',') + ')';
 };
 
 /***/ })

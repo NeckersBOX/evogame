@@ -85,34 +85,41 @@ export const generateSolutionColor = skills => {
   const logPrefix = ':generateSolutionColor] ';
   logger.info(logPrefix, '-->');
 
-  let values = skills.map(s => s.fitness);
-  let [ min, max ] = [
-    values.reduce((v, prev) => v < prev ? v : prev),
-    values.reduce((v, prev) => v > prev ? v : prev)
-  ];
+  const values = skills.map(s => s.fitness);
+  const minVal = values.reduce((prev, curr) => ((curr < prev && curr > 0) || !prev) ? curr : prev);
 
   logger.debug(logPrefix, 'values:', values);
-  logger.debug(logPrefix, 'min:', min, 'max:', max);
+  logger.debug(logPrefix, 'minVal:', minVal);
 
-  let colorRanges = skills.map(skill => ({
+  let valuesRanges = new Array(values.length).fill(1 / values.length);
+  if ( minVal != 0 ) {
+    let ranges = values.map(v => v / minVal);
+    logger.debug(logPrefix, 'values parts:', ranges);
+
+    let totRanges = ranges.reduce((a, b) => a + b, 0);
+    logger.debug(logPrefix, 'totRanges:', totRanges);
+
+    valuesRanges = ranges.map(r => r / totRanges)
+  }
+
+  logger.debug(logPrefix, 'valuesRanges:', valuesRanges, 'tot:', valuesRanges.reduce((p, c) => p + c));
+
+  let colorRanges = skills.map((skill, idx) => ({
     color: skill.color,
-    value: (skill.fitness / max) * 100
-  }));
+    value: valuesRanges[idx] * 100
+  })).filter(c => c.value > 0).sort((a, b) => a.value - b.value);
 
   logger.debug(logPrefix, 'colorRanges:', colorRanges);
 
-  let colors = [];
-  for ( let i in colorRanges ) {
-    if ( i == 0 ) {
-      colors.push(colorRanges[i].color);
-    }
-    else {
-      colors.push(colorRanges[i].color + ' ' + colorRanges[i - 1].value + '%');
-    }
+  let gradientColors = [];
+  let percentage = 0;
+  for ( let idx in colorRanges ) {
+    gradientColors.push(colorRanges[idx].color + ' ' + percentage + '%');
+    percentage += colorRanges[idx].value;
   }
 
-  logger.debug(logPrefix, 'colors:', colors);
+  logger.debug(logPrefix, 'gradientColors:', gradientColors);
 
   logger.info(logPrefix, '<--');
-  return 'radial-gradient(' + colors.join(',') + ')';
+  return 'linear-gradient(' + gradientColors.join(',') + ')';
 };
