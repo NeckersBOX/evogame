@@ -14,7 +14,10 @@ const skills = [
     value: -25,
     fitness: 0,
     color: '#AFE3D6',
-    generateFitness: (skill, min, max) => ({...skill, fitness: (max - skill.value) / Math.abs(max - min)})
+    generateFitness: (skill, min, max) => ({
+      ...skill,
+      fitness: max == min ? 1 : ((max - skill.value) / Math.abs(max - min))
+    })
   },
   {
     key: 'heat',
@@ -24,7 +27,10 @@ const skills = [
     value: 45,
     fitness: 0,
     color: '#6E2620',
-    generateFitness: (skill, min, max) => ({...skill, fitness: (skill.value - min) / Math.abs(max - min)})
+    generateFitness: (skill, min, max) => ({
+      ...skill,
+      fitness: max == min ? 1 : ((skill.value - min) / Math.abs(max - min))
+    })
   },
   {
     key: 'water',
@@ -34,7 +40,10 @@ const skills = [
     value: 8,
     fitness: 0,
     color: '#2A6790',
-    generateFitness: (skill, min, max) => ({...skill, fitness: (skill.value - min) / Math.abs(max - min)})
+    generateFitness: (skill, min, max) => ({
+      ...skill,
+      fitness: max == min ? 1 : ((skill.value - min) / Math.abs(max - min))
+    })
   },
   {
     key: 'wind',
@@ -44,7 +53,10 @@ const skills = [
     value: 90,
     fitness: 0,
     color: '#6833CC',
-    generateFitness: (skill, min, max) => ({...skill, fitness: (skill.value - min) / Math.abs(max - min)})
+    generateFitness: (skill, min, max) => ({
+      ...skill,
+      fitness: max == min ? 1 : ((skill.value - min) / Math.abs(max - min))
+    })
   }
 ];
 
