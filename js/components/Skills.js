@@ -6,6 +6,13 @@ import Input from 'preact-mui/lib/input'
 import Row from 'preact-mui/lib/row'
 import Col from 'preact-mui/lib/col'
 
+import log from 'loglevel'
+import prefix from 'loglevel-plugin-prefix'
+import prefixTemplate from '../loglevel-prefix-template'
+
+prefix.apply(log, prefixTemplate);
+const logger = log.getLogger('Skills');
+
 class Skills extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +20,9 @@ class Skills extends Component {
 
   @bind
   changeParameter (event, key) {
+    const logPrefix = ':changeParameter] ';
     event.preventDefault();
+    logger.info(logPrefix, '-->');
 
     this.props.dispatch({
       type: 'SET_SKILLS',
@@ -22,22 +31,38 @@ class Skills extends Component {
         value: event.target.value
       }
     });
+
+    logger.info(logPrefix, '<--');
   }
 
   render() {
-    return (
+    const logPrefix = ':render] ';
+    logger.info(logPrefix, '-->');
+
+    let result = (
       <div>
         <Row>
-          {this.props.skills.map(property =>
-            <Col md="3" sm="6">
-              <Input {...property} type="number" floatingLabel={true}
-                onChange={e => this.changeParameter(e, property.key)} />
-            </Col>
-          )}
+          {this.props.skills.map(property => {
+            logger.debug('Generating input for property', property);
+
+            return (
+              <Col key={property.key} md="3" sm="6">
+                <Input type="number" floatingLabel={true}
+                  label={property.label}
+                  min={property.min || null}
+                  max={property.max || null}
+                  value={property.value}
+                  onChange={e => this.changeParameter(e, property.key)} />
+              </Col>
+            );
+          })}
         </Row>
         <div className="muiextra--note">This settings will be applied only for the first generation</div>
       </div>
     );
+
+    logger.info(logPrefix, '<--');
+    return result;
   }
 }
 

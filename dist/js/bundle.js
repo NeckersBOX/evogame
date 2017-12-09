@@ -5145,6 +5145,13 @@ var Tabs = function (_Component) {
   }
 
   _createClass(Tabs, [{
+    key: 'changeTab',
+    value: function changeTab(e, selected) {
+      e.preventDefault();
+
+      this.setState({ selected: selected });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
@@ -5161,8 +5168,8 @@ var Tabs = function (_Component) {
               { key: idx, className: _this2.state.selected == idx ? 'selected' : '' },
               (0, _preact.h)(
                 'a',
-                { href: '#', onClick: function onClick() {
-                    return _this2.setState({ selected: idx });
+                { href: '#', onClick: function onClick(e) {
+                    return _this2.changeTab(e, idx);
                   } },
                 children.attributes.label
               )
@@ -6316,8 +6323,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _desc, _value, _class;
@@ -6339,6 +6344,18 @@ var _row2 = _interopRequireDefault(_row);
 var _col = __webpack_require__(7);
 
 var _col2 = _interopRequireDefault(_col);
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6377,6 +6394,9 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('Skills');
+
 var Skills = (_class = function (_Component) {
   _inherits(Skills, _Component);
 
@@ -6389,7 +6409,9 @@ var Skills = (_class = function (_Component) {
   _createClass(Skills, [{
     key: 'changeParameter',
     value: function changeParameter(event, key) {
+      var logPrefix = ':changeParameter] ';
       event.preventDefault();
+      logger.info(logPrefix, '-->');
 
       this.props.dispatch({
         type: 'SET_SKILLS',
@@ -6398,26 +6420,37 @@ var Skills = (_class = function (_Component) {
           value: event.target.value
         }
       });
+
+      logger.info(logPrefix, '<--');
     }
   }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
-      return (0, _preact.h)(
+      var logPrefix = ':render] ';
+      logger.info(logPrefix, '-->');
+
+      var result = (0, _preact.h)(
         'div',
         null,
         (0, _preact.h)(
           _row2.default,
           null,
           this.props.skills.map(function (property) {
+            logger.debug('Generating input for property', property);
+
             return (0, _preact.h)(
               _col2.default,
-              { md: '3', sm: '6' },
-              (0, _preact.h)(_input2.default, _extends({}, property, { type: 'number', floatingLabel: true,
+              { key: property.key, md: '3', sm: '6' },
+              (0, _preact.h)(_input2.default, { type: 'number', floatingLabel: true,
+                label: property.label,
+                min: property.min || null,
+                max: property.max || null,
+                value: property.value,
                 onChange: function onChange(e) {
                   return _this2.changeParameter(e, property.key);
-                } }))
+                } })
             );
           })
         ),
@@ -6427,6 +6460,9 @@ var Skills = (_class = function (_Component) {
           'This settings will be applied only for the first generation'
         )
       );
+
+      logger.info(logPrefix, '<--');
+      return result;
     }
   }]);
 
@@ -6842,6 +6878,7 @@ var skills = [{
   label: 'Cold Resistance [ °C ]',
   min: '-273',
   defaultValue: '-25',
+  lessThan: 'heat',
   value: -25,
   fitness: 0,
   color: '#AFE3D6',
@@ -6855,6 +6892,7 @@ var skills = [{
   label: 'Heat Resistance [ °C ]',
   min: '-273',
   defaultValue: '45',
+  greaterThan: 'cold',
   value: 45,
   fitness: 0,
   color: '#6E2620',
@@ -6895,14 +6933,60 @@ var skillReducer = function skillReducer(state, key, value) {
   var logPrefix = ':skillReducer] ';
   logger.info(logPrefix, '-->');
 
-  logger.debug(logPrefix, 'key:', key, 'value:', value);
+  logger.debug(logPrefix, 'key: `' + key + '` value: `' + value + '`');
 
-  logger.info(logPrefix, '<--');
-  return _extends({}, state, {
-    skills: skills.map(function (p) {
-      return p.key != key ? p : _extends({}, p, { value: value });
+  var nextState = _extends({}, state, {
+    skills: state.skills.map(function (p) {
+      if (p.key != key) {
+        return p;
+      }
+
+      if (p.hasOwnProperty('min') && +value < +p.min) {
+        logger.info(logPrefix, 'Prevent set a value less than minimum');
+        return p;
+      }
+
+      if (p.hasOwnProperty('max') && +value > +p.max) {
+        logger.info(logPrefix, 'Prevent set a value greater than maximum');
+        return p;
+      }
+
+      if (p.hasOwnProperty('lessThan')) {
+        logger.info(logPrefix, 'Property ' + p.key + ' must be less than ' + p.lessThan);
+        var lessThanValue = state.skills.find(function (s) {
+          return s.key == p.lessThan;
+        }).value;
+
+        if (value >= lessThanValue) {
+          logger.info(logPrefix, 'Property not respected ( ' + value + ' >= ' + lessThanValue + ' )');
+          return p;
+        } else {
+          logger.info(logPrefix, 'Property respected ( ' + value + ' < ' + lessThanValue + ' )');
+        }
+      }
+
+      if (p.hasOwnProperty('greaterThan')) {
+        logger.info(logPrefix, 'Property ' + p.key + ' must be greater than ' + p.greaterThan);
+        var greaterThanValue = state.skills.find(function (s) {
+          return s.key == p.greaterThan;
+        }).value;
+
+        if (value <= greaterThanValue) {
+          logger.info(logPrefix, 'Property not respected ( ' + value + ' <= ' + greaterThanValue + ' )');
+          return p;
+        } else {
+          logger.info(logPrefix, 'Property respected ( ' + value + ' > ' + greaterThanValue + ' )');
+        }
+      }
+
+      return _extends({}, p, {
+        value: value
+      });
     })
   });
+
+  logger.info(logPrefix, '<--');
+  return nextState;
 };
 
 exports.skills = skills;
@@ -7235,6 +7319,7 @@ var generateSolutionColor = exports.generateSolutionColor = function generateSol
   for (var idx in colorRanges) {
     gradientColors.push(colorRanges[idx].color + ' ' + percentage + '%');
     percentage += colorRanges[idx].value;
+    gradientColors.push(colorRanges[idx].color + ' ' + percentage + '%');
   }
 
   logger.debug(logPrefix, 'gradientColors:', gradientColors);
