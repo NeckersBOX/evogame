@@ -17,13 +17,19 @@ class Tabs extends Component {
     };
   }
 
+  changeTab(e, selected) {
+    e.preventDefault();
+
+    this.setState({ selected })
+  }
+
   render() {
     return (
       <div className="muiextra--tabs">
         <ul>
           {this.props.children.map((children, idx) =>
             <li key={idx} className={this.state.selected == idx ? 'selected' : ''}>
-              <a href="#" onClick={() => this.setState({ selected: idx })}>{children.attributes.label}</a>
+              <a href="#" onClick={e => this.changeTab(e, idx)}>{children.attributes.label}</a>
             </li>
           )}
         </ul>
