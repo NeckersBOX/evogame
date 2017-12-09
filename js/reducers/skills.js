@@ -14,7 +14,7 @@ const skills = [
     lessThan: 'heat',
     value: -25,
     fitness: 0,
-    color: '#AFE3D6',
+    color: '#FFFCF2',
     generateFitness: (skill, min, max) => ({
       ...skill,
       fitness: max == min ? 1 : ((max - skill.value) / Math.abs(max - min))
@@ -28,7 +28,7 @@ const skills = [
     greaterThan: 'cold',
     value: 45,
     fitness: 0,
-    color: '#6E2620',
+    color: '#ED6A5A',
     generateFitness: (skill, min, max) => ({
       ...skill,
       fitness: max == min ? 1 : ((skill.value - min) / Math.abs(max - min))
@@ -41,7 +41,7 @@ const skills = [
     defaultValue: '8',
     value: 8,
     fitness: 0,
-    color: '#2A6790',
+    color: '#9BC1BC',
     generateFitness: (skill, min, max) => ({
       ...skill,
       fitness: max == min ? 1 : ((skill.value - min) / Math.abs(max - min))
@@ -54,7 +54,7 @@ const skills = [
     defaultValue: '90',
     value: 90,
     fitness: 0,
-    color: '#6833CC',
+    color: '#8A84E2',
     generateFitness: (skill, min, max) => ({
       ...skill,
       fitness: max == min ? 1 : ((skill.value - min) / Math.abs(max - min))
