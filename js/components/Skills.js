@@ -39,7 +39,7 @@ class Skills extends Component {
     const logPrefix = ':render] ';
     logger.info(logPrefix, '-->');
 
-    let result = (
+    let stage = (
       <div>
         <Row>
           {this.props.skills.map(property => {
@@ -62,7 +62,7 @@ class Skills extends Component {
     );
 
     logger.info(logPrefix, '<--');
-    return result;
+    return stage;
   }
 }
 

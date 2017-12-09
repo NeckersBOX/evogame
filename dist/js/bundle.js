@@ -6431,7 +6431,7 @@ var Skills = (_class = function (_Component) {
       var logPrefix = ':render] ';
       logger.info(logPrefix, '-->');
 
-      var result = (0, _preact.h)(
+      var stage = (0, _preact.h)(
         'div',
         null,
         (0, _preact.h)(
@@ -6462,7 +6462,7 @@ var Skills = (_class = function (_Component) {
       );
 
       logger.info(logPrefix, '<--');
-      return result;
+      return stage;
     }
   }]);
 
@@ -6979,9 +6979,7 @@ var skillReducer = function skillReducer(state, key, value) {
         }
       }
 
-      return _extends({}, p, {
-        value: value
-      });
+      return _extends({}, p, { value: value });
     })
   });
 

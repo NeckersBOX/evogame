@@ -111,10 +111,7 @@ const skillReducer = (state, key, value) => {
         }
       }
 
-      return {
-        ...p,
-        value
-      }
+      return {...p, value};
     })
   });
 
