@@ -6685,6 +6685,7 @@ var logger = _loglevel2.default.getLogger('reducer');
 
 var initialState = {
   generation: 0,
+  initialized: false,
   solutions: [],
   day: 0,
   status: 'stop',
@@ -7034,10 +7035,17 @@ var playGame = exports.playGame = function playGame(state) {
     return state;
   }
 
+  if (state.initialized) {
+    return _extends({}, state, {
+      status: 'play'
+    });
+  }
+
   var nextState = _extends({}, state, {
     status: 'play',
     generation: 1,
-    day: 1
+    day: 1,
+    initialized: true
   });
 
   var _ref = [state.parameters.find(function (p) {
@@ -7141,7 +7149,8 @@ var stopGame = exports.stopGame = function stopGame(state) {
     solutions: [],
     status: 'stop',
     generation: 0,
-    day: 0
+    day: 0,
+    initialized: false
   });
 
   /* TODO timers */

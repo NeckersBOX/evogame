@@ -20,11 +20,19 @@ export const playGame = state => {
     return state;
   }
 
+  if ( state.initialized ) {
+    return {
+      ...state,
+      status: 'play'
+    };
+  }
+
   let nextState = {
     ...state,
     status: 'play',
     generation: 1,
-    day: 1
+    day: 1,
+    initialized: true
   };
 
   let [ maxSolutions, worldWidth, worldHeight, initialRange] = [
@@ -62,7 +70,7 @@ export const playGame = state => {
   logger.info(logPrefix, 'Evaluating solutions fitness');
   nextState.solutions = evaluateSolutionsFitness(state.skills, nextState.solutions);
   logger.debug(logPrefix, 'Current solutions:', nextState.solutions);
-  
+
   logger.info(logPrefix, 'Generating solutions colors');
   nextState.solutions = nextState.solutions.map(solution => ({
     ...solution,
@@ -108,7 +116,8 @@ export const stopGame = state => {
     solutions: [],
     status: 'stop',
     generation: 0,
-    day: 0
+    day: 0,
+    initialized: false
   };
 
   /* TODO timers */

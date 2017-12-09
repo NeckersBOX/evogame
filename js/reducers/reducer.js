@@ -10,6 +10,7 @@ const logger = log.getLogger('reducer');
 
 const initialState = {
   generation: 0,
+  initialized: false,
   solutions: [],
   day: 0,
   status: 'stop',
