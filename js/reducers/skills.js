@@ -14,7 +14,7 @@ const skills = [
     lessThan: 'heat',
     value: -25,
     fitness: 0,
-    color: '#FFFCF2',
+    color: '#E0E0E0',
     generateFitness: (skill, min, max) => ({
       ...skill,
       fitness: max == min ? 1 : ((max - skill.value) / Math.abs(max - min))

@@ -3903,7 +3903,7 @@ var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-(0, _loglevel.setLevel)("debug" || 'info');
+(0, _loglevel.setLevel)("silent" || 'info');
 
 window.addEventListener('load', function (event) {
   var logPrefix = ':loadEvent] ';
@@ -6882,7 +6882,7 @@ var skills = [{
   lessThan: 'heat',
   value: -25,
   fitness: 0,
-  color: '#AFE3D6',
+  color: '#E0E0E0',
   generateFitness: function generateFitness(skill, min, max) {
     return _extends({}, skill, {
       fitness: max == min ? 1 : (max - skill.value) / Math.abs(max - min)
@@ -6896,7 +6896,7 @@ var skills = [{
   greaterThan: 'cold',
   value: 45,
   fitness: 0,
-  color: '#6E2620',
+  color: '#ED6A5A',
   generateFitness: function generateFitness(skill, min, max) {
     return _extends({}, skill, {
       fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
@@ -6909,7 +6909,7 @@ var skills = [{
   defaultValue: '8',
   value: 8,
   fitness: 0,
-  color: '#2A6790',
+  color: '#9BC1BC',
   generateFitness: function generateFitness(skill, min, max) {
     return _extends({}, skill, {
       fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
@@ -6922,7 +6922,7 @@ var skills = [{
   defaultValue: '90',
   value: 90,
   fitness: 0,
-  color: '#6833CC',
+  color: '#8A84E2',
   generateFitness: function generateFitness(skill, min, max) {
     return _extends({}, skill, {
       fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
