@@ -116,6 +116,7 @@ export const generateSolutionColor = skills => {
   for ( let idx in colorRanges ) {
     gradientColors.push(colorRanges[idx].color + ' ' + percentage + '%');
     percentage += colorRanges[idx].value;
+    gradientColors.push(colorRanges[idx].color + ' ' + percentage + '%');
   }
 
   logger.debug(logPrefix, 'gradientColors:', gradientColors);
