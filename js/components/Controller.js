@@ -2,6 +2,12 @@ import { h, Component } from 'preact'
 import { connect } from 'preact-redux'
 import { ButtonsGroup, ButtonItem } from './extra-mui/buttons-group'
 import { bind } from 'decko'
+import log from 'loglevel'
+import prefix from 'loglevel-plugin-prefix'
+import prefixTemplate from '../loglevel-prefix-template'
+
+prefix.apply(log, prefixTemplate);
+const logger = log.getLogger('Controller');
 
 class Controller extends Component {
   constructor(props) {
@@ -12,7 +18,10 @@ class Controller extends Component {
   play() {
     this.props.dispatch({
       type: 'PLAY_GAME',
-      data: null
+      data: () => this.props.dispatch({
+        type: 'ADD_DAY',
+        data: null
+      })
     });
   }
 
@@ -33,7 +42,10 @@ class Controller extends Component {
   }
 
   render() {
-    return (
+    const logPrefix = ':render] ';
+    logger.debug(logPrefix, '-->');
+
+    let stage = (
       <ButtonsGroup>
         <ButtonItem active={this.props.status == 'play'} onClick={this.play}>
           <i className="fa fa-play" />
@@ -46,6 +58,9 @@ class Controller extends Component {
         </ButtonItem>
       </ButtonsGroup>
     );
+
+    logger.debug(logPrefix, '<--');
+    return stage;
   }
 }
 

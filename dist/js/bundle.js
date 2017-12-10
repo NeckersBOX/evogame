@@ -3903,9 +3903,10 @@ var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-(0, _loglevel.setLevel)("silent" || 'info');
+(0, _loglevel.setLevel)("debug" || 'info');
+console.log('Log level:', "debug" || 'info');
 
-window.addEventListener('load', function (event) {
+window.addEventListener('load', function () {
   var logPrefix = ':loadEvent] ';
   _loglevel2.default.info(logPrefix, '-->');
 
@@ -6496,6 +6497,20 @@ var _buttonsGroup = __webpack_require__(49);
 
 var _decko = __webpack_require__(9);
 
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -6531,6 +6546,9 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('Controller');
+
 var Controller = (_class = function (_Component) {
   _inherits(Controller, _Component);
 
@@ -6543,9 +6561,16 @@ var Controller = (_class = function (_Component) {
   _createClass(Controller, [{
     key: 'play',
     value: function play() {
+      var _this2 = this;
+
       this.props.dispatch({
         type: 'PLAY_GAME',
-        data: null
+        data: function data() {
+          return _this2.props.dispatch({
+            type: 'ADD_DAY',
+            data: null
+          });
+        }
       });
     }
   }, {
@@ -6567,7 +6592,10 @@ var Controller = (_class = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      return (0, _preact.h)(
+      var logPrefix = ':render] ';
+      logger.debug(logPrefix, '-->');
+
+      var stage = (0, _preact.h)(
         _buttonsGroup.ButtonsGroup,
         null,
         (0, _preact.h)(
@@ -6586,6 +6614,9 @@ var Controller = (_class = function (_Component) {
           (0, _preact.h)('i', { className: 'fa fa-stop' })
         )
       );
+
+      logger.debug(logPrefix, '<--');
+      return stage;
     }
   }]);
 
@@ -6666,6 +6697,8 @@ var _skills = __webpack_require__(53);
 
 var _controls = __webpack_require__(54);
 
+var _timers = __webpack_require__(56);
+
 var _loglevel = __webpack_require__(1);
 
 var _loglevel2 = _interopRequireDefault(_loglevel);
@@ -6689,16 +6722,22 @@ var initialState = {
   solutions: [],
   day: 0,
   status: 'stop',
+  timers: {
+    day: null
+  },
   parameters: _parameters.parameters,
   skills: _skills.skills
 };
 
 var reducerLookup = {
+  ADD_DAY: function ADD_DAY(state, data) {
+    return (0, _timers.addDay)(state);
+  },
   PAUSE_GAME: function PAUSE_GAME(state, data) {
     return (0, _controls.pauseGame)(state);
   },
   PLAY_GAME: function PLAY_GAME(state, data) {
-    return (0, _controls.playGame)(state);
+    return (0, _controls.playGame)(state, data);
   },
   SET_PARAMETERS: function SET_PARAMETERS(state, data) {
     return (0, _parameters.paramReducer)(state, data.key, +data.value);
@@ -7026,7 +7065,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
 var logger = _loglevel2.default.getLogger('controls');
 
-var playGame = exports.playGame = function playGame(state) {
+var playGame = exports.playGame = function playGame(state, callback) {
   var logPrefix = ':playGame] ';
   logger.info(logPrefix, '-->');
 
@@ -7037,7 +7076,12 @@ var playGame = exports.playGame = function playGame(state) {
 
   if (state.initialized) {
     return _extends({}, state, {
-      status: 'play'
+      status: 'play',
+      timers: _extends({}, state.timers, {
+        day: setInterval(callback, state.parameters.find(function (p) {
+          return p.key == 'day_time';
+        }).value)
+      })
     });
   }
 
@@ -7045,7 +7089,12 @@ var playGame = exports.playGame = function playGame(state) {
     status: 'play',
     generation: 1,
     day: 1,
-    initialized: true
+    initialized: true,
+    timers: _extends({}, state.timers, {
+      day: setInterval(callback, state.parameters.find(function (p) {
+        return p.key == 'day_time';
+      }).value)
+    })
   });
 
   var _ref = [state.parameters.find(function (p) {
@@ -7111,8 +7160,6 @@ var playGame = exports.playGame = function playGame(state) {
     });
   });
 
-  /* TODO timers */
-
   logger.info(logPrefix, '<--');
   return nextState;
 };
@@ -7126,10 +7173,12 @@ var pauseGame = exports.pauseGame = function pauseGame(state) {
     return state;
   }
 
-  logger.info(logPrefix, 'Perform pause');
-  var nextState = _extends({}, state, { status: 'pause' });
+  var nextState = _extends({}, state, {
+    status: 'pause'
+  });
 
-  /* TODO timers */
+  logger.info(logPrefix, 'Clearing intervals');
+  clearInterval(nextState.timers.day);
 
   logger.info(logPrefix, '<--');
   return nextState;
@@ -7153,7 +7202,8 @@ var stopGame = exports.stopGame = function stopGame(state) {
     initialized: false
   });
 
-  /* TODO timers */
+  logger.info(logPrefix, 'Clearing intervals');
+  clearInterval(nextState.timers.day);
 
   logger.info(logPrefix, '<--');
   return nextState;
@@ -7334,6 +7384,52 @@ var generateSolutionColor = exports.generateSolutionColor = function generateSol
   logger.info(logPrefix, '<--');
   return 'linear-gradient(' + gradientColors.join(',') + ')';
 };
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.addDay = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('timers');
+
+var addDay = function addDay(state) {
+  var logPrefix = ':addDay] ';
+  logger.debug(logPrefix, '-->');
+
+  logger.debug(logPrefix, 'End of day ' + state.day);
+  var nextState = _extends({}, state, {
+    day: state.day + 1
+  });
+
+  logger.debug(logPrefix, '<--');
+  return nextState;
+};
+
+exports.addDay = addDay;
 
 /***/ })
 /******/ ]);

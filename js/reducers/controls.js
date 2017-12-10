@@ -11,7 +11,7 @@ import {
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('controls');
 
-export const playGame = state => {
+export const playGame = (state, callback) => {
   const logPrefix = ':playGame] ';
   logger.info(logPrefix, '-->');
 
@@ -23,7 +23,11 @@ export const playGame = state => {
   if ( state.initialized ) {
     return {
       ...state,
-      status: 'play'
+      status: 'play',
+      timers: {
+        ...state.timers,
+        day: setInterval(callback, state.parameters.find(p => p.key == 'day_time').value)
+      }
     };
   }
 
@@ -32,7 +36,11 @@ export const playGame = state => {
     status: 'play',
     generation: 1,
     day: 1,
-    initialized: true
+    initialized: true,
+    timers: {
+      ...state.timers,
+      day: setInterval(callback, state.parameters.find(p => p.key == 'day_time').value)
+    }
   };
 
   let [ maxSolutions, worldWidth, worldHeight, initialRange] = [
@@ -77,8 +85,6 @@ export const playGame = state => {
     color: generateSolutionColor(solution.skills)
   }));
 
-  /* TODO timers */
-
   logger.info(logPrefix, '<--');
   return nextState;
 }
@@ -92,10 +98,13 @@ export const pauseGame = state => {
     return state;
   }
 
-  logger.info(logPrefix, 'Perform pause');
-  let nextState = {...state, status: 'pause'};
+  let nextState = {
+    ...state,
+    status: 'pause'
+  };
 
-  /* TODO timers */
+  logger.info(logPrefix, 'Clearing intervals');
+  clearInterval(nextState.timers.day);
 
   logger.info(logPrefix, '<--');
   return nextState;
@@ -120,7 +129,8 @@ export const stopGame = state => {
     initialized: false
   };
 
-  /* TODO timers */
+  logger.info(logPrefix, 'Clearing intervals');
+  clearInterval(nextState.timers.day);
 
   logger.info(logPrefix, '<--');
   return nextState;

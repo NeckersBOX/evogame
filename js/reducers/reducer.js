@@ -1,6 +1,7 @@
 import { parameters, paramReducer } from './parameters'
 import { skills, skillReducer } from './skills'
 import { playGame, pauseGame, stopGame } from './controls'
+import { addDay } from './timers'
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../loglevel-prefix-template'
@@ -14,13 +15,17 @@ const initialState = {
   solutions: [],
   day: 0,
   status: 'stop',
+  timers: {
+    day: null
+  },
   parameters,
   skills
 };
 
 const reducerLookup = {
+         ADD_DAY: (state, data) => addDay(state),
       PAUSE_GAME: (state, data) => pauseGame(state),
-       PLAY_GAME: (state, data) => playGame(state),
+       PLAY_GAME: (state, data) => playGame(state, data),
   SET_PARAMETERS: (state, data) => paramReducer(state, data.key, +data.value),
       SET_SKILLS: (state, data) => skillReducer(state, data.key, +data.value),
        STOP_GAME: (state, data) => stopGame(state)
