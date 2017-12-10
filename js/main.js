@@ -8,8 +8,9 @@ import prefixTemplate from './loglevel-prefix-template'
 
 prefix.apply(log, prefixTemplate);
 setLevel(process.env.loglevel || 'info');
+console.log('Log level:', process.env.loglevel || 'info');
 
-window.addEventListener('load', event => {
+window.addEventListener('load', () => {
   const logPrefix = ':loadEvent] ';
   log.info(logPrefix, '-->');
 
