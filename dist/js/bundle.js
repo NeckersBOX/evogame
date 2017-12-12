@@ -7419,13 +7419,35 @@ var logger = _loglevel2.default.getLogger('timers');
 var addDay = function addDay(state) {
   var logPrefix = ':addDay] ';
   logger.debug(logPrefix, '-->');
+  var year = state.parameters.find(function (s) {
+    return s.key == 'days_per_generation';
+  }).value;
 
   logger.debug(logPrefix, 'End of day ' + state.day);
   var nextState = _extends({}, state, {
     day: state.day + 1
   });
 
+  if (state.day == year) {
+    nextState = nextGeneration(state);
+  }
+
   logger.debug(logPrefix, '<--');
+  return nextState;
+};
+
+var nextGeneration = function nextGeneration(state) {
+  var logPrefix = ':nextGeneration] ';
+  logger.info(logPrefix, '-->');
+
+  var nextState = _extends({}, state, {
+    day: 1,
+    generation: state.generation + 1
+  });
+
+  /* TODO: reproductivity, ecc.. */
+
+  logger.info(logPrefix, '<--');
   return nextState;
 };
 
