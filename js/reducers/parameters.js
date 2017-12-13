@@ -10,6 +10,7 @@ const parameters = [
     key: 'solutions',
     dynamic: false,
     label: 'Solutions',
+    unit: 'n',
     min: '1',
     defaultValue: '16',
     value: 16
@@ -17,7 +18,8 @@ const parameters = [
   {
     key: 'days_per_generation',
     dynamic: true,
-    label: 'Generation duration [ days ]',
+    label: 'Generation duration',
+    unit: 'days',
     min: '1',
     defaultValue: '365',
     value: 365
@@ -25,7 +27,8 @@ const parameters = [
   {
     key: 'mutability',
     dynamic: true,
-    label: 'Mutability [ % ]',
+    label: 'Mutability',
+    unit: '%',
     min: '0',
     max: '100',
     defaultValue: '2',
@@ -34,7 +37,8 @@ const parameters = [
   {
     key: 'reproductivity',
     dynamic: true,
-    label: 'Reproductivity [ % ]',
+    label: 'Reproductivity',
+    unit: '%',
     min: '0',
     max: '100',
     defaultValue: '0',
@@ -43,7 +47,8 @@ const parameters = [
   {
     key: 'world-width',
     dynamic: true,
-    label: 'World Width [ cell ]',
+    label: 'World Width',
+    unit: 'cell',
     min: '1',
     defaultValue: '32',
     value: 32
@@ -51,7 +56,8 @@ const parameters = [
   {
     key: 'world-height',
     dynamic: true,
-    label: 'World Height [ cell ]',
+    label: 'World Height',
+    unit: 'cell',
     min: '1',
     defaultValue: '12',
     value: 12
@@ -59,7 +65,8 @@ const parameters = [
   {
     key: 'day_time',
     dynamic: true,
-    label: 'Day duration [ ms ]',
+    label: 'Day duration',
+    unit: 'ms',
     min: '10',
     defaultValue: '500',
     value: 500
@@ -67,7 +74,8 @@ const parameters = [
   {
     key: 'reproduction-area',
     dynamic: true,
-    label: 'Reproduction Area [ cell ]',
+    label: 'Reproduction Area',
+    unit: 'cell',
     min: '1',
     defaultValue: '6',
     value: 6
@@ -75,7 +83,8 @@ const parameters = [
   {
     key: 'initial-range',
     dynamic: false,
-    label: 'Initial Mutability Range [ % ]',
+    label: 'Initial Mutability Range',
+    unit: '%',
     min: '0',
     max: '100',
     defaultValue: '20',

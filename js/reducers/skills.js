@@ -8,7 +8,8 @@ const logger = log.getLogger('skills');
 const skills = [
   {
     key: 'cold',
-    label: 'Cold Resistance [ °C ]',
+    label: 'Cold Resistance',
+    unit: '°C',
     min: '-273',
     defaultValue: '-25',
     lessThan: 'heat',
@@ -22,7 +23,8 @@ const skills = [
   },
   {
     key: 'heat',
-    label: 'Heat Resistance [ °C ]',
+    label: 'Heat Resistance',
+    unit: '°C',
     min: '-273',
     defaultValue: '45',
     greaterThan: 'cold',
@@ -36,7 +38,8 @@ const skills = [
   },
   {
     key: 'water',
-    label: 'Water Resistance [ m ]',
+    label: 'Water Resistance',
+    unit: 'm',
     min: '0',
     defaultValue: '8',
     value: 8,
@@ -49,7 +52,8 @@ const skills = [
   },
   {
     key: 'wind',
-    label: 'Wind Resistance [ km/h ]',
+    label: 'Wind Resistance',
+    unit: 'km/h',
     min: '0',
     defaultValue: '90',
     value: 90,
