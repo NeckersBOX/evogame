@@ -14,13 +14,23 @@ import Parameters from './Parameters'
 import Skills from './Skills'
 import Controller from './Controller'
 
+import log from 'loglevel'
+import prefix from 'loglevel-plugin-prefix'
+import prefixTemplate from '../loglevel-prefix-template'
+
+prefix.apply(log, prefixTemplate);
+const logger = log.getLogger('Layout');
+
 class Layout extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    return (
+    const logPrefix = ':render] ';
+    logger.info(logPrefix, '-->');
+
+    let stage = (
       <div>
         <Container fluid={true}>
           <Row>
@@ -55,6 +65,9 @@ class Layout extends Component {
         </Container>
       </div>
     );
+
+    logger.info(logPrefix, '<--');
+    return stage;
   }
 }
 

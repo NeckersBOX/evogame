@@ -4649,6 +4649,18 @@ var _Controller = __webpack_require__(48);
 
 var _Controller2 = _interopRequireDefault(_Controller);
 
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4656,6 +4668,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('Layout');
 
 var Layout = function (_Component) {
   _inherits(Layout, _Component);
@@ -4669,7 +4684,10 @@ var Layout = function (_Component) {
   _createClass(Layout, [{
     key: 'render',
     value: function render() {
-      return (0, _preact.h)(
+      var logPrefix = ':render] ';
+      logger.info(logPrefix, '-->');
+
+      var stage = (0, _preact.h)(
         'div',
         null,
         (0, _preact.h)(
@@ -4726,6 +4744,9 @@ var Layout = function (_Component) {
           )
         )
       );
+
+      logger.info(logPrefix, '<--');
+      return stage;
     }
   }]);
 
@@ -5235,6 +5256,18 @@ var _button = __webpack_require__(42);
 
 var _button2 = _interopRequireDefault(_button);
 
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5242,6 +5275,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('Events');
 
 var Events = function (_Component) {
   _inherits(Events, _Component);
@@ -5255,7 +5291,10 @@ var Events = function (_Component) {
   _createClass(Events, [{
     key: 'render',
     value: function render() {
-      return (0, _preact.h)(
+      var logPrefix = ':render] ';
+      logger.info(logPrefix, '-->');
+
+      var stage = (0, _preact.h)(
         _form2.default,
         null,
         (0, _preact.h)(
@@ -5270,6 +5309,9 @@ var Events = function (_Component) {
           'Send Event'
         )
       );
+
+      logger.info(logPrefix, '<--');
+      return stage;
     }
   }]);
 
@@ -5998,11 +6040,28 @@ var _preactRedux = __webpack_require__(4);
 
 var _list = __webpack_require__(44);
 
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('GeneralInfo');
 
 var GeneralInfo = function (_Component) {
   _inherits(GeneralInfo, _Component);
@@ -6016,7 +6075,10 @@ var GeneralInfo = function (_Component) {
   _createClass(GeneralInfo, [{
     key: 'render',
     value: function render() {
-      return (0, _preact.h)(
+      var logPrefix = ':render] ';
+      logger.info(logPrefix, '-->');
+
+      var stage = (0, _preact.h)(
         _list.List,
         null,
         (0, _preact.h)(
@@ -6035,6 +6097,9 @@ var GeneralInfo = function (_Component) {
           this.props.day
         )
       );
+
+      logger.info(logPrefix, '<--');
+      return stage;
     }
   }]);
 
@@ -6105,11 +6170,28 @@ var _preact = __webpack_require__(0);
 
 var _preactRedux = __webpack_require__(4);
 
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('WorldMap');
 
 var WorldMap = function (_Component) {
   _inherits(WorldMap, _Component);
@@ -6125,6 +6207,9 @@ var WorldMap = function (_Component) {
     value: function render() {
       var _this2 = this;
 
+      var logPrefix = ':render] ';
+      logger.info(logPrefix, '-->');
+
       var width = this.props.parameters.find(function (p) {
         return p.key == 'world-width';
       }).value || 1,
@@ -6132,8 +6217,9 @@ var WorldMap = function (_Component) {
         return p.key == 'world-height';
       }).value || 1;
 
+      logger.debug(logPrefix, 'width:', width, 'height:', height);
 
-      return (0, _preact.h)(
+      var stage = (0, _preact.h)(
         'div',
         { className: 'evogame--worldmap' },
         new Array(height).fill().map(function (e, row) {
@@ -6159,6 +6245,9 @@ var WorldMap = function (_Component) {
           );
         })
       );
+
+      logger.info(logPrefix, '<--');
+      return stage;
     }
   }]);
 
@@ -6204,6 +6293,18 @@ var _col = __webpack_require__(7);
 
 var _col2 = _interopRequireDefault(_col);
 
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -6241,6 +6342,9 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = logger.getLogger('Parameters');
+
 var Parameters = (_class = function (_Component) {
   _inherits(Parameters, _Component);
 
@@ -6253,11 +6357,15 @@ var Parameters = (_class = function (_Component) {
   _createClass(Parameters, [{
     key: 'changeParameter',
     value: function changeParameter(event, key) {
+      var logPrefix = ':changeParameter] ';
       event.preventDefault();
+      logger.debug(logPrefix, '-->');
 
       if (this.props.running && this.props.parameters.find(function (p) {
         return p.key == key;
       }).dynamic) {
+        logger.debug(logPrefix, 'Prevent to change value when running');
+        logger.debug(logPrefix, '<--');
         return;
       }
 
@@ -6268,13 +6376,18 @@ var Parameters = (_class = function (_Component) {
           value: event.target.value
         }
       });
+
+      logger.debug(logPrefix, '<--');
     }
   }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
-      return (0, _preact.h)(
+      var logPrefix = ':render] ';
+      logger.info(logPrefix, '-->');
+
+      var stage = (0, _preact.h)(
         'div',
         null,
         (0, _preact.h)(
@@ -6304,6 +6417,9 @@ var Parameters = (_class = function (_Component) {
           ' Need restart to be applied'
         )
       );
+
+      logger.info(logPrefix, '<--');
+      return stage;
     }
   }]);
 
