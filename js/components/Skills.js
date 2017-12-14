@@ -43,7 +43,7 @@ class Skills extends Component {
       <div>
         <Row>
           {this.props.skills.map(property => {
-            logger.debug('Generating input for property', property);
+            logger.debug(logPrefix, 'Generating input for property', property);
 
             return (
               <Col key={property.key} md="3" sm="6">

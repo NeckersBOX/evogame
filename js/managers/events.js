@@ -1,38 +1,30 @@
-import { skills } from './reducers/skills.js'
+import SkillsManager from './skills'
+import events from './lists/events'
+
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
-import prefixTemplate from './loglevel-prefix-template'
+import prefixTemplate from '../loglevel-prefix-template'
 
 import { memoize } from 'decko'
 
 prefix.apply(log, prefixTemplate);
-const logger = log.getLogger('events');
+const logger = log.getLogger('eventsManager');
 
-export default class evoEvents {
+class EventsManager {
   constructor() {
-    const methodCall = this;
+    const logPrefix = ':constructor] ';
 
-    this.eventsList = [
-      {
-        key: 'wind',
-        label: 'Wind',
-        affect: [ 'wind' ],
-        labelEvaluate: 'evaluateWind'
-      }
-    ].map(event => {
-      let currSkill = skills.find(s => s.key == event.key);
+    logger.debug(logPrefix, '-->');
 
-      let result = { ...event, unit: currSkill.unit };
-      if ( currSkill.hasOwnProperty('min') ) {
-        result.min = currSkill.min;
-      }
+    this.eventsList = events.map(event => ({
+      ...event,
+      affect: event.affect.map(skillKey => ({
+        label: skillKey,
+        color: SkillsManager.getSkillByKey(skillKey).color
+      }))
+    }));
 
-      if ( currSkill.hasOwnProperty('max') ) {
-        result.max = currSkill.max;
-      }
-
-      return result;
-    });
+    logger.debug(logPrefix, '<--');
   }
 
   @memoize
@@ -63,7 +55,7 @@ export default class evoEvents {
     logger.info(logPrefix, '-->');
 
     let currentEvent = this.getEventByKey(eventKey);
-    let valueInfo = methodCall[currentEvent.labelEvaluate](value);
+    let valueInfo = this[currentEvent.labelEvaluate](value);
 
     logger.info(logPrefix, '<--');
     return valueInfo;
@@ -103,3 +95,5 @@ export default class evoEvents {
     return info;
   };
 }
+
+export default new EventsManager();

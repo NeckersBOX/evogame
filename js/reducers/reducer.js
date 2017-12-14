@@ -1,7 +1,11 @@
-import { parameters, paramReducer } from './parameters'
-import { skills, skillReducer } from './skills'
+import { paramReducer } from './parameters'
+import { skillReducer } from './skills'
 import { playGame, pauseGame, stopGame } from './controls'
 import { addDay } from './timers'
+
+import SkillsManager from '../managers/skills'
+import ParametersManager from '../managers/parameters'
+
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../loglevel-prefix-template'
@@ -18,8 +22,8 @@ const initialState = {
   timers: {
     day: null
   },
-  parameters,
-  skills
+  parameters: ParametersManager.getList(),
+  skills: SkillsManager.getList()
 };
 
 const reducerLookup = {

@@ -1,3 +1,5 @@
+console.log('Log level:', process.env.loglevel || 'info');
+
 import { h, render } from 'preact';
 import { Provider } from 'preact-redux';
 import Layout from './components/Layout'
@@ -8,7 +10,6 @@ import prefixTemplate from './loglevel-prefix-template'
 
 prefix.apply(log, prefixTemplate);
 setLevel(process.env.loglevel || 'info');
-console.log('Log level:', process.env.loglevel || 'info');
 
 window.addEventListener('load', () => {
   const logPrefix = ':loadEvent] ';

@@ -5,67 +5,6 @@ import prefixTemplate from '../loglevel-prefix-template'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('skills');
 
-const skills = [
-  {
-    key: 'cold',
-    label: 'Cold Resistance',
-    unit: '°C',
-    min: '-273',
-    defaultValue: '-25',
-    lessThan: 'heat',
-    value: -25,
-    fitness: 0,
-    color: '#E0E0E0',
-    generateFitness: (skill, min, max) => ({
-      ...skill,
-      fitness: max == min ? 1 : ((max - skill.value) / Math.abs(max - min))
-    })
-  },
-  {
-    key: 'heat',
-    label: 'Heat Resistance',
-    unit: '°C',
-    min: '-273',
-    defaultValue: '45',
-    greaterThan: 'cold',
-    value: 45,
-    fitness: 0,
-    color: '#ED6A5A',
-    generateFitness: (skill, min, max) => ({
-      ...skill,
-      fitness: max == min ? 1 : ((skill.value - min) / Math.abs(max - min))
-    })
-  },
-  {
-    key: 'water',
-    label: 'Water Resistance',
-    unit: 'm',
-    min: '0',
-    defaultValue: '8',
-    value: 8,
-    fitness: 0,
-    color: '#9BC1BC',
-    generateFitness: (skill, min, max) => ({
-      ...skill,
-      fitness: max == min ? 1 : ((skill.value - min) / Math.abs(max - min))
-    })
-  },
-  {
-    key: 'wind',
-    label: 'Wind Resistance',
-    unit: 'km/h',
-    min: '0',
-    defaultValue: '90',
-    value: 90,
-    fitness: 0,
-    color: '#8A84E2',
-    generateFitness: (skill, min, max) => ({
-      ...skill,
-      fitness: max == min ? 1 : ((skill.value - min) / Math.abs(max - min))
-    })
-  }
-];
-
 const skillReducer = (state, key, value) => {
   const logPrefix = ':skillReducer] ';
   logger.info(logPrefix, '-->');
@@ -123,4 +62,4 @@ const skillReducer = (state, key, value) => {
   return nextState;
 };
 
-export { skills, skillReducer };
+export { skillReducer };

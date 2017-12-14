@@ -1,4 +1,5 @@
 import { getRandomInt } from './generics'
+import SkillsManager from '../managers/skills'
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../loglevel-prefix-template'
@@ -71,7 +72,8 @@ export const evaluateSolutionsFitness = (skills, solutions) => {
         let currSkillRange = ranges.find(r => r.skill == skill.key);
 
         return {
-          ...skill.generateFitness(skill, currSkillRange.min, currSkillRange.max)
+          ...skill,
+          fitness: SkillsManager.evaluateFitness(skill, currSkillRange.min, currSkillRange.max)
         };
       })
     };

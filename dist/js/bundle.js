@@ -3334,9 +3334,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.skillReducer = exports.skills = undefined;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _desc, _value, _class;
+
+var _skills = __webpack_require__(46);
+
+var _skills2 = _interopRequireDefault(_skills);
 
 var _loglevel = __webpack_require__(1);
 
@@ -3350,131 +3355,110 @@ var _loglevelPrefixTemplate = __webpack_require__(3);
 
 var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
+var _decko = __webpack_require__(5);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('skills');
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var skills = [{
-  key: 'cold',
-  label: 'Cold Resistance',
-  unit: '°C',
-  min: '-273',
-  defaultValue: '-25',
-  lessThan: 'heat',
-  value: -25,
-  fitness: 0,
-  color: '#E0E0E0',
-  generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, {
-      fitness: max == min ? 1 : (max - skill.value) / Math.abs(max - min)
-    });
-  }
-}, {
-  key: 'heat',
-  label: 'Heat Resistance',
-  unit: '°C',
-  min: '-273',
-  defaultValue: '45',
-  greaterThan: 'cold',
-  value: 45,
-  fitness: 0,
-  color: '#ED6A5A',
-  generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, {
-      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
-    });
-  }
-}, {
-  key: 'water',
-  label: 'Water Resistance',
-  unit: 'm',
-  min: '0',
-  defaultValue: '8',
-  value: 8,
-  fitness: 0,
-  color: '#9BC1BC',
-  generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, {
-      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
-    });
-  }
-}, {
-  key: 'wind',
-  label: 'Wind Resistance',
-  unit: 'km/h',
-  min: '0',
-  defaultValue: '90',
-  value: 90,
-  fitness: 0,
-  color: '#8A84E2',
-  generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, {
-      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
-    });
-  }
-}];
-
-var skillReducer = function skillReducer(state, key, value) {
-  var logPrefix = ':skillReducer] ';
-  logger.info(logPrefix, '-->');
-
-  logger.debug(logPrefix, 'key: `' + key + '` value: `' + value + '`');
-
-  var nextState = _extends({}, state, {
-    skills: state.skills.map(function (p) {
-      if (p.key != key) {
-        return p;
-      }
-
-      if (p.hasOwnProperty('min') && +value < +p.min) {
-        logger.info(logPrefix, 'Prevent set a value less than minimum');
-        return p;
-      }
-
-      if (p.hasOwnProperty('max') && +value > +p.max) {
-        logger.info(logPrefix, 'Prevent set a value greater than maximum');
-        return p;
-      }
-
-      if (p.hasOwnProperty('lessThan')) {
-        logger.info(logPrefix, 'Property ' + p.key + ' must be less than ' + p.lessThan);
-        var lessThanValue = state.skills.find(function (s) {
-          return s.key == p.lessThan;
-        }).value;
-
-        if (value >= lessThanValue) {
-          logger.info(logPrefix, 'Property not respected ( ' + value + ' >= ' + lessThanValue + ' )');
-          return p;
-        } else {
-          logger.info(logPrefix, 'Property respected ( ' + value + ' < ' + lessThanValue + ' )');
-        }
-      }
-
-      if (p.hasOwnProperty('greaterThan')) {
-        logger.info(logPrefix, 'Property ' + p.key + ' must be greater than ' + p.greaterThan);
-        var greaterThanValue = state.skills.find(function (s) {
-          return s.key == p.greaterThan;
-        }).value;
-
-        if (value <= greaterThanValue) {
-          logger.info(logPrefix, 'Property not respected ( ' + value + ' <= ' + greaterThanValue + ' )');
-          return p;
-        } else {
-          logger.info(logPrefix, 'Property respected ( ' + value + ' > ' + greaterThanValue + ' )');
-        }
-      }
-
-      return _extends({}, p, { value: value });
-    })
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
   });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
 
-  logger.info(logPrefix, '<--');
-  return nextState;
-};
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
 
-exports.skills = skills;
-exports.skillReducer = skillReducer;
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('skillsManager');
+
+var SkillsManager = (_class = function () {
+  function SkillsManager() {
+    _classCallCheck(this, SkillsManager);
+
+    this.skillsList = _skills2.default;
+  }
+
+  _createClass(SkillsManager, [{
+    key: 'getList',
+    value: function getList() {
+      var logPrefix = ':getList] ';
+      logger.info(logPrefix, '-->');
+
+      logger.info(logPrefix, '<--');
+      return this.skillsList;
+    }
+  }, {
+    key: 'getSkillByKey',
+    value: function getSkillByKey(skillKey) {
+      var logPrefix = ':getSkillByKey] ';
+      logger.info(logPrefix, '-->');
+
+      var skill = this.skillsList.find(function (s) {
+        return s.key == skillKey;
+      });
+      logger.debug(logPrefix, 'skill:', skill);
+
+      logger.info(logPrefix, '<--');
+      return skill;
+    }
+  }, {
+    key: 'evaluateFitness',
+    value: function evaluateFitness(skill, min, max) {
+      var logPrefix = ':evaluateFitness] ';
+      logger.info(logPrefix, '-->');
+
+      var fitness = this[skill.generateFitness](skill.value, min, max);
+
+      logger.info(logPrefix, '<--');
+      return fitness;
+    }
+  }, {
+    key: 'fitnessCold',
+    value: function fitnessCold(value, min, max) {
+      return max == min ? 1 : (max - value) / Math.abs(max - min);
+    }
+  }, {
+    key: 'fitnessHeat',
+    value: function fitnessHeat(value, min, max) {
+      return max == min ? 1 : (value - min) / Math.abs(max - min);
+    }
+  }, {
+    key: 'fitnessWater',
+    value: function fitnessWater(value, min, max) {
+      return max == min ? 1 : (value - min) / Math.abs(max - min);
+    }
+  }, {
+    key: 'fitnessWind',
+    value: function fitnessWind(value, min, max) {
+      return max == min ? 1 : (value - min) / Math.abs(max - min);
+    }
+  }]);
+
+  return SkillsManager;
+}(), (_applyDecoratedDescriptor(_class.prototype, 'getList', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getList'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'getSkillByKey', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getSkillByKey'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'fitnessCold', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'fitnessCold'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'fitnessHeat', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'fitnessHeat'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'fitnessWater', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'fitnessWater'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'fitnessWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'fitnessWind'), _class.prototype)), _class);
+exports.default = new SkillsManager();
 
 /***/ }),
 /* 11 */
@@ -4036,7 +4020,7 @@ var _Layout = __webpack_require__(34);
 
 var _Layout2 = _interopRequireDefault(_Layout);
 
-var _store = __webpack_require__(53);
+var _store = __webpack_require__(55);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -4054,9 +4038,10 @@ var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+console.log('Log level:', "debug" || 'info');
+
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
 (0, _loglevel.setLevel)("debug" || 'info');
-console.log('Log level:', "debug" || 'info');
 
 window.addEventListener('load', function () {
   var logPrefix = ':loadEvent] ';
@@ -4781,23 +4766,23 @@ var _Events = __webpack_require__(39);
 
 var _Events2 = _interopRequireDefault(_Events);
 
-var _GeneralInfo = __webpack_require__(46);
+var _GeneralInfo = __webpack_require__(48);
 
 var _GeneralInfo2 = _interopRequireDefault(_GeneralInfo);
 
-var _WorldMap = __webpack_require__(48);
+var _WorldMap = __webpack_require__(50);
 
 var _WorldMap2 = _interopRequireDefault(_WorldMap);
 
-var _Parameters = __webpack_require__(49);
+var _Parameters = __webpack_require__(51);
 
 var _Parameters2 = _interopRequireDefault(_Parameters);
 
-var _Skills = __webpack_require__(50);
+var _Skills = __webpack_require__(52);
 
 var _Skills2 = _interopRequireDefault(_Skills);
 
-var _Controller = __webpack_require__(51);
+var _Controller = __webpack_require__(53);
 
 var _Controller2 = _interopRequireDefault(_Controller);
 
@@ -5388,6 +5373,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
+var _preactRedux = __webpack_require__(4);
+
 var _form = __webpack_require__(40);
 
 var _form2 = _interopRequireDefault(_form);
@@ -5409,8 +5396,6 @@ var _button = __webpack_require__(43);
 var _button2 = _interopRequireDefault(_button);
 
 var _badges = __webpack_require__(44);
-
-var _skills = __webpack_require__(10);
 
 var _events = __webpack_require__(45);
 
@@ -5450,11 +5435,10 @@ var Events = function (_Component) {
     var logPrefix = ':constructor] ';
     logger.debug(logPrefix, '-->');
 
-    _this.evoEvents = new _events2.default();
-    _this.eventList = _this.evoEvents.getList();
+    _this.eventList = _events2.default.getList();
 
     _this.state = {
-      event: _this.eventList.length ? _this.evoEvents.getEventByKey(_this.eventList[0].key) : {}
+      event: _this.eventList.length ? _events2.default.getEventByKey(_this.eventList[0].key) : {}
     };
 
     logger.debug(logPrefix, '<--');
@@ -5477,14 +5461,7 @@ var Events = function (_Component) {
             return (0, _preact.h)(_option2.default, { value: event.key, label: event.label });
           })
         ),
-        (0, _preact.h)(_badges.Badges, { label: 'Affect', badges: this.state.event.affect.map(function (b) {
-            return {
-              label: b,
-              color: _skills.skills.find(function (s) {
-                return s.key == b;
-              }).color
-            };
-          }) }),
+        (0, _preact.h)(_badges.Badges, { label: 'Affect', badges: this.state.event.affect }),
         (0, _preact.h)(_input2.default, { label: 'TODO', type: 'number', floatingLabel: true }),
         (0, _preact.h)(
           _button2.default,
@@ -5501,7 +5478,9 @@ var Events = function (_Component) {
   return Events;
 }(_preact.Component);
 
-exports.default = Events;
+exports.default = (0, _preactRedux.connect)(function (state) {
+  return state;
+})(Events);
 
 /***/ }),
 /* 40 */
@@ -6259,7 +6238,6 @@ exports.Badges = Badges;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -6268,6 +6246,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _desc, _value, _class;
 
 var _skills = __webpack_require__(10);
+
+var _skills2 = _interopRequireDefault(_skills);
+
+var _events = __webpack_require__(47);
+
+var _events2 = _interopRequireDefault(_events);
 
 var _loglevel = __webpack_require__(1);
 
@@ -6317,38 +6301,31 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
 }
 
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('events');
+var logger = _loglevel2.default.getLogger('eventsManager');
 
-var evoEvents = (_class = function () {
-  function evoEvents() {
-    _classCallCheck(this, evoEvents);
+var EventsManager = (_class = function () {
+  function EventsManager() {
+    _classCallCheck(this, EventsManager);
 
-    var methodCall = this;
+    var logPrefix = ':constructor] ';
 
-    this.eventsList = [{
-      key: 'wind',
-      label: 'Wind',
-      affect: ['wind'],
-      labelEvaluate: 'evaluateWind'
-    }].map(function (event) {
-      var currSkill = _skills.skills.find(function (s) {
-        return s.key == event.key;
+    logger.debug(logPrefix, '-->');
+
+    this.eventsList = _events2.default.map(function (event) {
+      return _extends({}, event, {
+        affect: event.affect.map(function (skillKey) {
+          return {
+            label: skillKey,
+            color: _skills2.default.getSkillByKey(skillKey).color
+          };
+        })
       });
-
-      var result = _extends({}, event, { unit: currSkill.unit });
-      if (currSkill.hasOwnProperty('min')) {
-        result.min = currSkill.min;
-      }
-
-      if (currSkill.hasOwnProperty('max')) {
-        result.max = currSkill.max;
-      }
-
-      return result;
     });
+
+    logger.debug(logPrefix, '<--');
   }
 
-  _createClass(evoEvents, [{
+  _createClass(EventsManager, [{
     key: 'getList',
     value: function getList() {
       var logPrefix = ':getList] ';
@@ -6382,7 +6359,7 @@ var evoEvents = (_class = function () {
       logger.info(logPrefix, '-->');
 
       var currentEvent = this.getEventByKey(eventKey);
-      var valueInfo = methodCall[currentEvent.labelEvaluate](value);
+      var valueInfo = this[currentEvent.labelEvaluate](value);
 
       logger.info(logPrefix, '<--');
       return valueInfo;
@@ -6409,12 +6386,85 @@ var evoEvents = (_class = function () {
     }
   }]);
 
-  return evoEvents;
+  return EventsManager;
 }(), (_applyDecoratedDescriptor(_class.prototype, 'getList', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getList'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'getEventByKey', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getEventByKey'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateWind'), _class.prototype)), _class);
-exports.default = evoEvents;
+exports.default = new EventsManager();
 
 /***/ }),
 /* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = [{
+  key: 'cold',
+  label: 'Cold Resistance',
+  unit: '°C',
+  min: '-273',
+  defaultValue: '-25',
+  lessThan: 'heat',
+  value: -25,
+  fitness: 0,
+  color: '#E0E0E0',
+  generateFitness: 'fitnessCold'
+}, {
+  key: 'heat',
+  label: 'Heat Resistance',
+  unit: '°C',
+  min: '-273',
+  defaultValue: '45',
+  greaterThan: 'cold',
+  value: 45,
+  fitness: 0,
+  color: '#ED6A5A',
+  generateFitness: 'fitnessHeat'
+}, {
+  key: 'water',
+  label: 'Water Resistance',
+  unit: 'm',
+  min: '0',
+  defaultValue: '8',
+  value: 8,
+  fitness: 0,
+  color: '#9BC1BC',
+  generateFitness: 'fitnessWater'
+}, {
+  key: 'wind',
+  label: 'Wind Resistance',
+  unit: 'km/h',
+  min: '0',
+  defaultValue: '90',
+  value: 90,
+  fitness: 0,
+  color: '#8A84E2',
+  generateFitness: 'fitnessWind'
+}];
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = [{
+  key: 'wind',
+  label: 'Wind',
+  affect: ['wind'],
+  min: 0,
+  unit: 'km/h',
+  labelEvaluate: 'evaluateWind'
+}];
+
+/***/ }),
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6430,7 +6480,7 @@ var _preact = __webpack_require__(0);
 
 var _preactRedux = __webpack_require__(4);
 
-var _list = __webpack_require__(47);
+var _list = __webpack_require__(49);
 
 var _loglevel = __webpack_require__(1);
 
@@ -6503,7 +6553,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(GeneralInfo);
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6546,7 +6596,7 @@ var ListItem = exports.ListItem = function ListItem(props) {
 };
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6651,7 +6701,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(WorldMap);
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6822,7 +6872,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(Parameters);
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6947,7 +6997,7 @@ var Skills = (_class = function (_Component) {
           _row2.default,
           null,
           this.props.skills.map(function (property) {
-            logger.debug('Generating input for property', property);
+            logger.debug(logPrefix, 'Generating input for property', property);
 
             return (0, _preact.h)(
               _col2.default,
@@ -6983,7 +7033,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 ;
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7001,7 +7051,7 @@ var _preact = __webpack_require__(0);
 
 var _preactRedux = __webpack_require__(4);
 
-var _buttonsGroup = __webpack_require__(52);
+var _buttonsGroup = __webpack_require__(54);
 
 var _decko = __webpack_require__(5);
 
@@ -7135,7 +7185,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(Controller);
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7168,7 +7218,7 @@ exports.ButtonsGroup = ButtonsGroup;
 exports.ButtonItem = ButtonItem;
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7180,7 +7230,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _redux = __webpack_require__(11);
 
-var _reducer = __webpack_require__(54);
+var _reducer = __webpack_require__(56);
 
 var _reducer2 = _interopRequireDefault(_reducer);
 
@@ -7189,7 +7239,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = (0, _redux.createStore)(_reducer2.default);
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7199,13 +7249,21 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _parameters = __webpack_require__(55);
+var _parameters = __webpack_require__(57);
 
-var _skills = __webpack_require__(10);
+var _skills = __webpack_require__(58);
 
-var _controls = __webpack_require__(56);
+var _controls = __webpack_require__(59);
 
-var _timers = __webpack_require__(58);
+var _timers = __webpack_require__(61);
+
+var _skills2 = __webpack_require__(10);
+
+var _skills3 = _interopRequireDefault(_skills2);
+
+var _parameters2 = __webpack_require__(62);
+
+var _parameters3 = _interopRequireDefault(_parameters2);
 
 var _loglevel = __webpack_require__(1);
 
@@ -7233,8 +7291,8 @@ var initialState = {
   timers: {
     day: null
   },
-  parameters: _parameters.parameters,
-  skills: _skills.skills
+  parameters: _parameters3.default.getList(),
+  skills: _skills3.default.getList()
 };
 
 var reducerLookup = {
@@ -7275,7 +7333,7 @@ var reducer = function reducer() {
 exports.default = reducer;
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7284,7 +7342,7 @@ exports.default = reducer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.paramReducer = exports.parameters = undefined;
+exports.paramReducer = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -7305,102 +7363,159 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
 var logger = _loglevel2.default.getLogger('parameters');
 
-var parameters = [{
-  key: 'solutions',
-  dynamic: false,
-  label: 'Solutions',
-  unit: 'n',
-  min: '1',
-  defaultValue: '16',
-  value: 16
-}, {
-  key: 'days_per_generation',
-  dynamic: true,
-  label: 'Generation duration',
-  unit: 'days',
-  min: '1',
-  defaultValue: '365',
-  value: 365
-}, {
-  key: 'mutability',
-  dynamic: true,
-  label: 'Mutability',
-  unit: '%',
-  min: '0',
-  max: '100',
-  defaultValue: '2',
-  value: 2
-}, {
-  key: 'reproductivity',
-  dynamic: true,
-  label: 'Reproductivity',
-  unit: '%',
-  min: '0',
-  max: '100',
-  defaultValue: '0',
-  value: 0
-}, {
-  key: 'world-width',
-  dynamic: true,
-  label: 'World Width',
-  unit: 'cell',
-  min: '1',
-  defaultValue: '32',
-  value: 32
-}, {
-  key: 'world-height',
-  dynamic: true,
-  label: 'World Height',
-  unit: 'cell',
-  min: '1',
-  defaultValue: '12',
-  value: 12
-}, {
-  key: 'day_time',
-  dynamic: true,
-  label: 'Day duration',
-  unit: 'ms',
-  min: '10',
-  defaultValue: '500',
-  value: 500
-}, {
-  key: 'reproduction-area',
-  dynamic: true,
-  label: 'Reproduction Area',
-  unit: 'cell',
-  min: '1',
-  defaultValue: '6',
-  value: 6
-}, {
-  key: 'initial-range',
-  dynamic: false,
-  label: 'Initial Mutability Range',
-  unit: '%',
-  min: '0',
-  max: '100',
-  defaultValue: '20',
-  value: 20
-}];
-
 var paramReducer = function paramReducer(state, key, value) {
   var logPrefix = ':paramReducer] ';
   logger.info(logPrefix, '-->');
 
   logger.debug(logPrefix, 'key:', key, 'value:', value);
 
-  logger.info(logPrefix, '<--');
-  return _extends({}, state, {
-    parameters: parameters.map(function (p) {
-      return p.key != key ? p : _extends({}, p, { value: value });
+  var nextState = _extends({}, state, {
+    parameters: state.parameters.map(function (p) {
+      if (p.key != key) {
+        return p;
+      }
+
+      if (p.hasOwnProperty('min') && +value < +p.min) {
+        logger.info(logPrefix, 'Prevent set a value less than minimum');
+        return p;
+      }
+
+      if (p.hasOwnProperty('max') && +value > +p.max) {
+        logger.info(logPrefix, 'Prevent set a value greater than maximum');
+        return p;
+      }
+
+      if (p.hasOwnProperty('lessThan')) {
+        logger.info(logPrefix, 'Property ' + p.key + ' must be less than ' + p.lessThan);
+        var lessThanValue = state.parameters.find(function (s) {
+          return s.key == p.lessThan;
+        }).value;
+
+        if (value >= lessThanValue) {
+          logger.info(logPrefix, 'Property not respected ( ' + value + ' >= ' + lessThanValue + ' )');
+          return p;
+        } else {
+          logger.info(logPrefix, 'Property respected ( ' + value + ' < ' + lessThanValue + ' )');
+        }
+      }
+
+      if (p.hasOwnProperty('greaterThan')) {
+        logger.info(logPrefix, 'Property ' + p.key + ' must be greater than ' + p.greaterThan);
+        var greaterThanValue = state.parameters.find(function (s) {
+          return s.key == p.greaterThan;
+        }).value;
+
+        if (value <= greaterThanValue) {
+          logger.info(logPrefix, 'Property not respected ( ' + value + ' <= ' + greaterThanValue + ' )');
+          return p;
+        } else {
+          logger.info(logPrefix, 'Property respected ( ' + value + ' > ' + greaterThanValue + ' )');
+        }
+      }
+
+      return _extends({}, p, { value: value });
     })
   });
+
+  logger.info(logPrefix, '<--');
+  return nextState;
 };
 
-exports.parameters = parameters;
 exports.paramReducer = paramReducer;
 
 /***/ }),
-/* 56 */
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.skillReducer = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('skills');
+
+var skillReducer = function skillReducer(state, key, value) {
+  var logPrefix = ':skillReducer] ';
+  logger.info(logPrefix, '-->');
+
+  logger.debug(logPrefix, 'key: `' + key + '` value: `' + value + '`');
+
+  var nextState = _extends({}, state, {
+    skills: state.skills.map(function (p) {
+      if (p.key != key) {
+        return p;
+      }
+
+      if (p.hasOwnProperty('min') && +value < +p.min) {
+        logger.info(logPrefix, 'Prevent set a value less than minimum');
+        return p;
+      }
+
+      if (p.hasOwnProperty('max') && +value > +p.max) {
+        logger.info(logPrefix, 'Prevent set a value greater than maximum');
+        return p;
+      }
+
+      if (p.hasOwnProperty('lessThan')) {
+        logger.info(logPrefix, 'Property ' + p.key + ' must be less than ' + p.lessThan);
+        var lessThanValue = state.skills.find(function (s) {
+          return s.key == p.lessThan;
+        }).value;
+
+        if (value >= lessThanValue) {
+          logger.info(logPrefix, 'Property not respected ( ' + value + ' >= ' + lessThanValue + ' )');
+          return p;
+        } else {
+          logger.info(logPrefix, 'Property respected ( ' + value + ' < ' + lessThanValue + ' )');
+        }
+      }
+
+      if (p.hasOwnProperty('greaterThan')) {
+        logger.info(logPrefix, 'Property ' + p.key + ' must be greater than ' + p.greaterThan);
+        var greaterThanValue = state.skills.find(function (s) {
+          return s.key == p.greaterThan;
+        }).value;
+
+        if (value <= greaterThanValue) {
+          logger.info(logPrefix, 'Property not respected ( ' + value + ' <= ' + greaterThanValue + ' )');
+          return p;
+        } else {
+          logger.info(logPrefix, 'Property respected ( ' + value + ' > ' + greaterThanValue + ' )');
+        }
+      }
+
+      return _extends({}, p, { value: value });
+    })
+  });
+
+  logger.info(logPrefix, '<--');
+  return nextState;
+};
+
+exports.skillReducer = skillReducer;
+
+/***/ }),
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7427,7 +7542,7 @@ var _loglevelPrefixTemplate = __webpack_require__(3);
 
 var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
-var _solutions = __webpack_require__(57);
+var _solutions = __webpack_require__(60);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7579,7 +7694,7 @@ var stopGame = exports.stopGame = function stopGame(state) {
 };
 
 /***/ }),
-/* 57 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7593,6 +7708,10 @@ exports.generateSolutionColor = exports.evaluateSolutionsFitness = exports.build
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _generics = __webpack_require__(17);
+
+var _skills = __webpack_require__(10);
+
+var _skills2 = _interopRequireDefault(_skills);
 
 var _loglevel = __webpack_require__(1);
 
@@ -7683,7 +7802,9 @@ var evaluateSolutionsFitness = exports.evaluateSolutionsFitness = function evalu
           return r.skill == skill.key;
         });
 
-        return _extends({}, skill.generateFitness(skill, currSkillRange.min, currSkillRange.max));
+        return _extends({}, skill, {
+          fitness: _skills2.default.evaluateFitness(skill, currSkillRange.min, currSkillRange.max)
+        });
       })
     });
   });
@@ -7755,7 +7876,7 @@ var generateSolutionColor = exports.generateSolutionColor = function generateSol
 };
 
 /***/ }),
-/* 58 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7821,6 +7942,198 @@ var nextGeneration = function nextGeneration(state) {
 };
 
 exports.addDay = addDay;
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _desc, _value, _class;
+
+var _parameters = __webpack_require__(63);
+
+var _parameters2 = _interopRequireDefault(_parameters);
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+var _decko = __webpack_require__(5);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('parametersManager');
+
+var ParametersManager = (_class = function () {
+  function ParametersManager() {
+    _classCallCheck(this, ParametersManager);
+
+    this.parametersList = _parameters2.default;
+  }
+
+  _createClass(ParametersManager, [{
+    key: 'getList',
+    value: function getList() {
+      var logPrefix = ':getList] ';
+      logger.info(logPrefix, '-->');
+
+      logger.info(logPrefix, '<--');
+      return this.parametersList;
+    }
+  }, {
+    key: 'getParameterByKey',
+    value: function getParameterByKey(parameterKey) {
+      var logPrefix = ':getParameterByKey] ';
+      logger.info(logPrefix, '-->');
+
+      var parameter = this.parametersList.find(function (s) {
+        return s.key == parameterKey;
+      });
+      logger.debug(logPrefix, 'parameter:', parameter);
+
+      logger.info(logPrefix, '<--');
+      return parameter;
+    }
+  }]);
+
+  return ParametersManager;
+}(), (_applyDecoratedDescriptor(_class.prototype, 'getList', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getList'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'getParameterByKey', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getParameterByKey'), _class.prototype)), _class);
+exports.default = new ParametersManager();
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = [{
+  key: 'solutions',
+  dynamic: false,
+  label: 'Solutions',
+  unit: 'n',
+  min: '1',
+  defaultValue: '16',
+  value: 16
+}, {
+  key: 'days_per_generation',
+  dynamic: true,
+  label: 'Generation duration',
+  unit: 'days',
+  min: '1',
+  defaultValue: '365',
+  value: 365
+}, {
+  key: 'mutability',
+  dynamic: true,
+  label: 'Mutability',
+  unit: '%',
+  min: '0',
+  max: '100',
+  defaultValue: '2',
+  value: 2
+}, {
+  key: 'reproductivity',
+  dynamic: true,
+  label: 'Reproductivity',
+  unit: '%',
+  min: '0',
+  max: '100',
+  defaultValue: '0',
+  value: 0
+}, {
+  key: 'world-width',
+  dynamic: true,
+  label: 'World Width',
+  unit: 'cell',
+  min: '1',
+  defaultValue: '32',
+  value: 32
+}, {
+  key: 'world-height',
+  dynamic: true,
+  label: 'World Height',
+  unit: 'cell',
+  min: '1',
+  defaultValue: '12',
+  value: 12
+}, {
+  key: 'day_time',
+  dynamic: true,
+  label: 'Day duration',
+  unit: 'ms',
+  min: '10',
+  defaultValue: '500',
+  value: 500
+}, {
+  key: 'reproduction-area',
+  dynamic: true,
+  label: 'Reproduction Area',
+  unit: 'cell',
+  min: '1',
+  defaultValue: '6',
+  value: 6
+}, {
+  key: 'initial-range',
+  dynamic: false,
+  label: 'Initial Mutability Range',
+  unit: '%',
+  min: '0',
+  max: '100',
+  defaultValue: '20',
+  value: 20
+}];
 
 /***/ })
 /******/ ]);
