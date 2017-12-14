@@ -118,6 +118,32 @@
     &.selected
       background-color: darken($mui-btn-primary-bg-color, 5%)
 
+.muiextra--badges
+  font-family: $mui-base-font-family
+  pointer-events: none
+  cursor: text
+
+  >span
+    font-size: $mui-label-font-size
+    color: $mui-label-font-color
+    line-height: 15px
+
+  >ul
+    list-style-type: none
+    margin: 0
+    padding: 0
+    display: inline-block
+
+    >li
+      display: inline-block
+      margin-left: 4px
+      background-color: $mui-btn-flat-bg-color-hover
+      padding: 2px 8px
+      font-size: 10px
+      text-transform: uppercase
+      color: $mui-text-dark
+      font-weight: bold
+
 @media screen and (min-width: #{$mui-screen-md-min})
   .muiextra--min-height-md
     min-height: 239px

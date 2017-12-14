@@ -4,10 +4,14 @@ import Select from 'preact-mui/lib/select'
 import Option from 'preact-mui/lib/option'
 import Input from 'preact-mui/lib/input'
 import Button from 'preact-mui/lib/button'
+
+import { Badges } from './extra-mui/badges'
+import { skills } from '../reducers/skills'
+import evoEvents from '../events'
+
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../loglevel-prefix-template'
-import evoEvents from '../events'
 
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('Events');
@@ -36,9 +40,13 @@ class Events extends Component {
       <Form>
         <Select name="evogame-event" label="Event Type" defaultValue={this.state.event.key}>
           {this.eventList.map(event =>
-            <Option key={event.key} value={event.key} label={event.label} />
+            <Option value={event.key} label={event.label} />
           )}
         </Select>
+        <Badges label="Affect" badges={this.state.event.affect.map(b => ({
+          label: b,
+          color: skills.find(s => s.key == b).color
+        }))} />
         <Input label="TODO" type="number" floatingLabel={true} />
         <Button color="primary" style={{ width: '100%' }} raised={true}>Send Event</Button>
       </Form>

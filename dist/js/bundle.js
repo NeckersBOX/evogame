@@ -1482,7 +1482,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 var _preact = __webpack_require__(0);
 
-var _redux = __webpack_require__(10);
+var _redux = __webpack_require__(11);
 
 var Children = {
   only: function only(children) {
@@ -3334,9 +3334,161 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.skillReducer = exports.skills = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('skills');
+
+var skills = [{
+  key: 'cold',
+  label: 'Cold Resistance',
+  unit: '°C',
+  min: '-273',
+  defaultValue: '-25',
+  lessThan: 'heat',
+  value: -25,
+  fitness: 0,
+  color: '#E0E0E0',
+  generateFitness: function generateFitness(skill, min, max) {
+    return _extends({}, skill, {
+      fitness: max == min ? 1 : (max - skill.value) / Math.abs(max - min)
+    });
+  }
+}, {
+  key: 'heat',
+  label: 'Heat Resistance',
+  unit: '°C',
+  min: '-273',
+  defaultValue: '45',
+  greaterThan: 'cold',
+  value: 45,
+  fitness: 0,
+  color: '#ED6A5A',
+  generateFitness: function generateFitness(skill, min, max) {
+    return _extends({}, skill, {
+      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
+    });
+  }
+}, {
+  key: 'water',
+  label: 'Water Resistance',
+  unit: 'm',
+  min: '0',
+  defaultValue: '8',
+  value: 8,
+  fitness: 0,
+  color: '#9BC1BC',
+  generateFitness: function generateFitness(skill, min, max) {
+    return _extends({}, skill, {
+      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
+    });
+  }
+}, {
+  key: 'wind',
+  label: 'Wind Resistance',
+  unit: 'km/h',
+  min: '0',
+  defaultValue: '90',
+  value: 90,
+  fitness: 0,
+  color: '#8A84E2',
+  generateFitness: function generateFitness(skill, min, max) {
+    return _extends({}, skill, {
+      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
+    });
+  }
+}];
+
+var skillReducer = function skillReducer(state, key, value) {
+  var logPrefix = ':skillReducer] ';
+  logger.info(logPrefix, '-->');
+
+  logger.debug(logPrefix, 'key: `' + key + '` value: `' + value + '`');
+
+  var nextState = _extends({}, state, {
+    skills: state.skills.map(function (p) {
+      if (p.key != key) {
+        return p;
+      }
+
+      if (p.hasOwnProperty('min') && +value < +p.min) {
+        logger.info(logPrefix, 'Prevent set a value less than minimum');
+        return p;
+      }
+
+      if (p.hasOwnProperty('max') && +value > +p.max) {
+        logger.info(logPrefix, 'Prevent set a value greater than maximum');
+        return p;
+      }
+
+      if (p.hasOwnProperty('lessThan')) {
+        logger.info(logPrefix, 'Property ' + p.key + ' must be less than ' + p.lessThan);
+        var lessThanValue = state.skills.find(function (s) {
+          return s.key == p.lessThan;
+        }).value;
+
+        if (value >= lessThanValue) {
+          logger.info(logPrefix, 'Property not respected ( ' + value + ' >= ' + lessThanValue + ' )');
+          return p;
+        } else {
+          logger.info(logPrefix, 'Property respected ( ' + value + ' < ' + lessThanValue + ' )');
+        }
+      }
+
+      if (p.hasOwnProperty('greaterThan')) {
+        logger.info(logPrefix, 'Property ' + p.key + ' must be greater than ' + p.greaterThan);
+        var greaterThanValue = state.skills.find(function (s) {
+          return s.key == p.greaterThan;
+        }).value;
+
+        if (value <= greaterThanValue) {
+          logger.info(logPrefix, 'Property not respected ( ' + value + ' <= ' + greaterThanValue + ' )');
+          return p;
+        } else {
+          logger.info(logPrefix, 'Property respected ( ' + value + ' > ' + greaterThanValue + ' )');
+        }
+      }
+
+      return _extends({}, p, { value: value });
+    })
+  });
+
+  logger.info(logPrefix, '<--');
+  return nextState;
+};
+
+exports.skills = skills;
+exports.skillReducer = skillReducer;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
 
-var _createStore = __webpack_require__(11);
+var _createStore = __webpack_require__(12);
 
 var _createStore2 = _interopRequireDefault(_createStore);
 
@@ -3352,11 +3504,11 @@ var _applyMiddleware = __webpack_require__(33);
 
 var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 
-var _compose = __webpack_require__(15);
+var _compose = __webpack_require__(16);
 
 var _compose2 = _interopRequireDefault(_compose);
 
-var _warning = __webpack_require__(14);
+var _warning = __webpack_require__(15);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -3379,7 +3531,7 @@ exports.applyMiddleware = _applyMiddleware2.default;
 exports.compose = _compose2.default;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3394,7 +3546,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = createStore;
 
-var _isPlainObject = __webpack_require__(12);
+var _isPlainObject = __webpack_require__(13);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
@@ -3651,7 +3803,7 @@ var ActionTypes = exports.ActionTypes = {
 }
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3734,7 +3886,7 @@ function isPlainObject(value) {
 exports.default = isPlainObject;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3756,7 +3908,7 @@ var _Symbol = _root2.default.Symbol;
 exports.default = _Symbol;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3789,7 +3941,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3831,158 +3983,6 @@ function compose() {
     };
   });
 }
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.skillReducer = exports.skills = undefined;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _loglevel = __webpack_require__(1);
-
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('skills');
-
-var skills = [{
-  key: 'cold',
-  label: 'Cold Resistance',
-  unit: '°C',
-  min: '-273',
-  defaultValue: '-25',
-  lessThan: 'heat',
-  value: -25,
-  fitness: 0,
-  color: '#E0E0E0',
-  generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, {
-      fitness: max == min ? 1 : (max - skill.value) / Math.abs(max - min)
-    });
-  }
-}, {
-  key: 'heat',
-  label: 'Heat Resistance',
-  unit: '°C',
-  min: '-273',
-  defaultValue: '45',
-  greaterThan: 'cold',
-  value: 45,
-  fitness: 0,
-  color: '#ED6A5A',
-  generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, {
-      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
-    });
-  }
-}, {
-  key: 'water',
-  label: 'Water Resistance',
-  unit: 'm',
-  min: '0',
-  defaultValue: '8',
-  value: 8,
-  fitness: 0,
-  color: '#9BC1BC',
-  generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, {
-      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
-    });
-  }
-}, {
-  key: 'wind',
-  label: 'Wind Resistance',
-  unit: 'km/h',
-  min: '0',
-  defaultValue: '90',
-  value: 90,
-  fitness: 0,
-  color: '#8A84E2',
-  generateFitness: function generateFitness(skill, min, max) {
-    return _extends({}, skill, {
-      fitness: max == min ? 1 : (skill.value - min) / Math.abs(max - min)
-    });
-  }
-}];
-
-var skillReducer = function skillReducer(state, key, value) {
-  var logPrefix = ':skillReducer] ';
-  logger.info(logPrefix, '-->');
-
-  logger.debug(logPrefix, 'key: `' + key + '` value: `' + value + '`');
-
-  var nextState = _extends({}, state, {
-    skills: state.skills.map(function (p) {
-      if (p.key != key) {
-        return p;
-      }
-
-      if (p.hasOwnProperty('min') && +value < +p.min) {
-        logger.info(logPrefix, 'Prevent set a value less than minimum');
-        return p;
-      }
-
-      if (p.hasOwnProperty('max') && +value > +p.max) {
-        logger.info(logPrefix, 'Prevent set a value greater than maximum');
-        return p;
-      }
-
-      if (p.hasOwnProperty('lessThan')) {
-        logger.info(logPrefix, 'Property ' + p.key + ' must be less than ' + p.lessThan);
-        var lessThanValue = state.skills.find(function (s) {
-          return s.key == p.lessThan;
-        }).value;
-
-        if (value >= lessThanValue) {
-          logger.info(logPrefix, 'Property not respected ( ' + value + ' >= ' + lessThanValue + ' )');
-          return p;
-        } else {
-          logger.info(logPrefix, 'Property respected ( ' + value + ' < ' + lessThanValue + ' )');
-        }
-      }
-
-      if (p.hasOwnProperty('greaterThan')) {
-        logger.info(logPrefix, 'Property ' + p.key + ' must be greater than ' + p.greaterThan);
-        var greaterThanValue = state.skills.find(function (s) {
-          return s.key == p.greaterThan;
-        }).value;
-
-        if (value <= greaterThanValue) {
-          logger.info(logPrefix, 'Property not respected ( ' + value + ' <= ' + greaterThanValue + ' )');
-          return p;
-        } else {
-          logger.info(logPrefix, 'Property respected ( ' + value + ' > ' + greaterThanValue + ' )');
-        }
-      }
-
-      return _extends({}, p, { value: value });
-    })
-  });
-
-  logger.info(logPrefix, '<--');
-  return nextState;
-};
-
-exports.skills = skills;
-exports.skillReducer = skillReducer;
 
 /***/ }),
 /* 17 */
@@ -4036,7 +4036,7 @@ var _Layout = __webpack_require__(34);
 
 var _Layout2 = _interopRequireDefault(_Layout);
 
-var _store = __webpack_require__(52);
+var _store = __webpack_require__(53);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -4082,7 +4082,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(13);
+var _Symbol2 = __webpack_require__(14);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
@@ -4176,7 +4176,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(13);
+var _Symbol2 = __webpack_require__(14);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
@@ -4468,13 +4468,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = combineReducers;
 
-var _createStore = __webpack_require__(11);
+var _createStore = __webpack_require__(12);
 
-var _isPlainObject = __webpack_require__(12);
+var _isPlainObject = __webpack_require__(13);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-var _warning = __webpack_require__(14);
+var _warning = __webpack_require__(15);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -4681,7 +4681,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = applyMiddleware;
 
-var _compose = __webpack_require__(15);
+var _compose = __webpack_require__(16);
 
 var _compose2 = _interopRequireDefault(_compose);
 
@@ -4781,23 +4781,23 @@ var _Events = __webpack_require__(39);
 
 var _Events2 = _interopRequireDefault(_Events);
 
-var _GeneralInfo = __webpack_require__(45);
+var _GeneralInfo = __webpack_require__(46);
 
 var _GeneralInfo2 = _interopRequireDefault(_GeneralInfo);
 
-var _WorldMap = __webpack_require__(47);
+var _WorldMap = __webpack_require__(48);
 
 var _WorldMap2 = _interopRequireDefault(_WorldMap);
 
-var _Parameters = __webpack_require__(48);
+var _Parameters = __webpack_require__(49);
 
 var _Parameters2 = _interopRequireDefault(_Parameters);
 
-var _Skills = __webpack_require__(49);
+var _Skills = __webpack_require__(50);
 
 var _Skills2 = _interopRequireDefault(_Skills);
 
-var _Controller = __webpack_require__(50);
+var _Controller = __webpack_require__(51);
 
 var _Controller2 = _interopRequireDefault(_Controller);
 
@@ -5408,6 +5408,14 @@ var _button = __webpack_require__(43);
 
 var _button2 = _interopRequireDefault(_button);
 
+var _badges = __webpack_require__(44);
+
+var _skills = __webpack_require__(10);
+
+var _events = __webpack_require__(45);
+
+var _events2 = _interopRequireDefault(_events);
+
 var _loglevel = __webpack_require__(1);
 
 var _loglevel2 = _interopRequireDefault(_loglevel);
@@ -5419,10 +5427,6 @@ var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
 var _loglevelPrefixTemplate = __webpack_require__(3);
 
 var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
-
-var _events = __webpack_require__(44);
-
-var _events2 = _interopRequireDefault(_events);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5470,9 +5474,17 @@ var Events = function (_Component) {
           _select2.default,
           { name: 'evogame-event', label: 'Event Type', defaultValue: this.state.event.key },
           this.eventList.map(function (event) {
-            return (0, _preact.h)(_option2.default, { key: event.key, value: event.key, label: event.label });
+            return (0, _preact.h)(_option2.default, { value: event.key, label: event.label });
           })
         ),
+        (0, _preact.h)(_badges.Badges, { label: 'Affect', badges: this.state.event.affect.map(function (b) {
+            return {
+              label: b,
+              color: _skills.skills.find(function (s) {
+                return s.key == b;
+              }).color
+            };
+          }) }),
         (0, _preact.h)(_input2.default, { label: 'TODO', type: 'number', floatingLabel: true }),
         (0, _preact.h)(
           _button2.default,
@@ -6202,6 +6214,51 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Badges = undefined;
+
+var _preact = __webpack_require__(0);
+
+var Badges = function Badges(props) {
+  var badgeLabel = null;
+
+  if (props.hasOwnProperty('label')) {
+    badgeLabel = (0, _preact.h)(
+      'span',
+      null,
+      props.label
+    );
+  }
+
+  return (0, _preact.h)(
+    'div',
+    { className: 'muiextra--badges' },
+    badgeLabel,
+    (0, _preact.h)(
+      'ul',
+      null,
+      props.badges.map(function (badge) {
+        return (0, _preact.h)(
+          'li',
+          { style: { backgroundColor: badge.color } },
+          badge.label
+        );
+      })
+    )
+  );
+};
+
+exports.Badges = Badges;
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -6210,7 +6267,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _desc, _value, _class;
 
-var _skills = __webpack_require__(16);
+var _skills = __webpack_require__(10);
 
 var _loglevel = __webpack_require__(1);
 
@@ -6357,7 +6414,7 @@ var evoEvents = (_class = function () {
 exports.default = evoEvents;
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6373,7 +6430,7 @@ var _preact = __webpack_require__(0);
 
 var _preactRedux = __webpack_require__(4);
 
-var _list = __webpack_require__(46);
+var _list = __webpack_require__(47);
 
 var _loglevel = __webpack_require__(1);
 
@@ -6446,7 +6503,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(GeneralInfo);
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6489,7 +6546,7 @@ var ListItem = exports.ListItem = function ListItem(props) {
 };
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6594,7 +6651,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(WorldMap);
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6765,7 +6822,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(Parameters);
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6926,7 +6983,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 ;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6944,7 +7001,7 @@ var _preact = __webpack_require__(0);
 
 var _preactRedux = __webpack_require__(4);
 
-var _buttonsGroup = __webpack_require__(51);
+var _buttonsGroup = __webpack_require__(52);
 
 var _decko = __webpack_require__(5);
 
@@ -7078,7 +7135,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(Controller);
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7111,27 +7168,6 @@ exports.ButtonsGroup = ButtonsGroup;
 exports.ButtonItem = ButtonItem;
 
 /***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _redux = __webpack_require__(10);
-
-var _reducer = __webpack_require__(53);
-
-var _reducer2 = _interopRequireDefault(_reducer);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = (0, _redux.createStore)(_reducer2.default);
-
-/***/ }),
 /* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7142,13 +7178,34 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _parameters = __webpack_require__(54);
+var _redux = __webpack_require__(11);
 
-var _skills = __webpack_require__(16);
+var _reducer = __webpack_require__(54);
 
-var _controls = __webpack_require__(55);
+var _reducer2 = _interopRequireDefault(_reducer);
 
-var _timers = __webpack_require__(57);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = (0, _redux.createStore)(_reducer2.default);
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _parameters = __webpack_require__(55);
+
+var _skills = __webpack_require__(10);
+
+var _controls = __webpack_require__(56);
+
+var _timers = __webpack_require__(58);
 
 var _loglevel = __webpack_require__(1);
 
@@ -7218,7 +7275,7 @@ var reducer = function reducer() {
 exports.default = reducer;
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7343,7 +7400,7 @@ exports.parameters = parameters;
 exports.paramReducer = paramReducer;
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7370,7 +7427,7 @@ var _loglevelPrefixTemplate = __webpack_require__(3);
 
 var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
-var _solutions = __webpack_require__(56);
+var _solutions = __webpack_require__(57);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7522,7 +7579,7 @@ var stopGame = exports.stopGame = function stopGame(state) {
 };
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7698,7 +7755,7 @@ var generateSolutionColor = exports.generateSolutionColor = function generateSol
 };
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
