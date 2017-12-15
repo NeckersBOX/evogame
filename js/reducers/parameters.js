@@ -5,7 +5,7 @@ import prefixTemplate from '../loglevel-prefix-template'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('parameters');
 
-const paramReducer = (state, key, value) => {
+const setParamValue = (state, key, value) => {
   const logPrefix = ':paramReducer] ';
   logger.info(logPrefix, '-->');
 
@@ -62,4 +62,4 @@ const paramReducer = (state, key, value) => {
   return nextState;
 };
 
-export { paramReducer };
+export { setParamValue };

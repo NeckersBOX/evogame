@@ -5,7 +5,7 @@ import prefixTemplate from '../loglevel-prefix-template'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('skills');
 
-const skillReducer = (state, key, value) => {
+const setSkillValue = (state, key, value) => {
   const logPrefix = ':skillReducer] ';
   logger.info(logPrefix, '-->');
 
@@ -62,4 +62,4 @@ const skillReducer = (state, key, value) => {
   return nextState;
 };
 
-export { skillReducer };
+export { setSkillValue };

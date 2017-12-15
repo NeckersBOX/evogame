@@ -1,10 +1,12 @@
-import { paramReducer } from './parameters'
-import { skillReducer } from './skills'
-import { playGame, pauseGame, stopGame } from './controls'
+import { setParamValue } from './parameters'
+import { setSkillValue } from './skills'
+import { setEvent } from './events'
 import { addDay } from './timers'
+import { playGame, pauseGame, stopGame } from './controls'
 
 import SkillsManager from '../managers/skills'
 import ParametersManager from '../managers/parameters'
+import EventsManager from '../managers/events'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
@@ -23,15 +25,18 @@ const initialState = {
     day: null
   },
   parameters: ParametersManager.getList(),
-  skills: SkillsManager.getList()
+  skills: SkillsManager.getList(),
+  events: EventsManager.getList(),
+  event: EventsManager.getEventByKey(EventsManager.getList()[0].key)
 };
 
 const reducerLookup = {
          ADD_DAY: (state, data) => addDay(state),
       PAUSE_GAME: (state, data) => pauseGame(state),
        PLAY_GAME: (state, data) => playGame(state, data),
-  SET_PARAMETERS: (state, data) => paramReducer(state, data.key, +data.value),
-      SET_SKILLS: (state, data) => skillReducer(state, data.key, +data.value),
+       SET_EVENT: (state, data) => setEvent(state, data),
+  SET_PARAMETERS: (state, data) => setParamValue(state, data.key, +data.value),
+      SET_SKILLS: (state, data) => setSkillValue(state, data.key, +data.value),
        STOP_GAME: (state, data) => stopGame(state)
 };
 

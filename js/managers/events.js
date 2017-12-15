@@ -94,6 +94,32 @@ class EventsManager {
     logger.info(logPrefix, '<--');
     return info;
   };
+
+  @memoize
+  evaluateRain(value) {
+    const logPrefix = ':evaluateRain] ';
+    logger.info(logPrefix, '-->');
+
+    const rainScale = [
+      { label: 'Fog',        value: 1  },
+      { label: 'Drizzle',    value: 4  },
+      { label: 'Heavy Rain', value: 10 },
+      { label: 'Shower',     value: 30 },
+      { label: 'Cloudburst', value: 31 }
+    ];
+
+    let result = null;
+    for ( let i in rainScale ) {
+      if ( value <= rainScale[i].value || i == rainScale.length - 1 ) {
+        result = rainScale[i];
+        break;
+      }
+    }
+    logger.debug(logPrefix, 'value in scale:', result.value, 'associated with label:', result.label);
+
+    logger.info(logPrefix, '<--');
+    return info;
+  }
 }
 
 export default new EventsManager();
