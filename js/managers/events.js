@@ -1,5 +1,4 @@
-import SkillsManager from './skills'
-import events from './lists/events'
+import EventsCore from './core/events'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
@@ -10,79 +9,9 @@ import { memoize } from 'decko'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('eventsManager');
 
-class EventsManager {
+class EventsManager extends EventsCore {
   constructor() {
-    const logPrefix = ':constructor] ';
-
-    logger.debug(logPrefix, '-->');
-
-    this.eventsList = events.map(event => ({
-      ...event,
-      affect: event.affect.map(skillKey => ({
-        label: skillKey,
-        color: SkillsManager.getSkillByKey(skillKey).color
-      }))
-    }));
-
-    logger.debug(logPrefix, '<--');
-  }
-
-  @memoize
-  getList() {
-    const logPrefix = ':getList] ';
-    logger.info(logPrefix, '-->');
-
-    let eventsFilteredList = this.eventsList.map(e => ({ key: e.key, label: e.label }));
-
-    logger.info(logPrefix, '<--');
-    return eventsFilteredList;
-  }
-
-  @memoize
-  getEventByKey(eventKey) {
-    const logPrefix = ':getEventByKey] ';
-    logger.info(logPrefix, '-->');
-
-    let event = this.eventsList.find(s => s.key == eventKey);
-    logger.debug(logPrefix, 'event:', event);
-
-    logger.info(logPrefix, '<--');
-    return event;
-  }
-
-  getValueInfo(eventKey, value) {
-    const logPrefix = ':getValueInfo] ';
-    logger.info(logPrefix, '-->');
-
-    let currentEvent = this.getEventByKey(eventKey);
-    let valueInfo = this[currentEvent.labelEvaluate](value);
-
-    logger.info(logPrefix, '<--');
-    return valueInfo;
-  }
-
-  getValueInScale(scale, value) {
-    const logPrefix = ':getValueInScale] ';
-    logger.info(logPrefix, '-->');
-
-    let result = null;
-
-    for ( let i in scale ) {
-      if ( value <= scale[i].value || i == scale.length - 1 ) {
-        result = scale[i];
-        break;
-      }
-    }
-
-    if ( result === null ) {
-      logger.info(logPrefix, 'No valid value found');
-      result = { label: '', value: 0 };
-    }
-
-    logger.debug(logPrefix, 'value in scale:', result.value, 'associated with label:', result.label);
-
-    logger.info(logPrefix, '<--');
-    return result;
+    super();
   }
 
   @memoize
@@ -106,7 +35,7 @@ class EventsManager {
       { label: 'Hurricane Force', value: -1 }
     ];
 
-    let result = getValueInScale(beaufortScale, value);
+    let result = this.getValueInScale(beaufortScale, value);
 
     logger.info(logPrefix, '<--');
     return result.label;
@@ -125,7 +54,7 @@ class EventsManager {
       { label: 'Cloudburst', value: -1 }
     ];
 
-    let result = getValueInScale(rainScale, value);
+    let result = this.getValueInScale(rainScale, value);
 
     logger.info(logPrefix, '<--');
     return result.label;
@@ -143,7 +72,7 @@ class EventsManager {
       { label: 'Martian Sandstorm', value: -1  }
     ];
 
-    let result = getValueInScale(sandstormScale, value);
+    let result = this.getValueInScale(sandstormScale, value);
 
     logger.info(logPrefix, '<--');
     return result.label;
@@ -159,7 +88,7 @@ class EventsManager {
       { label: 'Heavy Snow',   value: 5 }
     ];
 
-    let result = getValueInScale(snowScale, value);
+    let result = this.getValueInScale(snowScale, value);
 
     logger.info(logPrefix, '<--');
     return result.label;
@@ -178,7 +107,7 @@ class EventsManager {
       { label: 'Tsunami',       value: -1 }
     ];
 
-    let result = getValueInScale(waveScale, value);
+    let result = this.getValueInScale(waveScale, value);
 
     logger.info(logPrefix, '<--');
     return result;
@@ -200,10 +129,10 @@ class EventsManager {
       { label: 'Water Boiling',      value: 150 },
       { label: 'Mercury',            value: 200 },
       { label: 'Venus',              value: 500 },
-      { label: 'Burn Burn',          value: -1  }
+      { label: 'Burn Burn',          value:  -1 }
     ];
 
-    let result = getValueInScale(fireScale, value);
+    let result = this.getValueInScale(fireScale, value);
 
     logger.info(logPrefix, '<--');
     return result;
