@@ -12,7 +12,7 @@ export default [
     label: 'Rain',
     affect: [ 'water', 'wind' ],
     min: 0,
-    unit: 'mm',
+    unit: 'mm/h',
     labelEvaluate: 'evaluateRain'
   },
   {
@@ -26,18 +26,18 @@ export default [
   {
     key: 'snow',
     label: 'Snow',
-    affect: [ 'cold', 'water' ],
+    affect: [ 'cold' ],
     min: 0,
-    unit: 'cm',
+    unit: 'cm/h',
     labelEvaluate: 'evaluateSnow'
   },
   {
-    key: 'tsunami',
-    label: 'Tsunami',
+    key: 'wave',
+    label: 'Wave',
     affect: [ 'water' ],
     min: 0,
     unit: 'm',
-    labelEvaluate: 'evaluateTsunami'
+    labelEvaluate: 'evaluateWave'
   },
   {
     key: 'fire',

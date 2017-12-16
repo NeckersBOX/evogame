@@ -4105,24 +4105,42 @@ var EventsManager = (_class = function () {
       return valueInfo;
     }
   }, {
+    key: 'getValueInScale',
+    value: function getValueInScale(scale, value) {
+      var logPrefix = ':getValueInScale] ';
+      logger.info(logPrefix, '-->');
+
+      var result = null;
+
+      for (var i in scale) {
+        if (value <= scale[i].value || i == scale.length - 1) {
+          result = scale[i];
+          break;
+        }
+      }
+
+      if (result === null) {
+        logger.info(logPrefix, 'No valid value found');
+        result = { label: '', value: 0 };
+      }
+
+      logger.debug(logPrefix, 'value in scale:', result.value, 'associated with label:', result.label);
+
+      logger.info(logPrefix, '<--');
+      return result;
+    }
+  }, {
     key: 'evaluateWind',
     value: function evaluateWind(value) {
       var logPrefix = ':evaluateWind] ';
       logger.info(logPrefix, '-->');
 
-      var beaufortScale = [{ label: 'Calm', value: 1 }, { label: 'Light Air', value: 5 }, { label: 'Light Breeze', value: 11 }, { label: 'Gentle Breeze', value: 19 }, { label: 'Moderate Breeze', value: 28 }, { label: 'Fresh Breeze', value: 38 }, { label: 'Strong Breeze', value: 49 }, { label: 'Moderate Gale', value: 61 }, { label: 'Fresh Gale', value: 74 }, { label: 'Strong Gale', value: 88 }, { label: 'Storm', value: 102 }, { label: 'Violent Storm', value: 117 }, { label: 'Hurricane Force', value: 118 }];
+      var beaufortScale = [{ label: 'Calm', value: 1 }, { label: 'Light Air', value: 5 }, { label: 'Light Breeze', value: 11 }, { label: 'Gentle Breeze', value: 19 }, { label: 'Moderate Breeze', value: 28 }, { label: 'Fresh Breeze', value: 38 }, { label: 'Strong Breeze', value: 49 }, { label: 'Moderate Gale', value: 61 }, { label: 'Fresh Gale', value: 74 }, { label: 'Strong Gale', value: 88 }, { label: 'Storm', value: 102 }, { label: 'Violent Storm', value: 117 }, { label: 'Hurricane Force', value: -1 }];
 
-      var result = null;
-      for (var i in beaufortScale) {
-        if (value <= beaufortScale[i].value || i == beaufortScale.length - 1) {
-          result = beaufortScale[i];
-          break;
-        }
-      }
-      logger.debug(logPrefix, 'value in scale:', result.value, 'associated with label:', result.label);
+      var result = getValueInScale(beaufortScale, value);
 
       logger.info(logPrefix, '<--');
-      return info;
+      return result.label;
     }
   }, {
     key: 'evaluateRain',
@@ -4130,24 +4148,69 @@ var EventsManager = (_class = function () {
       var logPrefix = ':evaluateRain] ';
       logger.info(logPrefix, '-->');
 
-      var rainScale = [{ label: 'Fog', value: 1 }, { label: 'Drizzle', value: 4 }, { label: 'Heavy Rain', value: 10 }, { label: 'Shower', value: 30 }, { label: 'Cloudburst', value: 31 }];
+      var rainScale = [{ label: 'Fog', value: 1 }, { label: 'Drizzle', value: 4 }, { label: 'Heavy Rain', value: 10 }, { label: 'Shower', value: 30 }, { label: 'Cloudburst', value: -1 }];
 
-      var result = null;
-      for (var i in rainScale) {
-        if (value <= rainScale[i].value || i == rainScale.length - 1) {
-          result = rainScale[i];
-          break;
-        }
-      }
-      logger.debug(logPrefix, 'value in scale:', result.value, 'associated with label:', result.label);
+      var result = getValueInScale(rainScale, value);
 
       logger.info(logPrefix, '<--');
-      return info;
+      return result.label;
+    }
+  }, {
+    key: 'evaluateSandstorm',
+    value: function evaluateSandstorm(value) {
+      var logPrefix = ':evaluateSandstorm] ';
+      logger.info(logPrefix, '-->');
+
+      var sandstormScale = [{ label: 'Smoke In The Eyes', value: 10 }, { label: 'Regular Sandstorm', value: 35 }, { label: 'Haboob', value: 90 }, { label: 'Martian Sandstorm', value: -1 }];
+
+      var result = getValueInScale(sandstormScale, value);
+
+      logger.info(logPrefix, '<--');
+      return result.label;
+    }
+  }, {
+    key: 'evaluateSnow',
+    value: function evaluateSnow(value) {
+      var logPrefix = ':evaluateSnow] ';
+      logger.info(logPrefix, '-->');
+
+      var snowScale = [{ label: 'Regular Snow', value: 2 }, { label: 'Heavy Snow', value: 5 }];
+
+      var result = getValueInScale(snowScale, value);
+
+      logger.info(logPrefix, '<--');
+      return result.label;
+    }
+  }, {
+    key: 'evaluateWave',
+    value: function evaluateWave(value) {
+      var logPrefix = ':evaluateWave] ';
+      logger.info(logPrefix, '-->');
+
+      var waveScale = [{ label: 'Like A Mirror', value: 1 }, { label: 'Moderate Wave', value: 3 }, { label: 'High Wave', value: 8 }, { label: 'Rogue Wave', value: 16 }, { label: 'Tsunami', value: -1 }];
+
+      var result = getValueInScale(waveScale, value);
+
+      logger.info(logPrefix, '<--');
+      return result;
+    }
+  }, {
+    key: 'evaluateFire',
+    value: function evaluateFire(value) {
+      var logPrefix = ':evaluateFire] ';
+      logger.info(logPrefix, '-->');
+
+      var fireScale = [{ label: 'Earth Surface', value: 21 }, { label: 'Room Temperature', value: 28 }, { label: 'Minimum Human Body', value: 37 }, { label: 'Human Body', value: 38 }, { label: 'Cat Body', value: 39 }, { label: 'Death Valley', value: 90 }, { label: 'Soup', value: 100 }, { label: 'Water Boiling', value: 150 }, { label: 'Mercury', value: 200 }, { label: 'Venus', value: 500 }, { label: 'Burn Burn', value: -1 }];
+
+      var result = getValueInScale(fireScale, value);
+
+      logger.info(logPrefix, '<--');
+      return result;
     }
   }]);
 
   return EventsManager;
-}(), (_applyDecoratedDescriptor(_class.prototype, 'getList', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getList'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'getEventByKey', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getEventByKey'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateWind'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateRain', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateRain'), _class.prototype)), _class);
+}(), (_applyDecoratedDescriptor(_class.prototype, 'getList', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getList'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'getEventByKey', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getEventByKey'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateWind'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateRain', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateRain'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateSandstorm', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateSandstorm'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateSnow', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateSnow'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateWave', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateWave'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateFire', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateFire'), _class.prototype)), _class);
 exports.default = new EventsManager();
 
 /***/ }),
@@ -4220,10 +4283,10 @@ var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log('Log level:', "debug" || 'info');
+console.log('Log level:', "silent" || 'info');
 
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-(0, _loglevel.setLevel)("debug" || 'info');
+(0, _loglevel.setLevel)("silent" || 'info');
 
 window.addEventListener('load', function () {
   var logPrefix = ':loadEvent] ';
@@ -7621,7 +7684,7 @@ exports.default = [{
   label: 'Rain',
   affect: ['water', 'wind'],
   min: 0,
-  unit: 'mm',
+  unit: 'mm/h',
   labelEvaluate: 'evaluateRain'
 }, {
   key: 'sandstorm',
@@ -7633,17 +7696,17 @@ exports.default = [{
 }, {
   key: 'snow',
   label: 'Snow',
-  affect: ['cold', 'water'],
+  affect: ['cold'],
   min: 0,
-  unit: 'cm',
+  unit: 'cm/h',
   labelEvaluate: 'evaluateSnow'
 }, {
-  key: 'tsunami',
-  label: 'Tsunami',
+  key: 'wave',
+  label: 'Wave',
   affect: ['water'],
   min: 0,
   unit: 'm',
-  labelEvaluate: 'evaluateTsunami'
+  labelEvaluate: 'evaluateWave'
 }, {
   key: 'fire',
   label: 'Fire',
