@@ -4,6 +4,7 @@ export default [
     label: 'Wind',
     affect: [ 'wind' ],
     min: 0,
+    defaultValue: 20,
     unit: 'km/h',
     labelEvaluate: 'evaluateWind'
   },
@@ -12,6 +13,7 @@ export default [
     label: 'Rain',
     affect: [ 'water', 'wind' ],
     min: 0,
+    defaultValue: 5,
     unit: 'mm/h',
     labelEvaluate: 'evaluateRain'
   },
@@ -20,6 +22,7 @@ export default [
     label: 'Sandstorm',
     affect: [ 'heat', 'wind' ],
     min: 0,
+    defaultValue: 10,
     unit: 'km/h',
     labelEvaluate: 'evaluateSandstorm'
   },
@@ -28,6 +31,7 @@ export default [
     label: 'Snow',
     affect: [ 'cold' ],
     min: 0,
+    defaultValue: 4,
     unit: 'cm/h',
     labelEvaluate: 'evaluateSnow'
   },
@@ -36,6 +40,7 @@ export default [
     label: 'Wave',
     affect: [ 'water' ],
     min: 0,
+    defaultValue: 4,
     unit: 'm',
     labelEvaluate: 'evaluateWave'
   },
@@ -44,6 +49,7 @@ export default [
     label: 'Fire',
     affect: [ 'heat' ],
     min: 0,
+    defaultValue: 40,
     unit: '°C',
     labelEvaluate: 'evaluateFire'
   }
