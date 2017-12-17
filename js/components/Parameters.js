@@ -52,7 +52,7 @@ class Parameters extends Component {
             <Col md="3" sm="6">
               <Input {...{
                 ...property,
-                label: (property.dynamic ? '' : '* ') + property.label + '[ ' + property.unit + ' ]'
+                label: (property.dynamic ? '' : '* ') + property.label + ' [ ' + property.unit + ' ]'
               }} type="number" floatingLabel={true}
                 onChange={e => this.changeParameter(e, property.key)} />
             </Col>

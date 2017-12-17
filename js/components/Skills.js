@@ -48,7 +48,7 @@ class Skills extends Component {
             return (
               <Col key={property.key} md="3" sm="6">
                 <Input type="number" floatingLabel={true}
-                  label={property.label + '[ ' + property.unit + ' ]'}
+                  label={property.label + ' [ ' + property.unit + ' ]'}
                   min={property.min || null}
                   max={property.max || null}
                   value={property.value}
