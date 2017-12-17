@@ -1,16 +1,18 @@
-import ParametersCore from './core/parameters'
+import GlobalsCore from './core/GlobalsCore'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../loglevel-prefix-template'
 
 prefix.apply(log, prefixTemplate);
-const logger = log.getLogger('parametersManager');
+const logger = log.getLogger('globals');
 
-class ParametersManager extends ParametersCore {
+class GlobalsManager extends GlobalsCore {
   constructor() {
     super();
   }
+
+  
 }
 
-export default new ParametersManager();
+export default GlobalsManager;

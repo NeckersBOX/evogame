@@ -7649,22 +7649,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
 var logger = _loglevel2.default.getLogger('reducer');
 
-var initialState = {
-  generation: 0,
-  initialized: false,
-  solutions: [],
-  day: 0,
-  status: 'stop',
-  timers: {
-    day: null
-  },
-  parameters: _parameters3.default.getList(),
-  skills: _skills3.default.getList(),
-  events: _events3.default.getList(),
-  event: _events3.default.getEventByKey(_events3.default.getList()[0].key),
-  eventDisable: true
-};
-
 var reducerLookup = {
   ADD_DAY: function ADD_DAY(state, data) {
     return (0, _timers.addDay)(state);

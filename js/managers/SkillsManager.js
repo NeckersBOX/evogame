@@ -1,4 +1,4 @@
-import SkillsCore from './core/skills'
+import SkillsCore from './core/SkillsCore'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
@@ -7,18 +7,19 @@ import prefixTemplate from '../loglevel-prefix-template'
 import { memoize } from 'decko'
 
 prefix.apply(log, prefixTemplate);
-const logger = log.getLogger('skillsManager');
+const logger = log.getLogger('skills');
 
 class SkillsManager extends SkillsCore {
   constructor() {
     super();
   }
 
-  evaluateFitness(skill, min, max) {
-    const logPrefix = ':evaluateFitness] ';
+  getFitnessByKey(key, min, max) {
+    const logPrefix = ':getFitnessByKey] ';
     logger.info(logPrefix, '-->');
 
-    let fitness = this[skill.generateFitness](skill.value, min, max);
+    let element = this.getElementByKey(key);
+    let fitness = this[element.generateFitness](element.value, min, max);
 
     logger.info(logPrefix, '<--');
     return fitness;
@@ -45,4 +46,4 @@ class SkillsManager extends SkillsCore {
   }
 }
 
-export default new SkillsManager();
+export default SkillsManager;

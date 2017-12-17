@@ -11,7 +11,7 @@ import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../loglevel-prefix-template'
 
 prefix.apply(log, prefixTemplate);
-const logger = log.getLogger('Parameters');
+const logger = log.getLogger('parameters');
 
 class Parameters extends Component {
   constructor(props) {

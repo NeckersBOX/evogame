@@ -1,5 +1,6 @@
-import SkillsCore from './skills'
+import { CoreList } from './Core'
 import events from './lists/events'
+import skills from './lists/skills'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
@@ -8,59 +9,53 @@ import prefixTemplate from '../../loglevel-prefix-template'
 import { memoize } from 'decko'
 
 prefix.apply(log, prefixTemplate);
-const logger = log.getLogger('eventsCore');
+const logger = log.getLogger('events');
 
-class EventsCore {
+class EventsCore extends CoreList {
   constructor() {
-    const logPrefix = ':constructor] ';
-
-    logger.debug(logPrefix, '-->');
-
-    this.eventsList = events.map(event => ({
+    super(events.map(event => ({
       ...event,
       affect: event.affect.map(skillKey => ({
         label: skillKey,
-        color: new SkillsCore().getSkillByKey(skillKey).color
+        color: skills.find(s => s.key == skillKey).color
       }))
-    }));
+    })));
 
-    logger.debug(logPrefix, '<--');
+    this.state = {
+      ...this.state,
+      current: this.state.list[0]
+    }
+  }
+
+  setEventByKey(key) {
+    const logPrefix = ':setEventByKey] ';
+    logger.info(logPrefix, '-->');
+
+    this.state.current = this.getElementByKey(key);
+
+    logger.info(logPrefix, '<--');
+    return this;
+  }
+
+  setValueByKey(key, value) {
+    const logPrefix = ':setValueByKey] ';
+    logger.info(logPrefix, '-->');
+    logger.warn(logPrefix, 'Method not available with events');
+    logger.info(logPrefix, '<--');
   }
 
   @memoize
-  getList() {
-    const logPrefix = ':getList] ';
+  getValueLabel(key, value) {
+    const logPrefix = ':getValueLabel] ';
     logger.info(logPrefix, '-->');
 
-    let eventsFilteredList = this.eventsList.map(e => ({ key: e.key, label: e.label }));
-
-    logger.info(logPrefix, '<--');
-    return eventsFilteredList;
-  }
-
-  @memoize
-  getEventByKey(eventKey) {
-    const logPrefix = ':getEventByKey] ';
-    logger.info(logPrefix, '-->');
-
-    let event = this.eventsList.find(s => s.key == eventKey);
-    logger.debug(logPrefix, 'event:', event);
-
-    logger.info(logPrefix, '<--');
-    return event;
-  }
-
-  getValueInfo(eventKey, value) {
-    const logPrefix = ':getValueInfo] ';
-    logger.info(logPrefix, '-->');
-
-    let currentEvent = this.getEventByKey(eventKey);
-    let valueInfo = this[currentEvent.labelEvaluate](value);
+    let valueInfo = this[this.getElementByKey(key).labelEvaluate](value);
 
     logger.info(logPrefix, '<--');
     return valueInfo;
   }
 
+  @memoize
   getValueInScale(scale, value) {
     const logPrefix = ':getValueInScale] ';
     logger.info(logPrefix, '-->');
