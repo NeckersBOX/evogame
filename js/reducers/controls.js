@@ -40,7 +40,8 @@ export const playGame = (state, callback) => {
     timers: {
       ...state.timers,
       day: setInterval(callback, state.parameters.find(p => p.key == 'day_time').value)
-    }
+    },
+    eventDisable: false
   };
 
   let [ maxSolutions, worldWidth, worldHeight, initialRange] = [
@@ -126,7 +127,8 @@ export const stopGame = state => {
     status: 'stop',
     generation: 0,
     day: 0,
-    initialized: false
+    initialized: false,
+    eventDisable: true
   };
 
   logger.info(logPrefix, 'Clearing intervals');

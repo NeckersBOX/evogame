@@ -27,7 +27,8 @@ const initialState = {
   parameters: ParametersManager.getList(),
   skills: SkillsManager.getList(),
   events: EventsManager.getList(),
-  event: EventsManager.getEventByKey(EventsManager.getList()[0].key)
+  event: EventsManager.getEventByKey(EventsManager.getList()[0].key),
+  eventDisable: true
 };
 
 const reducerLookup = {
