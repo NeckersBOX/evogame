@@ -22,7 +22,6 @@ class EventsCore extends CoreList {
     })));
 
     this.state = {
-      ...this.state,
       current: this.state.list[0]
     }
   }
@@ -31,7 +30,7 @@ class EventsCore extends CoreList {
     const logPrefix = ':setEventByKey] ';
     logger.info(logPrefix, '-->');
 
-    this.state.current = this.getElementByKey(key);
+    this.setState({ current: this.getElementByKey(key) });
 
     logger.info(logPrefix, '<--');
     return this;

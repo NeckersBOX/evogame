@@ -10,9 +10,9 @@ const logger = log.getLogger('reducer');
 const reducerLookup = {
   EVENT_SET:          data => state.managers.events.setEventByKey(data),
   GLOBAL_ADD_DAY:     data => state.managers.globals.addDay(),
-  GLOBAL_STOP_GAME:   data => state.managers.globals.stopGame(),
-  GLOBAL_PAUSE_GAME:  data => state.managers.globals.pauseGame(),
-  GLOBAL_PLAY_GAME:   data => state.managers.globals.playGame(data),
+  GLOBAL_STOP_GAME:   data => state.managers.globals.stop(),
+  GLOBAL_PAUSE_GAME:  data => state.managers.globals.pause(),
+  GLOBAL_PLAY_GAME:   data => state.managers.globals.play(data),
   SKILL_SET:          data => state.managers.skills.setValueByKey(data.key, +data.value),
   PARAMETER_SET:      data => state.managers.parameters.setValueByKey(data.key, +data.value)
 };

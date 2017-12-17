@@ -7,7 +7,19 @@ const logger = log.getLogger('core');
 
 export class Core {
   constructor() {
-    this.state = {};
+    this._state = {};
+  }
+
+  set state(state) {
+    this._state = {...this._state, ...state};
+  }
+
+  get state() {
+    return this._state;
+  }
+
+  setState(state) {
+    this.state = state;
   }
 
   getCurrentState() {
@@ -22,9 +34,8 @@ export class Core {
 export class CoreList extends Core {
   constructor(list) {
     super();
-    
+
     this.state = {
-      ...this.state,
       list
     };
   }
@@ -52,48 +63,50 @@ export class CoreList extends Core {
     const logPrefix = ':setValueByKey] ';
     logger.info(logPrefix, '-->');
 
-    this.state.list = this.state.list.map(param => {
-      if ( param.key != key ) {
-        return param;
-      }
-
-      if ( param.hasOwnProperty('min') && +value < +param.min ) {
-        logger.info(logPrefix, 'Prevent set a value less than minimum');
-        return param;
-      }
-
-      if ( param.hasOwnProperty('max') && +value > +param.max ) {
-        logger.info(logPrefix, 'Prevent set a value greater than maximum');
-        return param;
-      }
-
-      if ( param.hasOwnProperty('lessThan') ) {
-        logger.info(logPrefix, 'Property ' + param.key + ' must be less than ' + param.lessThan);
-        let lessThanValue = this.getElementByKey(param.lessThan).value;
-
-        if ( value >= lessThanValue ) {
-          logger.info(logPrefix, 'Property not respected ( ' + value + ' >= ' + lessThanValue + ' )');
+    this.setState({
+      list: this.state.list.map(param => {
+        if ( param.key != key ) {
           return param;
         }
-        else {
-          logger.info(logPrefix, 'Property respected ( ' + value + ' < ' + lessThanValue + ' )');
-        }
-      }
 
-      if ( param.hasOwnProperty('greaterThan') ) {
-        logger.info(logPrefix, 'Property ' + param.key + ' must be greater than ' + param.greaterThan);
-        let greaterThanValue = this.getElementByKey(param.greaterThan).value;
-
-        if ( value <= greaterThanValue ) {
-          logger.info(logPrefix, 'Property not respected ( ' + value + ' <= ' + greaterThanValue + ' )');
+        if ( param.hasOwnProperty('min') && +value < +param.min ) {
+          logger.info(logPrefix, 'Prevent set a value less than minimum');
           return param;
         }
-        else {
-          logger.info(logPrefix, 'Property respected ( ' + value + ' > ' + greaterThanValue + ' )');
-        }
-      }
 
-      return {...param, value};
+        if ( param.hasOwnProperty('max') && +value > +param.max ) {
+          logger.info(logPrefix, 'Prevent set a value greater than maximum');
+          return param;
+        }
+
+        if ( param.hasOwnProperty('lessThan') ) {
+          logger.info(logPrefix, 'Property ' + param.key + ' must be less than ' + param.lessThan);
+          let lessThanValue = this.getElementByKey(param.lessThan).value;
+
+          if ( value >= lessThanValue ) {
+            logger.info(logPrefix, 'Property not respected ( ' + value + ' >= ' + lessThanValue + ' )');
+            return param;
+          }
+          else {
+            logger.info(logPrefix, 'Property respected ( ' + value + ' < ' + lessThanValue + ' )');
+          }
+        }
+
+        if ( param.hasOwnProperty('greaterThan') ) {
+          logger.info(logPrefix, 'Property ' + param.key + ' must be greater than ' + param.greaterThan);
+          let greaterThanValue = this.getElementByKey(param.greaterThan).value;
+
+          if ( value <= greaterThanValue ) {
+            logger.info(logPrefix, 'Property not respected ( ' + value + ' <= ' + greaterThanValue + ' )');
+            return param;
+          }
+          else {
+            logger.info(logPrefix, 'Property respected ( ' + value + ' > ' + greaterThanValue + ' )');
+          }
+        }
+
+        return {...param, value};
+      })
     });
 
     logger.info(logPrefix, '<--');
