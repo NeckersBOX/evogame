@@ -52,11 +52,21 @@ export class CoreList extends Core {
     const logPrefix = ':getElementByKey] ';
     logger.info(logPrefix, '-->');
 
-    let skill = this.state.list.find(s => s.key == key);
-    logger.debug(logPrefix, 'skill:', skill);
+    let elem = this.state.list.find(e => e.key == key);
+    logger.debug(logPrefix, 'key:', key, 'element:', elem);
 
     logger.info(logPrefix, '<--');
-    return skill;
+    return elem;
+  }
+
+  getValueByKey(key) {
+    const logPrefix = ':getValueByKey] ';
+    logger.info(logPrefix, '-->');
+
+    let value = this.getElementByKey(key).value;
+
+    logger.info(logPrefix, '<--');
+    return value;
   }
 
   setValueByKey(key, value) {

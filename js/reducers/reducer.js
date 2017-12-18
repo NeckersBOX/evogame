@@ -8,13 +8,13 @@ prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('reducer');
 
 const reducerLookup = {
-  EVENT_SET:          data => state.managers.events.setEventByKey(data),
-  GLOBAL_ADD_DAY:     data => state.managers.globals.addDay(),
-  GLOBAL_STOP_GAME:   data => state.managers.globals.stop(),
-  GLOBAL_PAUSE_GAME:  data => state.managers.globals.pause(),
-  GLOBAL_PLAY_GAME:   data => state.managers.globals.play(data),
-  SKILL_SET:          data => state.managers.skills.setValueByKey(data.key, +data.value),
-  PARAMETER_SET:      data => state.managers.parameters.setValueByKey(data.key, +data.value)
+  EVENT_SET:          (state, data) => state.managers.events.setEventByKey(data),
+  GLOBAL_ADD_DAY:     (state, data) => state.managers.globals.addDay(),
+  GLOBAL_STOP_GAME:   (state, data) => state.managers.globals.stop(),
+  GLOBAL_PAUSE_GAME:  (state, data) => state.managers.globals.pause(),
+  GLOBAL_PLAY_GAME:   (state, data) => state.managers.globals.play(state, data),
+  SKILL_SET:          (state, data) => state.managers.skills.setValueByKey(data.key, +data.value),
+  PARAMETER_SET:      (state, data) => state.managers.parameters.setValueByKey(data.key, +data.value)
 };
 
 const reducer = (state, action) => {
