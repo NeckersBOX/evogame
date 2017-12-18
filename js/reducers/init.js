@@ -1,7 +1,8 @@
-import SkillsManager from '../managers/skills'
-import ParametersManager from '../managers/parameters'
-import EventsManager from '../managers/events'
-import GlobalsManager from '../managers/globals'
+import SkillsManager from '../managers/SkillsManager'
+import ParametersManager from '../managers/ParametersManager'
+import EventsManager from '../managers/EventsManager'
+import GlobalsManager from '../managers/GlobalsManager'
+import SolutionsManager from '../managers/SolutionsManager'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
@@ -34,7 +35,8 @@ const initState = () => {
       events: new EventsManager(),
       globals: new GlobalsManager(),
       skills: new SkillsManager(),
-      parameters: new ParametersManager()
+      parameters: new ParametersManager(),
+      solutions: new SolutionsManager()
     }
   };
   logger.info(logPrefix, 'Managers initialized');
@@ -45,7 +47,8 @@ const initState = () => {
     events: nextState.managers.events.getCurrentState(),
     globals: nextState.managers.globals.getCurrentState(),
     skills: nextState.managers.skills.getCurrentState(),
-    parameters: nextState.managers.parameters.getCurrentState()
+    parameters: nextState.managers.parameters.getCurrentState(),
+    solutions: nextState.managers.solutions.getCurrentState()
   };
   logger.info(logPrefix, 'Manager states initialized');
 
