@@ -91,7 +91,7 @@ class GlobalsManager extends GlobalsCore {
     }
 
     solutions.addFitnessEvaluation(state.managers.skills);
-    solutions.generateSolutionsColor();
+    solutions.addSolutionsColors();
 
     logger.info(logPrefix, '<--');
     return this;
