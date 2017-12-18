@@ -141,6 +141,30 @@ class GlobalsManager extends GlobalsCore {
     logger.info(logPrefix, '<--');
     return this;
   }
+
+  addDay(state) {
+    const logPrefix = ':addDay] ';
+    logger.debug(logPrefix, '-->');
+
+    if ( this.state.day == state.managers.parameters.getValueByKey('days_per_generation') ) {
+      logger.info('End of generation', this.state.generation);
+
+      this.setState({
+        day: 1,
+        generation: this.state.generation + 1
+      });
+    }
+    else {
+      logger.debug('End of day', this.state.day, 'in generation', this.state.generation);
+
+      this.setState({
+        day: this.state.day + 1
+      });
+    }
+
+    logger.debug(logPrefix, '<--');
+    return this;
+  }
 }
 
 export default GlobalsManager;

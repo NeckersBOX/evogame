@@ -9,7 +9,7 @@ const logger = log.getLogger('reducer');
 
 const reducerLookup = {
   EVENT_SET:          (state, data) => state.managers.events.setEventByKey(data),
-  GLOBAL_ADD_DAY:     (state, data) => state.managers.globals.addDay(),
+  GLOBAL_ADD_DAY:     (state, data) => state.managers.globals.addDay(state),
   GLOBAL_STOP_GAME:   (state, data) => state.managers.globals.stop(),
   GLOBAL_PAUSE_GAME:  (state, data) => state.managers.globals.pause(),
   GLOBAL_PLAY_GAME:   (state, data) => state.managers.globals.play(state, data),
