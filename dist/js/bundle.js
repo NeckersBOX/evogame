@@ -4197,10 +4197,10 @@ var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log('Log level:', "debug" || 'info');
+console.log('Log level:', "info" || 'info');
 
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-(0, _loglevel.setLevel)("debug" || 'info');
+(0, _loglevel.setLevel)("info" || 'info');
 
 window.addEventListener('load', function () {
   var logPrefix = ':loadEvent] ';
@@ -6947,7 +6947,7 @@ var Skills = (_class = function (_Component) {
         logger.debug(logPrefix, 'Prevent to change dynamic parameters');
       } else {
         this.props.dispatch({
-          type: 'SET_SKILL',
+          type: 'SKILL_SET',
           data: {
             key: key,
             value: event.target.value
@@ -7273,16 +7273,18 @@ var reducer = function reducer(state, action) {
   var logPrefix = ':reducer] ';
   logger.info(logPrefix, '-->');
   logger.info(logPrefix, 'type:', action.type, 'data:', action.data);
+  logger.debug(logPrefix, 'Current state:', state);
 
   var nextState = state;
   if (action.type == '@@redux/INIT') {
     nextState = (0, _init.initState)();
   } else if (reducerLookup.hasOwnProperty(action.type)) {
-    nextState = _extends({}, state, reducerLookup[action.type](action.data).getCurrentState());
+    nextState = _extends({}, state, reducerLookup[action.type](state, action.data).getCurrentState());
   } else {
     logger.warn(logPrefix, 'Action not recognized.');
   }
 
+  logger.debug(logPrefix, 'New state:', nextState);
   logger.info(logPrefix, '<--');
   return nextState;
 };

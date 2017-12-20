@@ -21,6 +21,7 @@ const reducer = (state, action) => {
   const logPrefix = ':reducer] ';
   logger.info(logPrefix, '-->');
   logger.info(logPrefix, 'type:', action.type, 'data:', action.data);
+  logger.debug(logPrefix, 'Current state:', state);
 
   let nextState = state;
   if ( action.type == '@@redux/INIT' ) {
@@ -29,13 +30,14 @@ const reducer = (state, action) => {
   else if ( reducerLookup.hasOwnProperty(action.type) ) {
     nextState = {
       ...state,
-      ...reducerLookup[action.type](action.data).getCurrentState()
+      ...reducerLookup[action.type](state, action.data).getCurrentState()
     };
   }
   else {
     logger.warn(logPrefix, 'Action not recognized.');
   }
 
+  logger.debug(logPrefix, 'New state:', nextState);
   logger.info(logPrefix, '<--');
   return nextState;
 };
