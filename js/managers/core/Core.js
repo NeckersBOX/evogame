@@ -122,4 +122,18 @@ export class CoreList extends Core {
     logger.info(logPrefix, '<--');
     return this;
   }
+
+  isDynamic(key) {
+    const logPrefix = ':isDynamic] ';
+    logger.debug(logPrefix, '-->');
+
+    let [answer, param] = [ true, this.getElementByKey(key) ];
+
+    if ( param.hasOwnProperty('dynamic') ) {
+      answer = param.dynamic;
+    }
+
+    logger.debug(logPrefix, '<--');
+    return answer;
+  }
 }

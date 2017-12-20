@@ -9,7 +9,6 @@ import Button from 'preact-mui/lib/button'
 
 import { bind } from 'decko'
 import { Badges } from './extra-mui/badges'
-import EventsManager from '../managers/events'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
@@ -23,7 +22,7 @@ class Events extends Component {
     super(props);
 
     this.state = {
-      value: this.props.event.defaultValue
+      value: this.props.events.current.defaultValue
     };
   }
 
@@ -53,23 +52,23 @@ class Events extends Component {
 
     let stage = (
       <Form>
-        <Badges label="Affect" badges={this.props.event.affect} />
-        <Select name="evogame-event" label="Event Type" defaultValue={this.props.event.key} onChange={this.changeEvent}>
-          {this.props.events.map(event =>
+        <Badges label="Affect" badges={this.props.events.current.affect} />
+        <Select name="evogame-event" label="Event Type" defaultValue={this.props.events.current.key} onChange={this.changeEvent}>
+          {this.props.events.list.map(event =>
             <Option value={event.key} label={event.label} />
           )}
         </Select>
         <Input type="number" floatingLabel={true}
-          label={this.props.event.label + ' [ ' + this.props.event.unit + ' ]'}
-          min={this.props.event.min || null}
-          max={this.props.event.max || null}
+          label={this.props.events.current.label + ' [ ' + this.props.events.current.unit + ' ]'}
+          min={this.props.events.current.min || null}
+          max={this.props.events.current.max || null}
           value={this.state.value}
           onChange={e => this.setState({ value: e.target.value })} />
         <label className="evogame--event-label mui--text-caption">
-          {EventsManager.getValueInfo(this.props.event.key, this.state.value)}
+          {this.props.managers.events.getValueLabel(this.props.events.current.key, this.state.value)}
         </label>
         <Button color="primary" style={{ width: '100%' }} raised={true}
-          disabled={this.props.eventDisable}
+          disabled={/*TODO*/ true}
           onClick={this.sendEvent}>
           Send Event
         </Button>

@@ -139,4 +139,4 @@ class EventsManager extends EventsCore {
   }
 }
 
-export default new EventsManager();
+export default EventsManager;

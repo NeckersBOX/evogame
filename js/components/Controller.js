@@ -47,13 +47,13 @@ class Controller extends Component {
 
     let stage = (
       <ButtonsGroup>
-        <ButtonItem active={this.props.status == 'play'} onClick={this.play}>
+        <ButtonItem active={this.props.globals.status == 'play'} onClick={this.play}>
           <i className="fa fa-play" />
         </ButtonItem>
-        <ButtonItem active={this.props.status == 'pause'} onClick={this.pause}>
+        <ButtonItem active={this.props.globals.status == 'pause'} onClick={this.pause}>
           <i className="fa fa-pause" />
         </ButtonItem>
-        <ButtonItem active={this.props.status == 'stop'} onClick={this.stop}>
+        <ButtonItem active={this.props.globals.status == 'stop'} onClick={this.stop}>
           <i className="fa fa-stop" />
         </ButtonItem>
       </ButtonsGroup>

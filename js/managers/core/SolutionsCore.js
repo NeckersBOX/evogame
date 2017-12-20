@@ -12,7 +12,7 @@ class SolutionsCore extends Core {
     super();
 
     this.state = {
-      solutions: []
+      list: []
     };
   }
 
@@ -20,14 +20,14 @@ class SolutionsCore extends Core {
     const logPrefix = ':addSolution] ';
     logger.info(logPrefix, '-->');
 
-    let solutions = this.state.solutions;
+    let list = this.state.list;
 
-    solutions.push({
+    list.push({
       skills,
       position
     });
 
-    this.setState({ solutions });
+    this.setState({ list });
 
     logger.info(logPrefix, '<--');
     return this;
@@ -38,16 +38,16 @@ class SolutionsCore extends Core {
     logger.info(logPrefix, '-->');
 
     logger.info(logPrefix, '<--');
-    return this.state.solutions;
+    return this.state.list;
   }
 
   getSolutionAt(position) {
     const logPrefix = ':getSolutionAt] ';
-    logger.info(logPrefix, '-->');
+    logger.debug(logPrefix, '-->');
 
-    let solution = this.state.solutions.find(s => s.position.x == position.x && s.position.y == position.y);
+    let solution = this.state.list.find(s => s.position.x == position.x && s.position.y == position.y);
 
-    logger.info(logPrefix, '<--');
+    logger.debug(logPrefix, '<--');
     return (solution === undefined) ? null : solution;
   }
 
@@ -61,8 +61,8 @@ class SolutionsCore extends Core {
       max: undefined
     };
 
-    for ( let i in this.state.solutions ) {
-      let currSkillValue = this.state.solutions[i].skills.find(s => s.key == key).value;
+    for ( let i in this.state.list ) {
+      let currSkillValue = this.state.list[i].skills.find(s => s.key == key).value;
       logger.debug(logPrefix, 'currSkillValue:', currSkillValue, 'at Index:', i);
 
       if ( range.min == undefined || currSkillValue < range.min ) {
