@@ -29,7 +29,7 @@ class Skills extends Component {
     }
     else {
       this.props.dispatch({
-        type: 'SET_SKILL',
+        type: 'SKILL_SET',
         data: {
           key,
           value: event.target.value

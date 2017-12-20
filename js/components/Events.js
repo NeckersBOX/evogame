@@ -29,7 +29,7 @@ class Events extends Component {
   @bind
   changeEvent(e) {
     this.props.dispatch({
-      type: 'SET_EVENT',
+      type: 'EVENT_SET',
       data: e.target.value
     });
   }
@@ -39,7 +39,7 @@ class Events extends Component {
     e.preventDefault();
 
     this.props.dispatch({
-      type: 'SEND_EVENT',
+      type: 'EVENT_SEND',
       data: {
         value: this.state.value
       }

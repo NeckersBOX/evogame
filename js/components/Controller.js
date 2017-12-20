@@ -17,9 +17,9 @@ class Controller extends Component {
   @bind
   play() {
     this.props.dispatch({
-      type: 'PLAY_GAME',
+      type: 'GLOBAL_PLAY_GAME',
       data: () => this.props.dispatch({
-        type: 'ADD_DAY',
+        type: 'GLOBAL_ADD_DAY',
         data: null
       })
     });
@@ -28,7 +28,7 @@ class Controller extends Component {
   @bind
   pause() {
     this.props.dispatch({
-      type: 'PAUSE_GAME',
+      type: 'GLOBAL_PAUSE_GAME',
       data: null
     });
   }
@@ -36,7 +36,7 @@ class Controller extends Component {
   @bind
   stop() {
     this.props.dispatch({
-      type: 'STOP_GAME',
+      type: 'GLOBAL_STOP_GAME',
       data: null
     });
   }

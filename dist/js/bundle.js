@@ -5630,7 +5630,7 @@ var Events = (_class = function (_Component) {
     key: 'changeEvent',
     value: function changeEvent(e) {
       this.props.dispatch({
-        type: 'SET_EVENT',
+        type: 'EVENT_SET',
         data: e.target.value
       });
     }
@@ -5640,7 +5640,7 @@ var Events = (_class = function (_Component) {
       e.preventDefault();
 
       this.props.dispatch({
-        type: 'SEND_EVENT',
+        type: 'EVENT_SEND',
         data: {
           value: this.state.value
         }
@@ -6782,7 +6782,7 @@ var Parameters = (_class = function (_Component) {
         logger.debug(logPrefix, 'Prevent to change dynamic parameters');
       } else {
         this.props.dispatch({
-          type: 'SET_PARAMETER',
+          type: 'PARAMETER_SET',
           data: {
             key: key,
             value: event.target.value
@@ -7097,10 +7097,10 @@ var Controller = (_class = function (_Component) {
       var _this2 = this;
 
       this.props.dispatch({
-        type: 'PLAY_GAME',
+        type: 'GLOBAL_PLAY_GAME',
         data: function data() {
           return _this2.props.dispatch({
-            type: 'ADD_DAY',
+            type: 'GLOBAL_ADD_DAY',
             data: null
           });
         }
@@ -7110,7 +7110,7 @@ var Controller = (_class = function (_Component) {
     key: 'pause',
     value: function pause() {
       this.props.dispatch({
-        type: 'PAUSE_GAME',
+        type: 'GLOBAL_PAUSE_GAME',
         data: null
       });
     }
@@ -7118,7 +7118,7 @@ var Controller = (_class = function (_Component) {
     key: 'stop',
     value: function stop() {
       this.props.dispatch({
-        type: 'STOP_GAME',
+        type: 'GLOBAL_STOP_GAME',
         data: null
       });
     }

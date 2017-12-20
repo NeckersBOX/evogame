@@ -29,7 +29,7 @@ class Parameters extends Component {
     }
     else {
       this.props.dispatch({
-        type: 'SET_PARAMETER',
+        type: 'PARAMETER_SET',
         data: {
           key,
           value: event.target.value
