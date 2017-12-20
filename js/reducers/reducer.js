@@ -23,7 +23,7 @@ const reducer = (state, action) => {
   logger.info(logPrefix, 'type:', action.type, 'data:', action.data);
 
   let nextState = state;
-  if ( action.type == 'INIT' ) {
+  if ( action.type == '@@redux/INIT' ) {
     nextState = initState();
   }
   else if ( reducerLookup.hasOwnProperty(action.type) ) {
