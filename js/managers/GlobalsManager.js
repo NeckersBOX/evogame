@@ -40,7 +40,7 @@ class GlobalsManager extends GlobalsCore {
       this.setState({
         status: 'play',
         timers: {
-          day: setInterval(callback, parameters.getSkillByKey('day_time').value)
+          day: setInterval(callback, parameters.getElementByKey('day_time').value)
         }
       });
 
@@ -54,7 +54,7 @@ class GlobalsManager extends GlobalsCore {
       generation: 1,
       day: 1,
       timers: {
-        day: setInterval(callback, parameters.getSkillByKey('day_time').value)
+        day: setInterval(callback, parameters.getElementByKey('day_time').value)
       }
     });
 
@@ -97,7 +97,7 @@ class GlobalsManager extends GlobalsCore {
     return this;
   }
 
-  stop() {
+  stopGame() {
     const logPrefix = ':stop] ';
     logger.info(logPrefix, '-->');
 
@@ -123,7 +123,7 @@ class GlobalsManager extends GlobalsCore {
     return this;
   }
 
-  pause() {
+  pauseGame() {
     const logPrefix = ':pause] ';
     logger.info(logPrefix, '-->');
 

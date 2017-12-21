@@ -8,13 +8,34 @@ prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('reducer');
 
 const reducerLookup = {
-  EVENT_SET:          (state, data) => state.managers.events.setEventByKey(data),
-  GLOBAL_ADD_DAY:     (state, data) => state.managers.globals.addDay(state),
-  GLOBAL_STOP_GAME:   (state, data) => state.managers.globals.stop(),
-  GLOBAL_PAUSE_GAME:  (state, data) => state.managers.globals.pause(),
-  GLOBAL_PLAY_GAME:   (state, data) => state.managers.globals.play(state, data),
-  SKILL_SET:          (state, data) => state.managers.skills.setValueByKey(data.key, +data.value),
-  PARAMETER_SET:      (state, data) => state.managers.parameters.setValueByKey(data.key, +data.value)
+  EVENT_SET: {
+    param: 'events',
+    cb: (state, data) => state.managers.events.setEventByKey(data)
+  },
+  GLOBAL_ADD_DAY: {
+    param: 'globals',
+    cb: (state, data) => state.managers.globals.addDay(state)
+  },
+  GLOBAL_STOP_GAME: {
+    param: 'globals',
+    cb: (state, data) => state.managers.globals.stopGame()
+  },
+  GLOBAL_PAUSE_GAME: {
+    param: 'globals',
+    cb: (state, data) => state.managers.globals.pauseGame()
+  },
+  GLOBAL_PLAY_GAME: {
+    param: 'globals',
+    cb: (state, data) => state.managers.globals.playGame(state, data)
+  },
+  SKILL_SET: {
+    param: 'skills',
+    cb: (state, data) => state.managers.skills.setValueByKey(data.key, +data.value)
+  },
+  PARAMETER_SET: {
+    param: 'parameters',
+    cb: (state, data) => state.managers.parameters.setValueByKey(data.key, +data.value)
+  }
 };
 
 const reducer = (state, action) => {
@@ -28,9 +49,11 @@ const reducer = (state, action) => {
     nextState = initState();
   }
   else if ( reducerLookup.hasOwnProperty(action.type) ) {
+    let ref = reducerLookup[action.type];
+
     nextState = {
       ...state,
-      ...reducerLookup[action.type](state, action.data).getCurrentState()
+      [ref.param]: ref.cb(state, action.data).getCurrentState()
     };
   }
   else {

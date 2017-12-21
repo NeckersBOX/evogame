@@ -43,11 +43,11 @@ class SolutionsCore extends Core {
 
   getSolutionAt(position) {
     const logPrefix = ':getSolutionAt] ';
-    logger.debug(logPrefix, '-->');
+    logger.trace(logPrefix, '-->');
 
     let solution = this.state.list.find(s => s.position.x == position.x && s.position.y == position.y);
 
-    logger.debug(logPrefix, '<--');
+    logger.trace(logPrefix, '<--');
     return (solution === undefined) ? null : solution;
   }
 

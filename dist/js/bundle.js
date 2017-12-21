@@ -2838,13 +2838,14 @@ var Core = exports.Core = function () {
     key: 'setState',
     value: function setState(state) {
       this.state = state;
+      return this;
     }
   }, {
     key: 'getCurrentState',
     value: function getCurrentState() {
       var logPrefix = ':getCurrentState] ';
       logger.debug(logPrefix, '-->');
-
+      logger.trace(logPrefix, this.state);
       logger.debug(logPrefix, '<--');
       return this.state;
     }
@@ -2916,12 +2917,14 @@ var CoreList = exports.CoreList = function (_Core) {
 
       var logPrefix = ':setValueByKey] ';
       logger.info(logPrefix, '-->');
+      logger.debug(logPrefix, 'key:', key, 'value:', value);
 
       this.setState({
         list: this.state.list.map(function (param) {
           if (param.key != key) {
             return param;
           }
+          logger.debug(logPrefix, 'Element found:', param);
 
           if (param.hasOwnProperty('min') && +value < +param.min) {
             logger.info(logPrefix, 'Prevent set a value less than minimum');
@@ -2957,6 +2960,7 @@ var CoreList = exports.CoreList = function (_Core) {
             }
           }
 
+          logger.debug('Element returned:', _extends({}, param, { value: value }));
           return _extends({}, param, { value: value });
         })
       });
@@ -4197,10 +4201,10 @@ var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log('Log level:', "info" || 'info');
+console.log('Log level:', "debug" || 'info');
 
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-(0, _loglevel.setLevel)("info" || 'info');
+(0, _loglevel.setLevel)("debug" || 'info');
 
 window.addEventListener('load', function () {
   var logPrefix = ':loadEvent] ';
@@ -7242,30 +7246,53 @@ var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
 var logger = _loglevel2.default.getLogger('reducer');
 
 var reducerLookup = {
-  EVENT_SET: function EVENT_SET(state, data) {
-    return state.managers.events.setEventByKey(data);
+  EVENT_SET: {
+    param: 'events',
+    cb: function cb(state, data) {
+      return state.managers.events.setEventByKey(data);
+    }
   },
-  GLOBAL_ADD_DAY: function GLOBAL_ADD_DAY(state, data) {
-    return state.managers.globals.addDay(state);
+  GLOBAL_ADD_DAY: {
+    param: 'globals',
+    cb: function cb(state, data) {
+      return state.managers.globals.addDay(state);
+    }
   },
-  GLOBAL_STOP_GAME: function GLOBAL_STOP_GAME(state, data) {
-    return state.managers.globals.stop();
+  GLOBAL_STOP_GAME: {
+    param: 'globals',
+    cb: function cb(state, data) {
+      return state.managers.globals.stopGame();
+    }
   },
-  GLOBAL_PAUSE_GAME: function GLOBAL_PAUSE_GAME(state, data) {
-    return state.managers.globals.pause();
+  GLOBAL_PAUSE_GAME: {
+    param: 'globals',
+    cb: function cb(state, data) {
+      return state.managers.globals.pauseGame();
+    }
   },
-  GLOBAL_PLAY_GAME: function GLOBAL_PLAY_GAME(state, data) {
-    return state.managers.globals.play(state, data);
+  GLOBAL_PLAY_GAME: {
+    param: 'globals',
+    cb: function cb(state, data) {
+      return state.managers.globals.playGame(state, data);
+    }
   },
-  SKILL_SET: function SKILL_SET(state, data) {
-    return state.managers.skills.setValueByKey(data.key, +data.value);
+  SKILL_SET: {
+    param: 'skills',
+    cb: function cb(state, data) {
+      return state.managers.skills.setValueByKey(data.key, +data.value);
+    }
   },
-  PARAMETER_SET: function PARAMETER_SET(state, data) {
-    return state.managers.parameters.setValueByKey(data.key, +data.value);
+  PARAMETER_SET: {
+    param: 'parameters',
+    cb: function cb(state, data) {
+      return state.managers.parameters.setValueByKey(data.key, +data.value);
+    }
   }
 };
 
@@ -7279,7 +7306,9 @@ var reducer = function reducer(state, action) {
   if (action.type == '@@redux/INIT') {
     nextState = (0, _init.initState)();
   } else if (reducerLookup.hasOwnProperty(action.type)) {
-    nextState = _extends({}, state, reducerLookup[action.type](state, action.data).getCurrentState());
+    var ref = reducerLookup[action.type];
+
+    nextState = _extends({}, state, _defineProperty({}, ref.param, ref.cb(state, action.data).getCurrentState()));
   } else {
     logger.warn(logPrefix, 'Action not recognized.');
   }
@@ -8231,7 +8260,7 @@ var GlobalsManager = function (_GlobalsCore) {
         this.setState({
           status: 'play',
           timers: {
-            day: setInterval(callback, parameters.getSkillByKey('day_time').value)
+            day: setInterval(callback, parameters.getElementByKey('day_time').value)
           }
         });
 
@@ -8245,7 +8274,7 @@ var GlobalsManager = function (_GlobalsCore) {
         generation: 1,
         day: 1,
         timers: {
-          day: setInterval(callback, parameters.getSkillByKey('day_time').value)
+          day: setInterval(callback, parameters.getElementByKey('day_time').value)
         }
       });
 
@@ -8288,8 +8317,8 @@ var GlobalsManager = function (_GlobalsCore) {
       return this;
     }
   }, {
-    key: 'stop',
-    value: function stop() {
+    key: 'stopGame',
+    value: function stopGame() {
       var logPrefix = ':stop] ';
       logger.info(logPrefix, '-->');
 
@@ -8315,8 +8344,8 @@ var GlobalsManager = function (_GlobalsCore) {
       return this;
     }
   }, {
-    key: 'pause',
-    value: function pause() {
+    key: 'pauseGame',
+    value: function pauseGame() {
       var logPrefix = ':pause] ';
       logger.info(logPrefix, '-->');
 
@@ -8702,13 +8731,13 @@ var SolutionsCore = function (_Core) {
     key: 'getSolutionAt',
     value: function getSolutionAt(position) {
       var logPrefix = ':getSolutionAt] ';
-      logger.debug(logPrefix, '-->');
+      logger.trace(logPrefix, '-->');
 
       var solution = this.state.list.find(function (s) {
         return s.position.x == position.x && s.position.y == position.y;
       });
 
-      logger.debug(logPrefix, '<--');
+      logger.trace(logPrefix, '<--');
       return solution === undefined ? null : solution;
     }
   }, {

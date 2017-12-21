@@ -20,12 +20,13 @@ export class Core {
 
   setState(state) {
     this.state = state;
+    return this;
   }
 
   getCurrentState() {
     const logPrefix = ':getCurrentState] ';
     logger.debug(logPrefix, '-->');
-
+    logger.trace(logPrefix, this.state);
     logger.debug(logPrefix, '<--');
     return this.state;
   }
@@ -72,12 +73,14 @@ export class CoreList extends Core {
   setValueByKey(key, value) {
     const logPrefix = ':setValueByKey] ';
     logger.info(logPrefix, '-->');
+    logger.debug(logPrefix, 'key:', key, 'value:', value);
 
     this.setState({
       list: this.state.list.map(param => {
         if ( param.key != key ) {
           return param;
         }
+        logger.debug(logPrefix, 'Element found:', param);
 
         if ( param.hasOwnProperty('min') && +value < +param.min ) {
           logger.info(logPrefix, 'Prevent set a value less than minimum');
@@ -115,6 +118,7 @@ export class CoreList extends Core {
           }
         }
 
+        logger.debug('Element returned:', {...param, value});
         return {...param, value};
       })
     });
