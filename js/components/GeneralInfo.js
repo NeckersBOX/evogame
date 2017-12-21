@@ -16,12 +16,12 @@ class GeneralInfo extends Component {
   render() {
     const logPrefix = ':render] ';
     logger.info(logPrefix, '-->');
-
+    
     let stage = (
       <List>
-        <ListItem label="Generation">{this.props.generation}</ListItem>
-        <ListItem label="Solutions">{this.props.solutions.length}</ListItem>
-        <ListItem label="Day">{this.props.day}</ListItem>
+        <ListItem label="Generation">{this.props.globals.generation}</ListItem>
+        <ListItem label="Solutions">{this.props.solutions.list.length}</ListItem>
+        <ListItem label="Day">{this.props.globals.day}</ListItem>
       </List>
     );
 

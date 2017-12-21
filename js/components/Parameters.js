@@ -24,19 +24,18 @@ class Parameters extends Component {
     event.preventDefault();
     logger.debug(logPrefix, '-->');
 
-    if ( this.props.running && this.props.parameters.find(p => p.key == key).dynamic ) {
-      logger.debug(logPrefix, 'Prevent to change value when running');
-      logger.debug(logPrefix, '<--');
-      return;
+    if ( this.props.managers.parameters.isDynamic(key) && this.props.globals.status == 'play' ) {
+      logger.debug(logPrefix, 'Prevent to change dynamic parameters');
     }
-
-    this.props.dispatch({
-      type: 'SET_PARAMETERS',
-      data: {
-        key,
-        value: event.target.value
-      }
-    });
+    else {
+      this.props.dispatch({
+        type: 'PARAMETER_SET',
+        data: {
+          key,
+          value: event.target.value
+        }
+      });
+    }
 
     logger.debug(logPrefix, '<--');
   }
@@ -48,7 +47,7 @@ class Parameters extends Component {
     let stage = (
       <div>
         <Row>
-          {this.props.parameters.map(property =>
+          {this.props.parameters.list.map(property =>
             <Col md="3" sm="6">
               <Input {...{
                 ...property,

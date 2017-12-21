@@ -24,13 +24,18 @@ class Skills extends Component {
     event.preventDefault();
     logger.info(logPrefix, '-->');
 
-    this.props.dispatch({
-      type: 'SET_SKILLS',
-      data: {
-        key,
-        value: event.target.value
-      }
-    });
+    if ( this.props.managers.skills.isDynamic(key) == false && this.props.globals.status == 'play' ) {
+      logger.debug(logPrefix, 'Prevent to change dynamic parameters');
+    }
+    else {
+      this.props.dispatch({
+        type: 'SKILL_SET',
+        data: {
+          key,
+          value: event.target.value
+        }
+      });
+    }
 
     logger.info(logPrefix, '<--');
   }
@@ -42,7 +47,7 @@ class Skills extends Component {
     let stage = (
       <div>
         <Row>
-          {this.props.skills.map(property => {
+          {this.props.skills.list.map(property => {
             logger.debug(logPrefix, 'Generating input for property', property);
 
             return (
