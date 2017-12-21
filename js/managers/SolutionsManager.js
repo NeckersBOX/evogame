@@ -53,24 +53,26 @@ class SolutionsManager extends SolutionsCore {
     logger.debug(logPrefix, 'ranges:', ranges);
     logger.info(logPrefix, 'Generate fitness for each solution skill');
 
-    let solutions = this.state.list.map((solution, idx) => {
+    let list = this.state.list.map((solution, idx) => {
       logger.debug(logPrefix, 'Current solution index:', idx);
 
       return {
         ...solution,
         skills: solution.skills.map(skill => {
           logger.debug(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
+
           let currSkillRange = ranges.find(r => r.skill == skill.key);
+          logger.debug(logPrefix, 'Current skill ranges:', currSkillRange);
 
           return {
             ...skill,
-            fitness: skillsManager.getFitnessByKey(skill.key, currSkillRange.min, currSkillRange.max)
+            fitness: skillsManager.getFitness(skill, currSkillRange.min, currSkillRange.max)
           };
         })
       };
     });
 
-    this.setState({ solutions });
+    this.setState({ list });
 
     logger.info(logPrefix, '<--');
     return this;
@@ -80,7 +82,7 @@ class SolutionsManager extends SolutionsCore {
     const logPrefix = ':generateSolutionColor] ';
     logger.info(logPrefix, '-->');
 
-    let solutions = this.state.list.map((solution, idx) => {
+    let list = this.state.list.map((solution, idx) => {
       logger.info(logPrefix, 'Generate colors for solution ' + (idx + 1) + '/' + this.state.list.length);
       logger.debug(logPrefix, '-->');
 
@@ -126,7 +128,7 @@ class SolutionsManager extends SolutionsCore {
       };
     });
 
-    this.setState({ solutions });
+    this.setState({ list });
 
     logger.info(logPrefix, '<--');
     return this;

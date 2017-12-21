@@ -7267,7 +7267,7 @@ var reducerLookup = {
   GLOBAL_STOP_GAME: {
     param: 'globals',
     cb: function cb(state, data) {
-      return state.managers.globals.stopGame();
+      return state.managers.globals.stopGame(state);
     }
   },
   GLOBAL_PAUSE_GAME: {
@@ -7499,13 +7499,14 @@ var SkillsManager = (_class = function (_SkillsCore) {
   }
 
   _createClass(SkillsManager, [{
-    key: 'getFitnessByKey',
-    value: function getFitnessByKey(key, min, max) {
+    key: 'getFitness',
+    value: function getFitness(skill, min, max) {
       var logPrefix = ':getFitnessByKey] ';
       logger.info(logPrefix, '-->');
 
-      var element = this.getElementByKey(key);
-      var fitness = this[element.generateFitness](element.value, min, max);
+      var element = this.getElementByKey(skill.key);
+      var fitness = this[element.generateFitness](skill.value, min, max);
+      logger.debug(logPrefix, 'fitness:', fitness);
 
       logger.info(logPrefix, '<--');
       return fitness;
@@ -7513,22 +7514,58 @@ var SkillsManager = (_class = function (_SkillsCore) {
   }, {
     key: 'fitnessCold',
     value: function fitnessCold(value, min, max) {
-      return max == min ? 1 : (max - value) / Math.abs(max - min);
+      var logPrefix = ':fitnessCold] ';
+      logger.debug(logPrefix, '-->');
+
+      var result = 1;
+      if (max != min) {
+        result = (max - value) / Math.abs(max - min);
+      }
+
+      logger.debug(logPrefix, '<--');
+      return result;
     }
   }, {
     key: 'fitnessHeat',
     value: function fitnessHeat(value, min, max) {
-      return max == min ? 1 : (value - min) / Math.abs(max - min);
+      var logPrefix = ':fitnessHeat] ';
+      logger.debug(logPrefix, '-->');
+
+      var result = 1;
+      if (max != min) {
+        result = (value - min) / Math.abs(max - min);
+      }
+
+      logger.debug(logPrefix, '<--');
+      return result;
     }
   }, {
     key: 'fitnessWater',
     value: function fitnessWater(value, min, max) {
-      return max == min ? 1 : (value - min) / Math.abs(max - min);
+      var logPrefix = ':fitnessWater] ';
+      logger.debug(logPrefix, '-->');
+
+      var result = 1;
+      if (max != min) {
+        result = (value - min) / Math.abs(max - min);
+      }
+
+      logger.debug(logPrefix, '<--');
+      return result;
     }
   }, {
     key: 'fitnessWind',
     value: function fitnessWind(value, min, max) {
-      return max == min ? 1 : (value - min) / Math.abs(max - min);
+      var logPrefix = ':fitnessWind] ';
+      logger.debug(logPrefix, '-->');
+
+      var result = 1;
+      if (max != min) {
+        result = (value - min) / Math.abs(max - min);
+      }
+
+      logger.debug(logPrefix, '<--');
+      return result;
     }
   }]);
 
@@ -8318,7 +8355,8 @@ var GlobalsManager = function (_GlobalsCore) {
     }
   }, {
     key: 'stopGame',
-    value: function stopGame() {
+    value: function stopGame(state) {
+      /* TODO: clear solutions */
       var logPrefix = ':stop] ';
       logger.info(logPrefix, '-->');
 
@@ -8328,17 +8366,18 @@ var GlobalsManager = function (_GlobalsCore) {
         return this;
       }
 
+      logger.info(logPrefix, 'Clear intervals');
+      clearInterval(this.state.timers.day);
+
+      logger.info(logPrefix, 'Clear solutions');
+      state.managers.solutions.removeAll();
+
       logger.info(logPrefix, 'Reset world');
       this.setState({
         status: 'stop',
         day: 0,
-        generation: 0,
-        initialized: false,
-        solutions: null // TODO
+        generation: 0
       });
-
-      logger.info(logPrefix, 'Clear intervals');
-      clearInterval(this.state.timers.day);
 
       logger.info(logPrefix, '<--');
       return this;
@@ -8543,24 +8582,26 @@ var SolutionsManager = function (_SolutionsCore) {
       logger.debug(logPrefix, 'ranges:', ranges);
       logger.info(logPrefix, 'Generate fitness for each solution skill');
 
-      var solutions = this.state.list.map(function (solution, idx) {
+      var list = this.state.list.map(function (solution, idx) {
         logger.debug(logPrefix, 'Current solution index:', idx);
 
         return _extends({}, solution, {
           skills: solution.skills.map(function (skill) {
             logger.debug(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
+
             var currSkillRange = ranges.find(function (r) {
               return r.skill == skill.key;
             });
+            logger.debug(logPrefix, 'Current skill ranges:', currSkillRange);
 
             return _extends({}, skill, {
-              fitness: skillsManager.getFitnessByKey(skill.key, currSkillRange.min, currSkillRange.max)
+              fitness: skillsManager.getFitness(skill, currSkillRange.min, currSkillRange.max)
             });
           })
         });
       });
 
-      this.setState({ solutions: solutions });
+      this.setState({ list: list });
 
       logger.info(logPrefix, '<--');
       return this;
@@ -8573,7 +8614,7 @@ var SolutionsManager = function (_SolutionsCore) {
       var logPrefix = ':generateSolutionColor] ';
       logger.info(logPrefix, '-->');
 
-      var solutions = this.state.list.map(function (solution, idx) {
+      var list = this.state.list.map(function (solution, idx) {
         logger.info(logPrefix, 'Generate colors for solution ' + (idx + 1) + '/' + _this3.state.list.length);
         logger.debug(logPrefix, '-->');
 
@@ -8636,7 +8677,7 @@ var SolutionsManager = function (_SolutionsCore) {
         });
       });
 
-      this.setState({ solutions: solutions });
+      this.setState({ list: list });
 
       logger.info(logPrefix, '<--');
       return this;
@@ -8719,6 +8760,17 @@ var SolutionsCore = function (_Core) {
       return this;
     }
   }, {
+    key: 'removeAll',
+    value: function removeAll() {
+      var logPrefix = ':removeAll] ';
+      logger.info(logPrefix, '-->');
+
+      this.setState({ list: [] });
+
+      logger.info(logPrefix, '<--');
+      return this;
+    }
+  }, {
     key: 'getList',
     value: function getList() {
       var logPrefix = ':getList] ';
@@ -8745,7 +8797,7 @@ var SolutionsCore = function (_Core) {
     value: function getSkillRangeByKey(key) {
       var logPrefix = ':getSkillRange] ';
       logger.debug(logPrefix, '-->');
-      logger.debug(logPrefix, 'Skill key:', skill);
+      logger.debug(logPrefix, 'Skill key:', key);
 
       var range = {
         min: undefined,

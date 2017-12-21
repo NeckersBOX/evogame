@@ -18,7 +18,7 @@ const reducerLookup = {
   },
   GLOBAL_STOP_GAME: {
     param: 'globals',
-    cb: (state, data) => state.managers.globals.stopGame()
+    cb: (state, data) => state.managers.globals.stopGame(state)
   },
   GLOBAL_PAUSE_GAME: {
     param: 'globals',

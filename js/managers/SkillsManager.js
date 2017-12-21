@@ -14,12 +14,13 @@ class SkillsManager extends SkillsCore {
     super();
   }
 
-  getFitnessByKey(key, min, max) {
+  getFitness(skill, min, max) {
     const logPrefix = ':getFitnessByKey] ';
     logger.info(logPrefix, '-->');
 
-    let element = this.getElementByKey(key);
-    let fitness = this[element.generateFitness](element.value, min, max);
+    let element = this.getElementByKey(skill.key);
+    let fitness = this[element.generateFitness](skill.value, min, max);
+    logger.debug(logPrefix, 'fitness:', fitness);
 
     logger.info(logPrefix, '<--');
     return fitness;
@@ -27,22 +28,58 @@ class SkillsManager extends SkillsCore {
 
   @memoize
   fitnessCold(value, min, max) {
-    return max == min ? 1 : ((max - value) / Math.abs(max - min));
+    const logPrefix = ':fitnessCold] ';
+    logger.debug(logPrefix, '-->');
+
+    let result = 1;
+    if ( max != min ) {
+      result = (max - value) / Math.abs(max - min);
+    }
+
+    logger.debug(logPrefix, '<--');
+    return result;
   }
 
   @memoize
   fitnessHeat(value, min, max) {
-    return max == min ? 1 : ((value - min) / Math.abs(max - min));
+    const logPrefix = ':fitnessHeat] ';
+    logger.debug(logPrefix, '-->');
+
+    let result = 1;
+    if ( max != min ) {
+      result = (value - min) / Math.abs(max - min);
+    }
+
+    logger.debug(logPrefix, '<--');
+    return result;
   }
 
   @memoize
   fitnessWater(value, min, max) {
-    return max == min ? 1 : ((value - min) / Math.abs(max - min));
+    const logPrefix = ':fitnessWater] ';
+    logger.debug(logPrefix, '-->');
+
+    let result = 1;
+    if ( max != min ) {
+      result = (value - min) / Math.abs(max - min);
+    }
+
+    logger.debug(logPrefix, '<--');
+    return result;
   }
 
   @memoize
   fitnessWind(value, min, max) {
-    return max == min ? 1 : ((value - min) / Math.abs(max - min));
+    const logPrefix = ':fitnessWind] ';
+    logger.debug(logPrefix, '-->');
+
+    let result = 1;
+    if ( max != min ) {
+      result = (value - min) / Math.abs(max - min);
+    }
+
+    logger.debug(logPrefix, '<--');
+    return result;
   }
 }
 

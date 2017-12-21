@@ -97,7 +97,8 @@ class GlobalsManager extends GlobalsCore {
     return this;
   }
 
-  stopGame() {
+  stopGame(state) {
+    /* TODO: clear solutions */
     const logPrefix = ':stop] ';
     logger.info(logPrefix, '-->');
 
@@ -107,17 +108,18 @@ class GlobalsManager extends GlobalsCore {
       return this;
     }
 
+    logger.info(logPrefix, 'Clear intervals');
+    clearInterval(this.state.timers.day);
+
+    logger.info(logPrefix, 'Clear solutions');
+    state.managers.solutions.removeAll();
+
     logger.info(logPrefix, 'Reset world');
     this.setState({
       status: 'stop',
       day: 0,
-      generation: 0,
-      initialized: false,
-      solutions: null // TODO
+      generation: 0
     });
-
-    logger.info(logPrefix, 'Clear intervals');
-    clearInterval(this.state.timers.day);
 
     logger.info(logPrefix, '<--');
     return this;

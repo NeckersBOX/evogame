@@ -33,6 +33,16 @@ class SolutionsCore extends Core {
     return this;
   }
 
+  removeAll() {
+    const logPrefix = ':removeAll] ';
+    logger.info(logPrefix, '-->');
+
+    this.setState({ list: [] });
+    
+    logger.info(logPrefix, '<--');
+    return this;
+  }
+
   getList() {
     const logPrefix = ':getList] ';
     logger.info(logPrefix, '-->');
@@ -54,7 +64,7 @@ class SolutionsCore extends Core {
   getSkillRangeByKey(key) {
     const logPrefix = ':getSkillRange] ';
     logger.debug(logPrefix, '-->');
-    logger.debug(logPrefix, 'Skill key:', skill);
+    logger.debug(logPrefix, 'Skill key:', key);
 
     let range = {
       min: undefined,
