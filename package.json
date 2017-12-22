@@ -1,6 +1,6 @@
 {
   "name": "evogame",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "A tiny experiment",
   "main": "js/main.js",
   "scripts": {
