@@ -46,9 +46,35 @@ class Events extends Component {
     });
   }
 
+  @bind
+  changeValue(e) {
+    const logPrefix = ':changeValue] ';
+    logger.info(logPrefix, '-->');
+    e.preventDefault();
+
+    let [event, value] = [this.props.events.current, +e.target.value];
+
+    if ( event.hasOwnProperty('min') && value < event.min ) {
+      logger.info(logPrefix, 'Prevent to set a value less than minimum.');
+      value = event.min;
+    }
+
+    if ( event.hasOwnProperty('max') && value > event.max ) {
+      logger.info(logPrefix, 'Prevent to set a value more than maximum.');
+      value = event.max;
+    }
+
+    this.setState({ value });
+    logger.info(logPrefix, '<--');
+  }
+
   render() {
     const logPrefix = ':render] ';
     logger.info(logPrefix, '-->');
+
+    logger.debug(logPrefix, 'Get label for current event\'s value');
+    let label = this.props.managers.events.getValueLabel(this.props.events.current.key, this.state.value);
+    logger.debug(logPrefix, 'Label retrieved:', label);
 
     let stage = (
       <Form>
@@ -63,9 +89,9 @@ class Events extends Component {
           min={this.props.events.current.min || null}
           max={this.props.events.current.max || null}
           value={this.state.value}
-          onChange={e => this.setState({ value: e.target.value })} />
+          onChange={this.changeValue} />
         <label className="evogame--event-label mui--text-caption">
-          {this.props.managers.events.getValueLabel(this.props.events.current.key, this.state.value)}
+          {label}
         </label>
         <Button color="primary" style={{ width: '100%' }} raised={true}
           disabled={this.props.globals.status != 'play'}

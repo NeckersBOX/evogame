@@ -5675,12 +5675,39 @@ var Events = (_class = function (_Component) {
       });
     }
   }, {
+    key: 'changeValue',
+    value: function changeValue(e) {
+      var logPrefix = ':changeValue] ';
+      logger.info(logPrefix, '-->');
+      e.preventDefault();
+
+      var _ref = [this.props.events.current, +e.target.value],
+          event = _ref[0],
+          value = _ref[1];
+
+
+      if (event.hasOwnProperty('min') && value < event.min) {
+        logger.info(logPrefix, 'Prevent to set a value less than minimum.');
+        value = event.min;
+      }
+
+      if (event.hasOwnProperty('max') && value > event.max) {
+        logger.info(logPrefix, 'Prevent to set a value more than maximum.');
+        value = event.max;
+      }
+
+      this.setState({ value: value });
+      logger.info(logPrefix, '<--');
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
-
       var logPrefix = ':render] ';
       logger.info(logPrefix, '-->');
+
+      logger.debug(logPrefix, 'Get label for current event\'s value');
+      var label = this.props.managers.events.getValueLabel(this.props.events.current.key, this.state.value);
+      logger.debug(logPrefix, 'Label retrieved:', label);
 
       var stage = (0, _preact.h)(
         _form2.default,
@@ -5698,13 +5725,11 @@ var Events = (_class = function (_Component) {
           min: this.props.events.current.min || null,
           max: this.props.events.current.max || null,
           value: this.state.value,
-          onChange: function onChange(e) {
-            return _this2.setState({ value: e.target.value });
-          } }),
+          onChange: this.changeValue }),
         (0, _preact.h)(
           'label',
           { className: 'evogame--event-label mui--text-caption' },
-          this.props.managers.events.getValueLabel(this.props.events.current.key, this.state.value)
+          label
         ),
         (0, _preact.h)(
           _button2.default,
@@ -5721,7 +5746,7 @@ var Events = (_class = function (_Component) {
   }]);
 
   return Events;
-}(_preact.Component), (_applyDecoratedDescriptor(_class.prototype, 'changeEvent', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'changeEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'sendEvent', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'sendEvent'), _class.prototype)), _class);
+}(_preact.Component), (_applyDecoratedDescriptor(_class.prototype, 'changeEvent', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'changeEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'sendEvent', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'sendEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'changeValue', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'changeValue'), _class.prototype)), _class);
 exports.default = (0, _preactRedux.connect)(function (state) {
   return state;
 })(Events);
@@ -8042,6 +8067,8 @@ var EventsCore = function (_CoreList) {
       logger.info(logPrefix, '-->');
       logger.warn(logPrefix, 'Method not available with events');
       logger.info(logPrefix, '<--');
+
+      return this;
     }
   }]);
 
@@ -8081,7 +8108,7 @@ exports.default = [{
 }, {
   key: 'sandstorm',
   label: 'Sandstorm',
-  affect: ['heat', 'wind'],
+  affect: ['heat', 'cold', 'wind'],
   min: 0,
   defaultValue: 10,
   unit: 'km/h',
@@ -8090,7 +8117,7 @@ exports.default = [{
 }, {
   key: 'snow',
   label: 'Snow',
-  affect: ['cold'],
+  affect: ['cold', 'heat'],
   min: 0,
   defaultValue: 4,
   unit: 'cm/h',
@@ -8108,7 +8135,7 @@ exports.default = [{
 }, {
   key: 'fire',
   label: 'Fire',
-  affect: ['heat'],
+  affect: ['heat', 'cold'],
   min: 0,
   defaultValue: 40,
   unit: '°C',
@@ -8191,7 +8218,7 @@ var LabelEvaluate = (_class = function () {
   _createClass(LabelEvaluate, null, [{
     key: 'labelWind',
     value: function labelWind(value) {
-      var logPrefix = ':evaluateWind] ';
+      var logPrefix = ':labelWind] ';
       logger.info(logPrefix, '-->');
 
       var beaufortScale = [{ label: 'Calm', value: 1 }, { label: 'Light Air', value: 5 }, { label: 'Light Breeze', value: 11 }, { label: 'Gentle Breeze', value: 19 }, { label: 'Moderate Breeze', value: 28 }, { label: 'Fresh Breeze', value: 38 }, { label: 'Strong Breeze', value: 49 }, { label: 'Moderate Gale', value: 61 }, { label: 'Fresh Gale', value: 74 }, { label: 'Strong Gale', value: 88 }, { label: 'Storm', value: 102 }, { label: 'Violent Storm', value: 117 }, { label: 'Hurricane Force', value: -1 }];
@@ -8204,7 +8231,7 @@ var LabelEvaluate = (_class = function () {
   }, {
     key: 'labelRain',
     value: function labelRain(value) {
-      var logPrefix = ':evaluateRain] ';
+      var logPrefix = ':labelRain] ';
       logger.info(logPrefix, '-->');
 
       var rainScale = [{ label: 'Fog', value: 1 }, { label: 'Drizzle', value: 4 }, { label: 'Heavy Rain', value: 10 }, { label: 'Shower', value: 30 }, { label: 'Cloudburst', value: -1 }];
@@ -8217,7 +8244,7 @@ var LabelEvaluate = (_class = function () {
   }, {
     key: 'labelSandstorm',
     value: function labelSandstorm(value) {
-      var logPrefix = ':evaluateSandstorm] ';
+      var logPrefix = ':labelSandstorm] ';
       logger.info(logPrefix, '-->');
 
       var sandstormScale = [{ label: 'Smoke In The Eyes', value: 10 }, { label: 'Regular Sandstorm', value: 35 }, { label: 'Haboob', value: 90 }, { label: 'Martian Sandstorm', value: -1 }];
@@ -8230,7 +8257,7 @@ var LabelEvaluate = (_class = function () {
   }, {
     key: 'labelSnow',
     value: function labelSnow(value) {
-      var logPrefix = ':evaluateSnow] ';
+      var logPrefix = ':labelSnow] ';
       logger.info(logPrefix, '-->');
 
       var snowScale = [{ label: 'Regular Snow', value: 2 }, { label: 'Heavy Snow', value: 5 }];
@@ -8243,7 +8270,7 @@ var LabelEvaluate = (_class = function () {
   }, {
     key: 'labelWave',
     value: function labelWave(value) {
-      var logPrefix = ':evaluateWave] ';
+      var logPrefix = ':labelWave] ';
       logger.info(logPrefix, '-->');
 
       var waveScale = [{ label: 'Like A Mirror', value: 1 }, { label: 'Moderate Wave', value: 3 }, { label: 'High Wave', value: 8 }, { label: 'Rogue Wave', value: 16 }, { label: 'Tsunami', value: -1 }];
@@ -8251,12 +8278,12 @@ var LabelEvaluate = (_class = function () {
       var result = (0, _generics.getValueInScale)(waveScale, value);
 
       logger.info(logPrefix, '<--');
-      return result;
+      return result.label;
     }
   }, {
     key: 'labelFire',
     value: function labelFire(value) {
-      var logPrefix = ':evaluateFire] ';
+      var logPrefix = ':labelFire] ';
       logger.info(logPrefix, '-->');
 
       var fireScale = [{ label: 'Earth Surface', value: 21 }, { label: 'Room Temperature', value: 28 }, { label: 'Minimum Human Body', value: 37 }, { label: 'Human Body', value: 38 }, { label: 'Cat Body', value: 39 }, { label: 'Death Valley', value: 90 }, { label: 'Soup', value: 100 }, { label: 'Water Boiling', value: 150 }, { label: 'Mercury', value: 200 }, { label: 'Venus', value: 500 }, { label: 'Burn Burn', value: -1 }];
@@ -8264,7 +8291,7 @@ var LabelEvaluate = (_class = function () {
       var result = (0, _generics.getValueInScale)(fireScale, value);
 
       logger.info(logPrefix, '<--');
-      return result;
+      return result.label;
     }
   }]);
 
@@ -8349,7 +8376,9 @@ var DamageEvaluate = (_class = function () {
       logger.info(logPrefix, '-->');
 
       logger.info(logPrefix, '<--');
-      return { wind: value };
+      return {
+        wind: value
+      };
     }
   }, {
     key: 'damageRain',
@@ -8363,10 +8392,58 @@ var DamageEvaluate = (_class = function () {
         wind: value * 2.2
       };
     }
+  }, {
+    key: 'damageFire',
+    value: function damageFire(value) {
+      var logPrefix = ':damageFire] ';
+      logger.info(logPrefix, '-->');
+
+      logger.info(logPrefix, '<--');
+      return {
+        heat: value,
+        cold: value
+      };
+    }
+  }, {
+    key: 'damageSnow',
+    value: function damageSnow(value) {
+      var logPrefix = ':damageSnow] ';
+      logger.info(logPrefix, '-->');
+
+      logger.info(logPrefix, '<--');
+      return {
+        cold: 1 / 24 * value,
+        heat: 1 / 24 * value
+      };
+    }
+  }, {
+    key: 'damageWave',
+    value: function damageWave(value) {
+      var logPrefix = ':damageWave] ';
+      logger.info(logPrefix, '-->');
+
+      logger.info(logPrefix, '<--');
+      return {
+        water: value
+      };
+    }
+  }, {
+    key: 'damageSandstorm',
+    value: function damageSandstorm(value) {
+      var logPrefix = ':damageSandstorm] ';
+      logger.info(logPrefix, '-->');
+
+      logger.info(logPrefix, '<--');
+      return {
+        wind: value,
+        heat: 50 - value / 10,
+        cold: 50 - value / 10
+      };
+    }
   }]);
 
   return DamageEvaluate;
-}(), (_applyDecoratedDescriptor(_class, 'damageWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageWind'), _class), _applyDecoratedDescriptor(_class, 'damageRain', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageRain'), _class)), _class);
+}(), (_applyDecoratedDescriptor(_class, 'damageWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageWind'), _class), _applyDecoratedDescriptor(_class, 'damageRain', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageRain'), _class), _applyDecoratedDescriptor(_class, 'damageFire', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageFire'), _class), _applyDecoratedDescriptor(_class, 'damageSnow', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageSnow'), _class), _applyDecoratedDescriptor(_class, 'damageWave', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageWave'), _class), _applyDecoratedDescriptor(_class, 'damageSandstorm', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageSandstorm'), _class)), _class);
 exports.default = DamageEvaluate;
 
 /***/ }),

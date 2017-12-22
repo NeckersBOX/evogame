@@ -39,6 +39,8 @@ class EventsCore extends CoreList {
     logger.info(logPrefix, '-->');
     logger.warn(logPrefix, 'Method not available with events');
     logger.info(logPrefix, '<--');
+
+    return this;
   }
 }
 

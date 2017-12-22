@@ -22,7 +22,7 @@ export default [
   {
     key: 'sandstorm',
     label: 'Sandstorm',
-    affect: [ 'heat', 'wind' ],
+    affect: [ 'heat', 'cold', 'wind' ],
     min: 0,
     defaultValue: 10,
     unit: 'km/h',
@@ -32,7 +32,7 @@ export default [
   {
     key: 'snow',
     label: 'Snow',
-    affect: [ 'cold' ],
+    affect: [ 'cold', 'heat' ],
     min: 0,
     defaultValue: 4,
     unit: 'cm/h',
@@ -52,7 +52,7 @@ export default [
   {
     key: 'fire',
     label: 'Fire',
-    affect: [ 'heat' ],
+    affect: [ 'heat', 'cold' ],
     min: 0,
     defaultValue: 40,
     unit: '°C',

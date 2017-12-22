@@ -11,7 +11,7 @@ const logger = log.getLogger('labelEvaluate');
 class LabelEvaluate {
   @memoize
   static labelWind(value) {
-    const logPrefix = ':evaluateWind] ';
+    const logPrefix = ':labelWind] ';
     logger.info(logPrefix, '-->');
 
     const beaufortScale = [
@@ -38,7 +38,7 @@ class LabelEvaluate {
 
   @memoize
   static labelRain(value) {
-    const logPrefix = ':evaluateRain] ';
+    const logPrefix = ':labelRain] ';
     logger.info(logPrefix, '-->');
 
     const rainScale = [
@@ -57,7 +57,7 @@ class LabelEvaluate {
 
   @memoize
   static labelSandstorm(value) {
-    const logPrefix = ':evaluateSandstorm] ';
+    const logPrefix = ':labelSandstorm] ';
     logger.info(logPrefix, '-->');
 
     const sandstormScale = [
@@ -75,7 +75,7 @@ class LabelEvaluate {
 
   @memoize
   static labelSnow(value) {
-    const logPrefix = ':evaluateSnow] ';
+    const logPrefix = ':labelSnow] ';
     logger.info(logPrefix, '-->');
 
     const snowScale = [
@@ -91,7 +91,7 @@ class LabelEvaluate {
 
   @memoize
   static labelWave(value) {
-    const logPrefix = ':evaluateWave] ';
+    const logPrefix = ':labelWave] ';
     logger.info(logPrefix, '-->');
 
     const waveScale = [
@@ -105,12 +105,12 @@ class LabelEvaluate {
     let result = getValueInScale(waveScale, value);
 
     logger.info(logPrefix, '<--');
-    return result;
+    return result.label;
   }
 
   @memoize
   static labelFire(value) {
-    const logPrefix = ':evaluateFire] ';
+    const logPrefix = ':labelFire] ';
     logger.info(logPrefix, '-->');
 
     const fireScale = [
@@ -130,7 +130,7 @@ class LabelEvaluate {
     let result = getValueInScale(fireScale, value);
 
     logger.info(logPrefix, '<--');
-    return result;
+    return result.label;
   }
 }
 
