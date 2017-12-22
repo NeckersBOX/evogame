@@ -1,4 +1,4 @@
-import EventsCore from './core/events'
+import EventsCore from './core/EventsCore'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
@@ -7,7 +7,7 @@ import prefixTemplate from '../loglevel-prefix-template'
 import { memoize } from 'decko'
 
 prefix.apply(log, prefixTemplate);
-const logger = log.getLogger('eventsManager');
+const logger = log.getLogger('events');
 
 class EventsManager extends EventsCore {
   constructor() {
@@ -139,4 +139,4 @@ class EventsManager extends EventsCore {
   }
 }
 
-export default new EventsManager();
+export default EventsManager;

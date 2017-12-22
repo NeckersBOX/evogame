@@ -1,12 +1,4 @@
-import { setParamValue } from './parameters'
-import { setSkillValue } from './skills'
-import { setEvent } from './events'
-import { addDay } from './timers'
-import { playGame, pauseGame, stopGame } from './controls'
-
-import SkillsManager from '../managers/skills'
-import ParametersManager from '../managers/parameters'
-import EventsManager from '../managers/events'
+import { initState } from './init'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
@@ -15,39 +7,60 @@ import prefixTemplate from '../loglevel-prefix-template'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('reducer');
 
-const initialState = {
-  generation: 0,
-  initialized: false,
-  solutions: [],
-  day: 0,
-  status: 'stop',
-  timers: {
-    day: null
-  },
-  parameters: ParametersManager.getList(),
-  skills: SkillsManager.getList(),
-  events: EventsManager.getList(),
-  event: EventsManager.getEventByKey(EventsManager.getList()[0].key),
-  eventDisable: true
-};
-
 const reducerLookup = {
-         ADD_DAY: (state, data) => addDay(state),
-      PAUSE_GAME: (state, data) => pauseGame(state),
-       PLAY_GAME: (state, data) => playGame(state, data),
-       SET_EVENT: (state, data) => setEvent(state, data),
-  SET_PARAMETERS: (state, data) => setParamValue(state, data.key, +data.value),
-      SET_SKILLS: (state, data) => setSkillValue(state, data.key, +data.value),
-       STOP_GAME: (state, data) => stopGame(state)
+  EVENT_SET: {
+    param: 'events',
+    cb: (state, data) => state.managers.events.setEventByKey(data)
+  },
+  GLOBAL_ADD_DAY: {
+    param: 'globals',
+    cb: (state, data) => state.managers.globals.addDay(state)
+  },
+  GLOBAL_STOP_GAME: {
+    param: 'globals',
+    cb: (state, data) => state.managers.globals.stopGame(state)
+  },
+  GLOBAL_PAUSE_GAME: {
+    param: 'globals',
+    cb: (state, data) => state.managers.globals.pauseGame()
+  },
+  GLOBAL_PLAY_GAME: {
+    param: 'globals',
+    cb: (state, data) => state.managers.globals.playGame(state, data)
+  },
+  SKILL_SET: {
+    param: 'skills',
+    cb: (state, data) => state.managers.skills.setValueByKey(data.key, +data.value)
+  },
+  PARAMETER_SET: {
+    param: 'parameters',
+    cb: (state, data) => state.managers.parameters.setValueByKey(data.key, +data.value)
+  }
 };
 
-const reducer = (state = initialState, action) => {
+const reducer = (state, action) => {
   const logPrefix = ':reducer] ';
   logger.info(logPrefix, '-->');
-
   logger.info(logPrefix, 'type:', action.type, 'data:', action.data);
-  let nextState = reducerLookup.hasOwnProperty(action.type) ? reducerLookup[action.type](state, action.data) : state;
+  logger.debug(logPrefix, 'Current state:', state);
 
+  let nextState = state;
+  if ( action.type == '@@redux/INIT' ) {
+    nextState = initState();
+  }
+  else if ( reducerLookup.hasOwnProperty(action.type) ) {
+    let ref = reducerLookup[action.type];
+
+    nextState = {
+      ...state,
+      [ref.param]: ref.cb(state, action.data).getCurrentState()
+    };
+  }
+  else {
+    logger.warn(logPrefix, 'Action not recognized.');
+  }
+
+  logger.debug(logPrefix, 'New state:', nextState);
   logger.info(logPrefix, '<--');
   return nextState;
 };

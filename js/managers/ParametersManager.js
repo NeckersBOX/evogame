@@ -1,11 +1,11 @@
-import ParametersCore from './core/parameters'
+import ParametersCore from './core/ParametersCore'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../loglevel-prefix-template'
 
 prefix.apply(log, prefixTemplate);
-const logger = log.getLogger('parametersManager');
+const logger = log.getLogger('parameters');
 
 class ParametersManager extends ParametersCore {
   constructor() {
@@ -13,4 +13,4 @@ class ParametersManager extends ParametersCore {
   }
 }
 
-export default new ParametersManager();
+export default ParametersManager;
