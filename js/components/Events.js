@@ -68,7 +68,7 @@ class Events extends Component {
           {this.props.managers.events.getValueLabel(this.props.events.current.key, this.state.value)}
         </label>
         <Button color="primary" style={{ width: '100%' }} raised={true}
-          disabled={/*TODO*/ true}
+          disabled={this.props.globals.status != 'play'}
           onClick={this.sendEvent}>
           Send Event
         </Button>

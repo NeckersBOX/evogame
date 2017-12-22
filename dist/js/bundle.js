@@ -5685,7 +5685,7 @@ var Events = (_class = function (_Component) {
         (0, _preact.h)(
           _button2.default,
           { color: 'primary', style: { width: '100%' }, raised: true,
-            disabled: /*TODO*/true,
+            disabled: this.props.globals.status != 'play',
             onClick: this.sendEvent },
           'Send Event'
         )
