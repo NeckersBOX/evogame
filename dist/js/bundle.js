@@ -1524,7 +1524,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 var _preact = __webpack_require__(0);
 
-var _redux = __webpack_require__(11);
+var _redux = __webpack_require__(12);
 
 var Children = {
   only: function only(children) {
@@ -3579,9 +3579,70 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.getValueInScale = exports.getRandomInt = undefined;
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('generics');
+
+var getRandomInt = exports.getRandomInt = function getRandomInt(min, max) {
+  var _ref = [Math.ceil(min), Math.floor(max)];
+  min = _ref[0];
+  max = _ref[1];
+
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var getValueInScale = exports.getValueInScale = function getValueInScale(scale, value) {
+  var logPrefix = ':getValueInScale] ';
+  logger.info(logPrefix, '-->');
+
+  var result = null;
+
+  for (var i in scale) {
+    if (value <= scale[i].value || i == scale.length - 1) {
+      result = scale[i];
+      break;
+    }
+  }
+
+  if (result === null) {
+    logger.info(logPrefix, 'No valid value found');
+    result = { label: '', value: 0 };
+  }
+
+  logger.debug(logPrefix, 'value in scale:', result.value, 'associated with label:', result.label);
+
+  logger.info(logPrefix, '<--');
+  return result;
+};
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
 
-var _createStore = __webpack_require__(12);
+var _createStore = __webpack_require__(13);
 
 var _createStore2 = _interopRequireDefault(_createStore);
 
@@ -3597,11 +3658,11 @@ var _applyMiddleware = __webpack_require__(34);
 
 var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 
-var _compose = __webpack_require__(16);
+var _compose = __webpack_require__(17);
 
 var _compose2 = _interopRequireDefault(_compose);
 
-var _warning = __webpack_require__(15);
+var _warning = __webpack_require__(16);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -3624,7 +3685,7 @@ exports.applyMiddleware = _applyMiddleware2.default;
 exports.compose = _compose2.default;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3639,7 +3700,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = createStore;
 
-var _isPlainObject = __webpack_require__(13);
+var _isPlainObject = __webpack_require__(14);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
@@ -3896,7 +3957,7 @@ var ActionTypes = exports.ActionTypes = {
 }
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3979,7 +4040,7 @@ function isPlainObject(value) {
 exports.default = isPlainObject;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4001,7 +4062,7 @@ var _Symbol = _root2.default.Symbol;
 exports.default = _Symbol;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4034,7 +4095,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4078,7 +4139,7 @@ function compose() {
 }
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4130,43 +4191,6 @@ exports.default = [{
   color: '#8A84E2',
   generateFitness: 'fitnessWind'
 }];
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getRandomInt = undefined;
-
-var _loglevel = __webpack_require__(1);
-
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('generics');
-
-var getRandomInt = exports.getRandomInt = function getRandomInt(min, max) {
-  var _ref = [Math.ceil(min), Math.floor(max)];
-  min = _ref[0];
-  max = _ref[1];
-
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
 
 /***/ }),
 /* 19 */
@@ -4230,7 +4254,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(14);
+var _Symbol2 = __webpack_require__(15);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
@@ -4324,7 +4348,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(14);
+var _Symbol2 = __webpack_require__(15);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
@@ -4616,13 +4640,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = combineReducers;
 
-var _createStore = __webpack_require__(12);
+var _createStore = __webpack_require__(13);
 
-var _isPlainObject = __webpack_require__(13);
+var _isPlainObject = __webpack_require__(14);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-var _warning = __webpack_require__(15);
+var _warning = __webpack_require__(16);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -4829,7 +4853,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = applyMiddleware;
 
-var _compose = __webpack_require__(16);
+var _compose = __webpack_require__(17);
 
 var _compose2 = _interopRequireDefault(_compose);
 
@@ -7207,7 +7231,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(11);
+var _redux = __webpack_require__(12);
 
 var _reducer = __webpack_require__(54);
 
@@ -7252,6 +7276,12 @@ _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate
 var logger = _loglevel2.default.getLogger('reducer');
 
 var reducerLookup = {
+  EVENT_SEND: {
+    param: 'events',
+    cb: function cb(state, data) {
+      return state.managers.events.sendEvent(state, data);
+    }
+  },
   EVENT_SET: {
     param: 'events',
     cb: function cb(state, data) {
@@ -7346,11 +7376,11 @@ var _EventsManager = __webpack_require__(61);
 
 var _EventsManager2 = _interopRequireDefault(_EventsManager);
 
-var _GlobalsManager = __webpack_require__(64);
+var _GlobalsManager = __webpack_require__(66);
 
 var _GlobalsManager2 = _interopRequireDefault(_GlobalsManager);
 
-var _SolutionsManager = __webpack_require__(66);
+var _SolutionsManager = __webpack_require__(68);
 
 var _SolutionsManager2 = _interopRequireDefault(_SolutionsManager);
 
@@ -7584,7 +7614,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _skills = __webpack_require__(17);
+var _skills = __webpack_require__(18);
 
 var _skills2 = _interopRequireDefault(_skills);
 
@@ -7833,11 +7863,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _desc, _value, _class;
-
 var _EventsCore2 = __webpack_require__(62);
 
 var _EventsCore3 = _interopRequireDefault(_EventsCore2);
+
+var _LabelEvaluate = __webpack_require__(64);
+
+var _LabelEvaluate2 = _interopRequireDefault(_LabelEvaluate);
+
+var _DamageEvaluate = __webpack_require__(65);
+
+var _DamageEvaluate2 = _interopRequireDefault(_DamageEvaluate);
 
 var _loglevel = __webpack_require__(1);
 
@@ -7851,8 +7887,6 @@ var _loglevelPrefixTemplate = __webpack_require__(3);
 
 var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
-var _decko = __webpack_require__(5);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -7861,39 +7895,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
-  var desc = {};
-  Object['ke' + 'ys'](descriptor).forEach(function (key) {
-    desc[key] = descriptor[key];
-  });
-  desc.enumerable = !!desc.enumerable;
-  desc.configurable = !!desc.configurable;
-
-  if ('value' in desc || desc.initializer) {
-    desc.writable = true;
-  }
-
-  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
-    return decorator(target, property, desc) || desc;
-  }, desc);
-
-  if (context && desc.initializer !== void 0) {
-    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
-    desc.initializer = undefined;
-  }
-
-  if (desc.initializer === void 0) {
-    Object['define' + 'Property'](target, property, desc);
-    desc = null;
-  }
-
-  return desc;
-}
-
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
 var logger = _loglevel2.default.getLogger('events');
 
-var EventsManager = (_class = function (_EventsCore) {
+var EventsManager = function (_EventsCore) {
   _inherits(EventsManager, _EventsCore);
 
   function EventsManager() {
@@ -7903,87 +7908,47 @@ var EventsManager = (_class = function (_EventsCore) {
   }
 
   _createClass(EventsManager, [{
-    key: 'evaluateWind',
-    value: function evaluateWind(value) {
-      var logPrefix = ':evaluateWind] ';
+    key: 'sendEvent',
+    value: function sendEvent(state, data) {
+      var logPrefix = ':sendEvent] ';
       logger.info(logPrefix, '-->');
 
-      var beaufortScale = [{ label: 'Calm', value: 1 }, { label: 'Light Air', value: 5 }, { label: 'Light Breeze', value: 11 }, { label: 'Gentle Breeze', value: 19 }, { label: 'Moderate Breeze', value: 28 }, { label: 'Fresh Breeze', value: 38 }, { label: 'Strong Breeze', value: 49 }, { label: 'Moderate Gale', value: 61 }, { label: 'Fresh Gale', value: 74 }, { label: 'Strong Gale', value: 88 }, { label: 'Storm', value: 102 }, { label: 'Violent Storm', value: 117 }, { label: 'Hurricane Force', value: -1 }];
-
-      var result = this.getValueInScale(beaufortScale, value);
+      if (!this.state.current) {
+        logger.info(logPrefix, 'Element not found');
+      } else if (!_DamageEvaluate2.default.hasOwnProperty(this.state.current.damageEvaluate)) {
+        logger.info(logPrefix, 'Method ' + this.state.current.damageEvaluate + ' not found.');
+      } else {
+        var damage = _DamageEvaluate2.default[this.state.current.damageEvaluate](data.value);
+      }
 
       logger.info(logPrefix, '<--');
-      return result.label;
+      return this;
     }
   }, {
-    key: 'evaluateRain',
-    value: function evaluateRain(value) {
-      var logPrefix = ':evaluateRain] ';
+    key: 'getValueLabel',
+    value: function getValueLabel(key, value) {
+      var logPrefix = ':getValueLabel] ';
       logger.info(logPrefix, '-->');
 
-      var rainScale = [{ label: 'Fog', value: 1 }, { label: 'Drizzle', value: 4 }, { label: 'Heavy Rain', value: 10 }, { label: 'Shower', value: 30 }, { label: 'Cloudburst', value: -1 }];
+      var element = this.getElementByKey(key);
+      var valueInfo = 'undefined';
 
-      var result = this.getValueInScale(rainScale, value);
-
-      logger.info(logPrefix, '<--');
-      return result.label;
-    }
-  }, {
-    key: 'evaluateSandstorm',
-    value: function evaluateSandstorm(value) {
-      var logPrefix = ':evaluateSandstorm] ';
-      logger.info(logPrefix, '-->');
-
-      var sandstormScale = [{ label: 'Smoke In The Eyes', value: 10 }, { label: 'Regular Sandstorm', value: 35 }, { label: 'Haboob', value: 90 }, { label: 'Martian Sandstorm', value: -1 }];
-
-      var result = this.getValueInScale(sandstormScale, value);
+      if (!element) {
+        logger.info(logPrefix, 'Element not found');
+      } else if (!_LabelEvaluate2.default.hasOwnProperty(element.labelEvaluate)) {
+        logger.info(logPrefix, 'Method ' + element.labelEvaluate + ' not found.');
+      } else {
+        valueInfo = _LabelEvaluate2.default[element.labelEvaluate](value);
+      }
 
       logger.info(logPrefix, '<--');
-      return result.label;
-    }
-  }, {
-    key: 'evaluateSnow',
-    value: function evaluateSnow(value) {
-      var logPrefix = ':evaluateSnow] ';
-      logger.info(logPrefix, '-->');
-
-      var snowScale = [{ label: 'Regular Snow', value: 2 }, { label: 'Heavy Snow', value: 5 }];
-
-      var result = this.getValueInScale(snowScale, value);
-
-      logger.info(logPrefix, '<--');
-      return result.label;
-    }
-  }, {
-    key: 'evaluateWave',
-    value: function evaluateWave(value) {
-      var logPrefix = ':evaluateWave] ';
-      logger.info(logPrefix, '-->');
-
-      var waveScale = [{ label: 'Like A Mirror', value: 1 }, { label: 'Moderate Wave', value: 3 }, { label: 'High Wave', value: 8 }, { label: 'Rogue Wave', value: 16 }, { label: 'Tsunami', value: -1 }];
-
-      var result = this.getValueInScale(waveScale, value);
-
-      logger.info(logPrefix, '<--');
-      return result;
-    }
-  }, {
-    key: 'evaluateFire',
-    value: function evaluateFire(value) {
-      var logPrefix = ':evaluateFire] ';
-      logger.info(logPrefix, '-->');
-
-      var fireScale = [{ label: 'Earth Surface', value: 21 }, { label: 'Room Temperature', value: 28 }, { label: 'Minimum Human Body', value: 37 }, { label: 'Human Body', value: 38 }, { label: 'Cat Body', value: 39 }, { label: 'Death Valley', value: 90 }, { label: 'Soup', value: 100 }, { label: 'Water Boiling', value: 150 }, { label: 'Mercury', value: 200 }, { label: 'Venus', value: 500 }, { label: 'Burn Burn', value: -1 }];
-
-      var result = this.getValueInScale(fireScale, value);
-
-      logger.info(logPrefix, '<--');
-      return result;
+      return valueInfo;
     }
   }]);
 
   return EventsManager;
-}(_EventsCore3.default), (_applyDecoratedDescriptor(_class.prototype, 'evaluateWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateWind'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateRain', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateRain'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateSandstorm', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateSandstorm'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateSnow', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateSnow'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateWave', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateWave'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'evaluateFire', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'evaluateFire'), _class.prototype)), _class);
+}(_EventsCore3.default);
+
 exports.default = EventsManager;
 
 /***/ }),
@@ -8001,15 +7966,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _desc, _value, _class;
-
 var _Core = __webpack_require__(6);
 
 var _events = __webpack_require__(63);
 
 var _events2 = _interopRequireDefault(_events);
 
-var _skills = __webpack_require__(17);
+var _skills = __webpack_require__(18);
 
 var _skills2 = _interopRequireDefault(_skills);
 
@@ -8025,8 +7988,6 @@ var _loglevelPrefixTemplate = __webpack_require__(3);
 
 var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
-var _decko = __webpack_require__(5);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -8035,39 +7996,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
-  var desc = {};
-  Object['ke' + 'ys'](descriptor).forEach(function (key) {
-    desc[key] = descriptor[key];
-  });
-  desc.enumerable = !!desc.enumerable;
-  desc.configurable = !!desc.configurable;
-
-  if ('value' in desc || desc.initializer) {
-    desc.writable = true;
-  }
-
-  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
-    return decorator(target, property, desc) || desc;
-  }, desc);
-
-  if (context && desc.initializer !== void 0) {
-    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
-    desc.initializer = undefined;
-  }
-
-  if (desc.initializer === void 0) {
-    Object['define' + 'Property'](target, property, desc);
-    desc = null;
-  }
-
-  return desc;
-}
-
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
 var logger = _loglevel2.default.getLogger('events');
 
-var EventsCore = (_class = function (_CoreList) {
+var EventsCore = function (_CoreList) {
   _inherits(EventsCore, _CoreList);
 
   function EventsCore() {
@@ -8111,46 +8043,11 @@ var EventsCore = (_class = function (_CoreList) {
       logger.warn(logPrefix, 'Method not available with events');
       logger.info(logPrefix, '<--');
     }
-  }, {
-    key: 'getValueLabel',
-    value: function getValueLabel(key, value) {
-      var logPrefix = ':getValueLabel] ';
-      logger.info(logPrefix, '-->');
-
-      var valueInfo = this[this.getElementByKey(key).labelEvaluate](value);
-
-      logger.info(logPrefix, '<--');
-      return valueInfo;
-    }
-  }, {
-    key: 'getValueInScale',
-    value: function getValueInScale(scale, value) {
-      var logPrefix = ':getValueInScale] ';
-      logger.info(logPrefix, '-->');
-
-      var result = null;
-
-      for (var i in scale) {
-        if (value <= scale[i].value || i == scale.length - 1) {
-          result = scale[i];
-          break;
-        }
-      }
-
-      if (result === null) {
-        logger.info(logPrefix, 'No valid value found');
-        result = { label: '', value: 0 };
-      }
-
-      logger.debug(logPrefix, 'value in scale:', result.value, 'associated with label:', result.label);
-
-      logger.info(logPrefix, '<--');
-      return result;
-    }
   }]);
 
   return EventsCore;
-}(_Core.CoreList), (_applyDecoratedDescriptor(_class.prototype, 'getValueLabel', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getValueLabel'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'getValueInScale', [_decko.memoize], Object.getOwnPropertyDescriptor(_class.prototype, 'getValueInScale'), _class.prototype)), _class);
+}(_Core.CoreList);
+
 exports.default = EventsCore;
 
 /***/ }),
@@ -8170,7 +8067,8 @@ exports.default = [{
   min: 0,
   defaultValue: 20,
   unit: 'km/h',
-  labelEvaluate: 'evaluateWind'
+  labelEvaluate: 'labelWind',
+  damageEvaluate: 'damageWind'
 }, {
   key: 'rain',
   label: 'Rain',
@@ -8178,7 +8076,8 @@ exports.default = [{
   min: 0,
   defaultValue: 5,
   unit: 'mm/h',
-  labelEvaluate: 'evaluateRain'
+  labelEvaluate: 'labelRain',
+  damageEvaluate: 'damageRain'
 }, {
   key: 'sandstorm',
   label: 'Sandstorm',
@@ -8186,7 +8085,8 @@ exports.default = [{
   min: 0,
   defaultValue: 10,
   unit: 'km/h',
-  labelEvaluate: 'evaluateSandstorm'
+  labelEvaluate: 'labelSandstorm',
+  damageEvaluate: 'damageSandstorm'
 }, {
   key: 'snow',
   label: 'Snow',
@@ -8194,7 +8094,8 @@ exports.default = [{
   min: 0,
   defaultValue: 4,
   unit: 'cm/h',
-  labelEvaluate: 'evaluateSnow'
+  labelEvaluate: 'labelSnow',
+  damageEvaluate: 'damageSnow'
 }, {
   key: 'wave',
   label: 'Wave',
@@ -8202,7 +8103,8 @@ exports.default = [{
   min: 0,
   defaultValue: 4,
   unit: 'm',
-  labelEvaluate: 'evaluateWave'
+  labelEvaluate: 'labelWave',
+  damageEvaluate: 'damageWave'
 }, {
   key: 'fire',
   label: 'Fire',
@@ -8210,7 +8112,8 @@ exports.default = [{
   min: 0,
   defaultValue: 40,
   unit: '°C',
-  labelEvaluate: 'evaluateFire'
+  labelEvaluate: 'labelFire',
+  damageEvaluate: 'damageFire'
 }];
 
 /***/ }),
@@ -8226,11 +8129,264 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _GlobalsCore2 = __webpack_require__(65);
+var _desc, _value, _class;
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+var _generics = __webpack_require__(11);
+
+var _decko = __webpack_require__(5);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('labelEvaluate');
+
+var LabelEvaluate = (_class = function () {
+  function LabelEvaluate() {
+    _classCallCheck(this, LabelEvaluate);
+  }
+
+  _createClass(LabelEvaluate, null, [{
+    key: 'labelWind',
+    value: function labelWind(value) {
+      var logPrefix = ':evaluateWind] ';
+      logger.info(logPrefix, '-->');
+
+      var beaufortScale = [{ label: 'Calm', value: 1 }, { label: 'Light Air', value: 5 }, { label: 'Light Breeze', value: 11 }, { label: 'Gentle Breeze', value: 19 }, { label: 'Moderate Breeze', value: 28 }, { label: 'Fresh Breeze', value: 38 }, { label: 'Strong Breeze', value: 49 }, { label: 'Moderate Gale', value: 61 }, { label: 'Fresh Gale', value: 74 }, { label: 'Strong Gale', value: 88 }, { label: 'Storm', value: 102 }, { label: 'Violent Storm', value: 117 }, { label: 'Hurricane Force', value: -1 }];
+
+      var result = (0, _generics.getValueInScale)(beaufortScale, value);
+
+      logger.info(logPrefix, '<--');
+      return result.label;
+    }
+  }, {
+    key: 'labelRain',
+    value: function labelRain(value) {
+      var logPrefix = ':evaluateRain] ';
+      logger.info(logPrefix, '-->');
+
+      var rainScale = [{ label: 'Fog', value: 1 }, { label: 'Drizzle', value: 4 }, { label: 'Heavy Rain', value: 10 }, { label: 'Shower', value: 30 }, { label: 'Cloudburst', value: -1 }];
+
+      var result = (0, _generics.getValueInScale)(rainScale, value);
+
+      logger.info(logPrefix, '<--');
+      return result.label;
+    }
+  }, {
+    key: 'labelSandstorm',
+    value: function labelSandstorm(value) {
+      var logPrefix = ':evaluateSandstorm] ';
+      logger.info(logPrefix, '-->');
+
+      var sandstormScale = [{ label: 'Smoke In The Eyes', value: 10 }, { label: 'Regular Sandstorm', value: 35 }, { label: 'Haboob', value: 90 }, { label: 'Martian Sandstorm', value: -1 }];
+
+      var result = (0, _generics.getValueInScale)(sandstormScale, value);
+
+      logger.info(logPrefix, '<--');
+      return result.label;
+    }
+  }, {
+    key: 'labelSnow',
+    value: function labelSnow(value) {
+      var logPrefix = ':evaluateSnow] ';
+      logger.info(logPrefix, '-->');
+
+      var snowScale = [{ label: 'Regular Snow', value: 2 }, { label: 'Heavy Snow', value: 5 }];
+
+      var result = (0, _generics.getValueInScale)(snowScale, value);
+
+      logger.info(logPrefix, '<--');
+      return result.label;
+    }
+  }, {
+    key: 'labelWave',
+    value: function labelWave(value) {
+      var logPrefix = ':evaluateWave] ';
+      logger.info(logPrefix, '-->');
+
+      var waveScale = [{ label: 'Like A Mirror', value: 1 }, { label: 'Moderate Wave', value: 3 }, { label: 'High Wave', value: 8 }, { label: 'Rogue Wave', value: 16 }, { label: 'Tsunami', value: -1 }];
+
+      var result = (0, _generics.getValueInScale)(waveScale, value);
+
+      logger.info(logPrefix, '<--');
+      return result;
+    }
+  }, {
+    key: 'labelFire',
+    value: function labelFire(value) {
+      var logPrefix = ':evaluateFire] ';
+      logger.info(logPrefix, '-->');
+
+      var fireScale = [{ label: 'Earth Surface', value: 21 }, { label: 'Room Temperature', value: 28 }, { label: 'Minimum Human Body', value: 37 }, { label: 'Human Body', value: 38 }, { label: 'Cat Body', value: 39 }, { label: 'Death Valley', value: 90 }, { label: 'Soup', value: 100 }, { label: 'Water Boiling', value: 150 }, { label: 'Mercury', value: 200 }, { label: 'Venus', value: 500 }, { label: 'Burn Burn', value: -1 }];
+
+      var result = (0, _generics.getValueInScale)(fireScale, value);
+
+      logger.info(logPrefix, '<--');
+      return result;
+    }
+  }]);
+
+  return LabelEvaluate;
+}(), (_applyDecoratedDescriptor(_class, 'labelWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'labelWind'), _class), _applyDecoratedDescriptor(_class, 'labelRain', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'labelRain'), _class), _applyDecoratedDescriptor(_class, 'labelSandstorm', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'labelSandstorm'), _class), _applyDecoratedDescriptor(_class, 'labelSnow', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'labelSnow'), _class), _applyDecoratedDescriptor(_class, 'labelWave', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'labelWave'), _class), _applyDecoratedDescriptor(_class, 'labelFire', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'labelFire'), _class)), _class);
+exports.default = LabelEvaluate;
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _desc, _value, _class;
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+var _decko = __webpack_require__(5);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('damageEvaluate');
+
+var DamageEvaluate = (_class = function () {
+  function DamageEvaluate() {
+    _classCallCheck(this, DamageEvaluate);
+  }
+
+  _createClass(DamageEvaluate, null, [{
+    key: 'damageWind',
+    value: function damageWind(value) {
+      var logPrefix = ':damageWind] ';
+      logger.info(logPrefix, '-->');
+
+      logger.info(logPrefix, '<--');
+      return { wind: value };
+    }
+  }, {
+    key: 'damageRain',
+    value: function damageRain(value) {
+      var logPrefix = ':damageRain] ';
+      logger.info(logPrefix, '-->');
+
+      logger.info(logPrefix, '<--');
+      return {
+        water: value * 0.24,
+        wind: value * 2.2
+      };
+    }
+  }]);
+
+  return DamageEvaluate;
+}(), (_applyDecoratedDescriptor(_class, 'damageWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageWind'), _class), _applyDecoratedDescriptor(_class, 'damageRain', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageRain'), _class)), _class);
+exports.default = DamageEvaluate;
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _GlobalsCore2 = __webpack_require__(67);
 
 var _GlobalsCore3 = _interopRequireDefault(_GlobalsCore2);
 
-var _generics = __webpack_require__(18);
+var _generics = __webpack_require__(11);
 
 var _loglevel = __webpack_require__(1);
 
@@ -8434,7 +8590,7 @@ var GlobalsManager = function (_GlobalsCore) {
 exports.default = GlobalsManager;
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8484,7 +8640,7 @@ var GlobalsCore = function (_Core) {
 exports.default = GlobalsCore;
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8498,11 +8654,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _SolutionsCore2 = __webpack_require__(67);
+var _SolutionsCore2 = __webpack_require__(69);
 
 var _SolutionsCore3 = _interopRequireDefault(_SolutionsCore2);
 
-var _generics = __webpack_require__(18);
+var _generics = __webpack_require__(11);
 
 var _loglevel = __webpack_require__(1);
 
@@ -8690,7 +8846,7 @@ var SolutionsManager = function (_SolutionsCore) {
 exports.default = SolutionsManager;
 
 /***/ }),
-/* 67 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -6,8 +6,6 @@ import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../../loglevel-prefix-template'
 
-import { memoize } from 'decko'
-
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('events');
 
@@ -41,42 +39,6 @@ class EventsCore extends CoreList {
     logger.info(logPrefix, '-->');
     logger.warn(logPrefix, 'Method not available with events');
     logger.info(logPrefix, '<--');
-  }
-
-  @memoize
-  getValueLabel(key, value) {
-    const logPrefix = ':getValueLabel] ';
-    logger.info(logPrefix, '-->');
-
-    let valueInfo = this[this.getElementByKey(key).labelEvaluate](value);
-
-    logger.info(logPrefix, '<--');
-    return valueInfo;
-  }
-
-  @memoize
-  getValueInScale(scale, value) {
-    const logPrefix = ':getValueInScale] ';
-    logger.info(logPrefix, '-->');
-
-    let result = null;
-
-    for ( let i in scale ) {
-      if ( value <= scale[i].value || i == scale.length - 1 ) {
-        result = scale[i];
-        break;
-      }
-    }
-
-    if ( result === null ) {
-      logger.info(logPrefix, 'No valid value found');
-      result = { label: '', value: 0 };
-    }
-
-    logger.debug(logPrefix, 'value in scale:', result.value, 'associated with label:', result.label);
-
-    logger.info(logPrefix, '<--');
-    return result;
   }
 }
 

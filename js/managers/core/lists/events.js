@@ -6,7 +6,8 @@ export default [
     min: 0,
     defaultValue: 20,
     unit: 'km/h',
-    labelEvaluate: 'evaluateWind'
+    labelEvaluate: 'labelWind',
+    damageEvaluate: 'damageWind'
   },
   {
     key: 'rain',
@@ -15,7 +16,8 @@ export default [
     min: 0,
     defaultValue: 5,
     unit: 'mm/h',
-    labelEvaluate: 'evaluateRain'
+    labelEvaluate: 'labelRain',
+    damageEvaluate: 'damageRain'
   },
   {
     key: 'sandstorm',
@@ -24,7 +26,8 @@ export default [
     min: 0,
     defaultValue: 10,
     unit: 'km/h',
-    labelEvaluate: 'evaluateSandstorm'
+    labelEvaluate: 'labelSandstorm',
+    damageEvaluate: 'damageSandstorm'
   },
   {
     key: 'snow',
@@ -33,7 +36,8 @@ export default [
     min: 0,
     defaultValue: 4,
     unit: 'cm/h',
-    labelEvaluate: 'evaluateSnow'
+    labelEvaluate: 'labelSnow',
+    damageEvaluate: 'damageSnow'
   },
   {
     key: 'wave',
@@ -42,7 +46,8 @@ export default [
     min: 0,
     defaultValue: 4,
     unit: 'm',
-    labelEvaluate: 'evaluateWave'
+    labelEvaluate: 'labelWave',
+    damageEvaluate: 'damageWave'
   },
   {
     key: 'fire',
@@ -51,6 +56,7 @@ export default [
     min: 0,
     defaultValue: 40,
     unit: '°C',
-    labelEvaluate: 'evaluateFire'
+    labelEvaluate: 'labelFire',
+    damageEvaluate: 'damageFire'
   }
 ];

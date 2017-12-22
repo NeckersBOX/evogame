@@ -8,6 +8,10 @@ prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('reducer');
 
 const reducerLookup = {
+  EVENT_SEND: {
+    param: 'events',
+    cb: (state, data) => state.managers.events.sendEvent(state, data)
+  },
   EVENT_SET: {
     param: 'events',
     cb: (state, data) => state.managers.events.setEventByKey(data)
