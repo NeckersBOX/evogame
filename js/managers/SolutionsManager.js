@@ -56,19 +56,22 @@ class SolutionsManager extends SolutionsCore {
     let list = this.state.list.map((solution, idx) => {
       logger.debug(logPrefix, 'Current solution index:', idx);
 
+      let skills = solution.skills.map(skill => {
+        logger.debug(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
+
+        let currSkillRange = ranges.find(r => r.skill == skill.key);
+        logger.debug(logPrefix, 'Current skill ranges:', currSkillRange);
+
+        return {
+          ...skill,
+          fitness: skillsManager.getFitness(skill, currSkillRange.min, currSkillRange.max)
+        };
+      });
+
       return {
         ...solution,
-        skills: solution.skills.map(skill => {
-          logger.debug(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
-
-          let currSkillRange = ranges.find(r => r.skill == skill.key);
-          logger.debug(logPrefix, 'Current skill ranges:', currSkillRange);
-
-          return {
-            ...skill,
-            fitness: skillsManager.getFitness(skill, currSkillRange.min, currSkillRange.max)
-          };
-        })
+        skills,
+        fitness: skills.reduce((p, curr) => p + curr.fitness, 0) / skills.length
       };
     });
 
