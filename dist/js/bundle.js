@@ -8199,6 +8199,11 @@ var EventsManager = function (_EventsCore) {
       } else {
         var damage = _DamageEvaluate2.default[this.state.current.damageEvaluate](data.value);
         state.managers.solutions.applyDamage(state.managers.skills, damage);
+
+        if (state.managers.solutions.getList().length == 0) {
+          logger.info(logPrefix, 'No solutions left');
+          state.managers.globals.stopGame(state);
+        }
       }
 
       logger.info(logPrefix, '<--');
@@ -8697,7 +8702,6 @@ var GlobalsManager = function (_GlobalsCore) {
   }, {
     key: 'stopGame',
     value: function stopGame(state) {
-      /* TODO: clear solutions */
       var logPrefix = ':stop] ';
       logger.info(logPrefix, '-->');
 
@@ -8926,19 +8930,24 @@ var SolutionsManager = function (_SolutionsCore) {
       var list = this.state.list.map(function (solution, idx) {
         logger.debug(logPrefix, 'Current solution index:', idx);
 
+        var skills = solution.skills.map(function (skill) {
+          logger.debug(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
+
+          var currSkillRange = ranges.find(function (r) {
+            return r.skill == skill.key;
+          });
+          logger.debug(logPrefix, 'Current skill ranges:', currSkillRange);
+
+          return _extends({}, skill, {
+            fitness: skillsManager.getFitness(skill, currSkillRange.min, currSkillRange.max)
+          });
+        });
+
         return _extends({}, solution, {
-          skills: solution.skills.map(function (skill) {
-            logger.debug(logPrefix, '- Evaluating skill ' + skill.key + ' fitness');
-
-            var currSkillRange = ranges.find(function (r) {
-              return r.skill == skill.key;
-            });
-            logger.debug(logPrefix, 'Current skill ranges:', currSkillRange);
-
-            return _extends({}, skill, {
-              fitness: skillsManager.getFitness(skill, currSkillRange.min, currSkillRange.max)
-            });
-          })
+          skills: skills,
+          fitness: skills.reduce(function (p, curr) {
+            return p + curr.fitness;
+          }, 0) / skills.length
         });
       });
 

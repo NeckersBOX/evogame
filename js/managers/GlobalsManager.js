@@ -98,7 +98,6 @@ class GlobalsManager extends GlobalsCore {
   }
 
   stopGame(state) {
-    /* TODO: clear solutions */
     const logPrefix = ':stop] ';
     logger.info(logPrefix, '-->');
 

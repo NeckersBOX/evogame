@@ -27,6 +27,11 @@ class EventsManager extends EventsCore {
     else {
       let damage = DamageEvaluate[this.state.current.damageEvaluate](data.value);
       state.managers.solutions.applyDamage(state.managers.skills, damage);
+
+      if ( state.managers.solutions.getList().length == 0 ) {
+        logger.info(logPrefix, 'No solutions left');
+        state.managers.globals.pauseGame();
+      }
     }
 
     logger.info(logPrefix, '<--');
