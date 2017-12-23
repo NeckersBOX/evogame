@@ -26,6 +26,7 @@ class EventsManager extends EventsCore {
     }
     else {
       let damage = DamageEvaluate[this.state.current.damageEvaluate](data.value);
+      state.managers.solutions.applyDamage(state.managers.skills, damage);
     }
 
     logger.info(logPrefix, '<--');

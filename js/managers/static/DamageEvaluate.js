@@ -78,6 +78,42 @@ class DamageEvaluate {
       cold: 50 - (value / 10)
     };
   }
+
+  @memoize
+  static isFatalCold(resistance, value) {
+    const logPrefix = ':isFatalCold] ';
+    logger.debug(logPrefix, '-->');
+
+    logger.debug(logPrefix, '<--');
+    return value <= resistance;
+  }
+
+  @memoize
+  static isFatalHeat(resistance, value) {
+    const logPrefix = ':isFatalHeat ] ';
+    logger.debug(logPrefix, '-->');
+
+    logger.debug(logPrefix, '<--');
+    return value >= resistance;
+  }
+
+  @memoize
+  static isFatalWind(resistance, value) {
+    const logPrefix = ':isFatalWind ] ';
+    logger.debug(logPrefix, '-->');
+
+    logger.debug(logPrefix, '<--');
+    return value >= resistance;
+  }
+
+  @memoize
+  static isFatalWater(resistance, value) {
+    const logPrefix = ':isFatalWater ] ';
+    logger.debug(logPrefix, '-->');
+
+    logger.debug(logPrefix, '<--');
+    return value >= resistance;
+  }
 }
 
 export default DamageEvaluate;

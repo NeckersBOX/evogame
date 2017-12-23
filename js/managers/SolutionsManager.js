@@ -133,6 +133,22 @@ class SolutionsManager extends SolutionsCore {
     logger.info(logPrefix, '<--');
     return this;
   }
+
+  applyDamage(skillManager, damage) {
+    const logPrefix = ':applyDamage] ';
+    logger.info(logPrefix, '-->');
+
+    logger.info(logPrefix, 'Current solutions:', this.state.list.length);
+    let list = this.state.list.filter(solution =>
+      !solution.skills.reduce((p, curr) => p |= skillManager.isFatalDamage(curr, damage), false)
+    );
+    logger.info(logPrefix, 'Filtered solutions:', list.length);
+
+    this.setState({ list });
+
+    logger.info(logPrefix, '<--');
+    return this;
+  }
 }
 
 export default SolutionsManager;

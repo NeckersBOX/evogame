@@ -9,7 +9,8 @@ export default [
     value: -25,
     fitness: 0,
     color: '#E0E0E0',
-    generateFitness: 'fitnessCold'
+    generateFitness: 'fitnessCold',
+    isFatal: 'isFatalCold'
   },
   {
     key: 'heat',
@@ -21,7 +22,8 @@ export default [
     value: 45,
     fitness: 0,
     color: '#ED6A5A',
-    generateFitness: 'fitnessHeat'
+    generateFitness: 'fitnessHeat',
+    isFatal: 'isFatalHeat'
   },
   {
     key: 'water',
@@ -32,7 +34,8 @@ export default [
     value: 8,
     fitness: 0,
     color: '#9BC1BC',
-    generateFitness: 'fitnessWater'
+    generateFitness: 'fitnessWater',
+    isFatal: 'isFatalWater'
   },
   {
     key: 'wind',
@@ -43,6 +46,7 @@ export default [
     value: 90,
     fitness: 0,
     color: '#8A84E2',
-    generateFitness: 'fitnessWind'
+    generateFitness: 'fitnessWind',
+    isFatal: 'isFatalWind'
   }
 ];
