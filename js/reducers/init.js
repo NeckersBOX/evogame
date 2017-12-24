@@ -14,12 +14,14 @@ const logger = log.getLogger('init');
 const initialState = {
   events: {},
   skills: {},
+  solutions: {},
   parameters: {},
   globals: {},
   managers: {
     events: null,
     globals: null,
     skills: null,
+    solutions: null,
     parameters: null
   }
 };
