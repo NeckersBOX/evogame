@@ -9,39 +9,30 @@ const logger = log.getLogger('reducer');
 
 const reducerLookup = {
   EVENT_SEND: {
-    param: 'events',
     cb: (state, data) => state.managers.events.sendEvent(state)
   },
   EVENT_SET: {
-    param: 'events',
     cb: (state, data) => state.managers.events.setEventByKey(data)
   },
   EVENT_SET_VALUE: {
-    param: 'events',
     cb: (state, data) => state.managers.events.setCurrentEventValue(data)
   },
   GLOBAL_ADD_DAY: {
-    param: 'globals',
     cb: (state, data) => state.managers.globals.addDay(state)
   },
   GLOBAL_STOP_GAME: {
-    param: 'globals',
     cb: (state, data) => state.managers.globals.stopGame(state)
   },
   GLOBAL_PAUSE_GAME: {
-    param: 'globals',
     cb: (state, data) => state.managers.globals.pauseGame()
   },
   GLOBAL_PLAY_GAME: {
-    param: 'globals',
     cb: (state, data) => state.managers.globals.playGame(state, data)
   },
   SKILL_SET: {
-    param: 'skills',
     cb: (state, data) => state.managers.skills.setValueByKey(data.key, +data.value)
   },
   PARAMETER_SET: {
-    param: 'parameters',
     cb: (state, data) => state.managers.parameters.setValueByKey(data.key, +data.value)
   }
 };
