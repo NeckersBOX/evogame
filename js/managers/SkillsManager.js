@@ -34,7 +34,9 @@ class SkillsManager extends SkillsCore {
     if ( damages.hasOwnProperty(skill.key) ) {
       let element = this.getElementByKey(skill.key);
       isFatal = DamageEvaluate[element.isFatal](skill.value, damages[skill.key]);
+      logger.debug(logPrefix, (isFatal ? 'is' : 'isn\'t') + ' fatal.');
     }
+    else logger.debug(logPrefix, 'damages doesn\'t affect skill', skill.key);
 
     logger.debug(logPrefix, '<--');
     return isFatal;

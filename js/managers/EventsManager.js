@@ -14,7 +14,7 @@ class EventsManager extends EventsCore {
     super();
   }
 
-  sendEvent(state, data) {
+  sendEvent(state) {
     const logPrefix = ':sendEvent] ';
     logger.info(logPrefix, '-->');
 
@@ -25,7 +25,9 @@ class EventsManager extends EventsCore {
       logger.info(logPrefix, 'Method ' + this.state.current.damageEvaluate + ' not found.');
     }
     else {
-      let damage = DamageEvaluate[this.state.current.damageEvaluate](data.value);
+      let damage = DamageEvaluate[this.state.current.damageEvaluate](this.state.current.value);
+      logger.info(logPrefix, 'damages:', damage);
+
       state.managers.solutions.applyDamage(state.managers.skills, damage);
 
       if ( state.managers.solutions.getList().length == 0 ) {

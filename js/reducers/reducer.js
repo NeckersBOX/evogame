@@ -10,11 +10,15 @@ const logger = log.getLogger('reducer');
 const reducerLookup = {
   EVENT_SEND: {
     param: 'events',
-    cb: (state, data) => state.managers.events.sendEvent(state, data)
+    cb: (state, data) => state.managers.events.sendEvent(state)
   },
   EVENT_SET: {
     param: 'events',
     cb: (state, data) => state.managers.events.setEventByKey(data)
+  },
+  EVENT_SET_VALUE: {
+    param: 'events',
+    cb: (state, data) => state.managers.events.setCurrentEventValue(data)
   },
   GLOBAL_ADD_DAY: {
     param: 'globals',
@@ -53,11 +57,17 @@ const reducer = (state, action) => {
     nextState = initState();
   }
   else if ( reducerLookup.hasOwnProperty(action.type) ) {
-    let ref = reducerLookup[action.type];
+    logger.info(logPrefix, 'Executing action received');
+    reducerLookup[action.type].cb(state, action.data);
 
+    logger.info(logPrefix, 'Updating state');
     nextState = {
-      ...state,
-      [ref.param]: ref.cb(state, action.data).getCurrentState()
+      managers: state.managers,
+      events: state.managers.events.getCurrentState(),
+      globals: state.managers.globals.getCurrentState(),
+      skills: state.managers.skills.getCurrentState(),
+      parameters: state.managers.parameters.getCurrentState(),
+      solutions: state.managers.solutions.getCurrentState()
     };
   }
   else {

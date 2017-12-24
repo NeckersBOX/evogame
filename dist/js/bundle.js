@@ -5833,12 +5833,7 @@ var Events = (_class = function (_Component) {
   function Events(props) {
     _classCallCheck(this, Events);
 
-    var _this = _possibleConstructorReturn(this, (Events.__proto__ || Object.getPrototypeOf(Events)).call(this, props));
-
-    _this.state = {
-      value: _this.props.events.current.defaultValue
-    };
-    return _this;
+    return _possibleConstructorReturn(this, (Events.__proto__ || Object.getPrototypeOf(Events)).call(this, props));
   }
 
   _createClass(Events, [{
@@ -5856,35 +5851,18 @@ var Events = (_class = function (_Component) {
 
       this.props.dispatch({
         type: 'EVENT_SEND',
-        data: {
-          value: this.state.value
-        }
+        data: null
       });
     }
   }, {
     key: 'changeValue',
     value: function changeValue(e) {
-      var logPrefix = ':changeValue] ';
-      logger.info(logPrefix, '-->');
       e.preventDefault();
 
-      var _ref = [this.props.events.current, +e.target.value],
-          event = _ref[0],
-          value = _ref[1];
-
-
-      if (event.hasOwnProperty('min') && value < event.min) {
-        logger.info(logPrefix, 'Prevent to set a value less than minimum.');
-        value = event.min;
-      }
-
-      if (event.hasOwnProperty('max') && value > event.max) {
-        logger.info(logPrefix, 'Prevent to set a value more than maximum.');
-        value = event.max;
-      }
-
-      this.setState({ value: value });
-      logger.info(logPrefix, '<--');
+      this.props.dispatch({
+        type: 'EVENT_SET_VALUE',
+        data: e.target.value
+      });
     }
   }, {
     key: 'render',
@@ -5911,7 +5889,7 @@ var Events = (_class = function (_Component) {
           label: this.props.events.current.label + ' [ ' + this.props.events.current.unit + ' ]',
           min: this.props.events.current.min || null,
           max: this.props.events.current.max || null,
-          value: this.state.value,
+          value: this.props.events.current.value,
           onChange: this.changeValue }),
         (0, _preact.h)(
           'label',
@@ -7464,8 +7442,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _init = __webpack_require__(56);
 
 var _loglevel = __webpack_require__(1);
@@ -7482,8 +7458,6 @@ var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
 var logger = _loglevel2.default.getLogger('reducer');
 
@@ -7491,13 +7465,19 @@ var reducerLookup = {
   EVENT_SEND: {
     param: 'events',
     cb: function cb(state, data) {
-      return state.managers.events.sendEvent(state, data);
+      return state.managers.events.sendEvent(state);
     }
   },
   EVENT_SET: {
     param: 'events',
     cb: function cb(state, data) {
       return state.managers.events.setEventByKey(data);
+    }
+  },
+  EVENT_SET_VALUE: {
+    param: 'events',
+    cb: function cb(state, data) {
+      return state.managers.events.setCurrentEventValue(data);
     }
   },
   GLOBAL_ADD_DAY: {
@@ -7548,9 +7528,18 @@ var reducer = function reducer(state, action) {
   if (action.type == '@@redux/INIT') {
     nextState = (0, _init.initState)();
   } else if (reducerLookup.hasOwnProperty(action.type)) {
-    var ref = reducerLookup[action.type];
+    logger.info(logPrefix, 'Executing action received');
+    reducerLookup[action.type].cb(state, action.data);
 
-    nextState = _extends({}, state, _defineProperty({}, ref.param, ref.cb(state, action.data).getCurrentState()));
+    logger.info(logPrefix, 'Updating state');
+    nextState = {
+      managers: state.managers,
+      events: state.managers.events.getCurrentState(),
+      globals: state.managers.globals.getCurrentState(),
+      skills: state.managers.skills.getCurrentState(),
+      parameters: state.managers.parameters.getCurrentState(),
+      solutions: state.managers.solutions.getCurrentState()
+    };
   } else {
     logger.warn(logPrefix, 'Action not recognized.');
   }
@@ -7738,7 +7727,8 @@ var SkillsManager = function (_SkillsCore) {
       if (damages.hasOwnProperty(skill.key)) {
         var element = this.getElementByKey(skill.key);
         isFatal = _DamageEvaluate2.default[element.isFatal](skill.value, damages[skill.key]);
-      }
+        logger.debug(logPrefix, (isFatal ? 'is' : 'isn\'t') + ' fatal.');
+      } else logger.debug(logPrefix, 'damages doesn\'t affect skill', skill.key);
 
       logger.debug(logPrefix, '<--');
       return isFatal;
@@ -8188,7 +8178,7 @@ var EventsManager = function (_EventsCore) {
 
   _createClass(EventsManager, [{
     key: 'sendEvent',
-    value: function sendEvent(state, data) {
+    value: function sendEvent(state) {
       var logPrefix = ':sendEvent] ';
       logger.info(logPrefix, '-->');
 
@@ -8197,12 +8187,14 @@ var EventsManager = function (_EventsCore) {
       } else if (!_DamageEvaluate2.default.hasOwnProperty(this.state.current.damageEvaluate)) {
         logger.info(logPrefix, 'Method ' + this.state.current.damageEvaluate + ' not found.');
       } else {
-        var damage = _DamageEvaluate2.default[this.state.current.damageEvaluate](data.value);
+        var damage = _DamageEvaluate2.default[this.state.current.damageEvaluate](this.state.current.value);
+        logger.info(logPrefix, 'damages:', damage);
+
         state.managers.solutions.applyDamage(state.managers.skills, damage);
 
         if (state.managers.solutions.getList().length == 0) {
           logger.info(logPrefix, 'No solutions left');
-          state.managers.globals.stopGame(state);
+          state.managers.globals.pauseGame();
         }
       }
 
@@ -8304,7 +8296,9 @@ var EventsCore = function (_CoreList) {
     })));
 
     _this.state = {
-      current: _this.state.list[0]
+      current: _extends({}, _this.state.list[0], {
+        value: _this.state.list[0].defaultValue
+      })
     };
     return _this;
   }
@@ -8315,7 +8309,13 @@ var EventsCore = function (_CoreList) {
       var logPrefix = ':setEventByKey] ';
       logger.info(logPrefix, '-->');
 
-      this.setState({ current: this.getElementByKey(key) });
+      var element = this.getElementByKey(key);
+
+      this.setState({
+        current: _extends({}, element, {
+          value: element.defaultValue
+        })
+      });
 
       logger.info(logPrefix, '<--');
       return this;
@@ -8328,6 +8328,31 @@ var EventsCore = function (_CoreList) {
       logger.warn(logPrefix, 'Method not available with events');
       logger.info(logPrefix, '<--');
 
+      return this;
+    }
+  }, {
+    key: 'setCurrentEventValue',
+    value: function setCurrentEventValue(value) {
+      var logPrefix = ':setCurrentEventValue] ';
+      logger.info(logPrefix, '-->');
+
+      if (this.state.current.hasOwnProperty('min') && value < this.state.current.min) {
+        logger.info(logPrefix, 'Prevent to set a value less than minimum.');
+        value = event.min;
+      }
+
+      if (this.state.current.hasOwnProperty('max') && value > this.state.current.max) {
+        logger.info(logPrefix, 'Prevent to set a value more than maximum.');
+        value = event.max;
+      }
+
+      this.setState({
+        current: _extends({}, this.state.current, {
+          value: value
+        })
+      });
+
+      logger.info(logPrefix, '<--');
       return this;
     }
   }]);

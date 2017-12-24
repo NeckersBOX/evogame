@@ -20,7 +20,10 @@ class EventsCore extends CoreList {
     })));
 
     this.state = {
-      current: this.state.list[0]
+      current: {
+        ...this.state.list[0],
+        value: this.state.list[0].defaultValue
+      }
     }
   }
 
@@ -28,7 +31,14 @@ class EventsCore extends CoreList {
     const logPrefix = ':setEventByKey] ';
     logger.info(logPrefix, '-->');
 
-    this.setState({ current: this.getElementByKey(key) });
+    let element = this.getElementByKey(key);
+
+    this.setState({
+      current: {
+        ...element,
+        value: element.defaultValue
+      }
+    });
 
     logger.info(logPrefix, '<--');
     return this;
@@ -40,6 +50,31 @@ class EventsCore extends CoreList {
     logger.warn(logPrefix, 'Method not available with events');
     logger.info(logPrefix, '<--');
 
+    return this;
+  }
+
+  setCurrentEventValue(value) {
+    const logPrefix = ':setCurrentEventValue] ';
+    logger.info(logPrefix, '-->');
+
+    if ( this.state.current.hasOwnProperty('min') && value < this.state.current.min ) {
+      logger.info(logPrefix, 'Prevent to set a value less than minimum.');
+      value = event.min;
+    }
+
+    if ( this.state.current.hasOwnProperty('max') && value > this.state.current.max ) {
+      logger.info(logPrefix, 'Prevent to set a value more than maximum.');
+      value = event.max;
+    }
+
+    this.setState({
+      current: {
+        ...this.state.current,
+        value
+      }
+    });
+
+    logger.info(logPrefix, '<--');
     return this;
   }
 }
