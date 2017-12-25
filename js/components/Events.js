@@ -1,5 +1,6 @@
-import { h, Component } from 'preact'
+import { h } from 'preact'
 import { connect } from 'preact-redux'
+import EvoComponent from './EvoComponent'
 
 import Form from 'preact-mui/lib/form'
 import Select from 'preact-mui/lib/select'
@@ -9,6 +10,7 @@ import Button from 'preact-mui/lib/button'
 
 import { bind } from 'decko'
 import { Badges } from './extra-mui/badges'
+import State from '../managers/core/State'
 
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
@@ -17,7 +19,7 @@ import prefixTemplate from '../loglevel-prefix-template'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('Events');
 
-class Events extends Component {
+class Events extends EvoComponent {
   constructor(props) {
     super(props);
   }
@@ -88,4 +90,7 @@ class Events extends Component {
   }
 }
 
-export default connect(state => state)(Events);
+export default connect(state => new State(state)
+  .ignore(['skills', 'parameters', 'solutions' ])
+  .ignoreGlobals([ 'day', 'generation', 'timers' ]).state
+)(Events);

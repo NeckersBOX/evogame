@@ -1,4 +1,7 @@
-import { h, Component } from 'preact'
+import { h } from 'preact'
+import EvoComponent from './EvoComponent'
+import State from '../managers/core/State'
+
 import { connect } from 'preact-redux'
 import { bind } from 'decko';
 
@@ -13,7 +16,7 @@ import prefixTemplate from '../loglevel-prefix-template'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('Skills');
 
-class Skills extends Component {
+class Skills extends EvoComponent {
   constructor(props) {
     super(props);
   }
@@ -71,4 +74,7 @@ class Skills extends Component {
   }
 }
 
-export default connect(state => state)(Skills);;
+export default connect(state => new State(state)
+  .ignore([ 'events', 'parameters', 'solutions' ])
+  .ignoreGlobals([ 'day', 'generation', 'timers' ]).state
+)(Skills);;

@@ -1,4 +1,6 @@
-import { h, Component } from 'preact'
+import { h } from 'preact'
+import EvoComponent from './EvoComponent'
+
 import Container from 'preact-mui/lib/container'
 import Row from 'preact-mui/lib/row';
 import Col from 'preact-mui/lib/col';
@@ -21,7 +23,7 @@ import prefixTemplate from '../loglevel-prefix-template'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('Layout');
 
-class Layout extends Component {
+class Layout extends EvoComponent {
   constructor(props) {
     super(props);
   }

@@ -33,3 +33,31 @@ export const getValueInScale = (scale, value) => {
   logger.info(logPrefix, '<--');
   return result;
 }
+
+export const compareObjects = (a, b) => {
+  if ( typeof a != 'object' || typeof b != 'object' ) {
+    throw new Error('Invalid arguments (a: ' + (typeof a) + ', b: ' + (typeof b) + ')');
+    return false;
+  }
+
+  for ( let key in a ) {
+    if ( !b.hasOwnProperty(key) ) {
+      return false;
+    }
+
+    if ( typeof a[key] != typeof b[key] ) {
+      return false;
+    }
+
+    if ( typeof a[key] != 'object' ) {
+      if ( a[key] !== b[key] ) {
+        return false;
+      }
+    }
+    else if ( !compareObjects(a[key], b[key]) ) {
+      return false;
+    }
+  }
+
+  return true;
+}

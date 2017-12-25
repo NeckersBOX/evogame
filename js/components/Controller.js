@@ -1,7 +1,11 @@
-import { h, Component } from 'preact'
+import { h } from 'preact'
+import EvoComponent from './EvoComponent'
+import State from '../managers/core/State'
+
 import { connect } from 'preact-redux'
 import { ButtonsGroup, ButtonItem } from './extra-mui/buttons-group'
 import { bind } from 'decko'
+
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../loglevel-prefix-template'
@@ -9,7 +13,7 @@ import prefixTemplate from '../loglevel-prefix-template'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('Controller');
 
-class Controller extends Component {
+class Controller extends EvoComponent {
   constructor(props) {
     super(props);
   }
@@ -43,7 +47,7 @@ class Controller extends Component {
 
   render() {
     const logPrefix = ':render] ';
-    logger.debug(logPrefix, '-->');
+    logger.info(logPrefix, '-->');
 
     let stage = (
       <ButtonsGroup>
@@ -59,9 +63,12 @@ class Controller extends Component {
       </ButtonsGroup>
     );
 
-    logger.debug(logPrefix, '<--');
+    logger.info(logPrefix, '<--');
     return stage;
   }
 }
 
-export default connect(state => state)(Controller);
+export default connect(state => new State(state)
+  .ignore([ 'events', 'parameters', 'skills', 'solutions' ])
+  .ignoreGlobals([ 'day', 'generation', 'timers' ]).state
+)(Controller);

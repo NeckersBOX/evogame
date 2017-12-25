@@ -1,4 +1,7 @@
-import { h, Component } from 'preact'
+import { h } from 'preact'
+import EvoComponent from './EvoComponent'
+import State from '../managers/core/State'
+
 import { connect } from 'preact-redux'
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
@@ -7,7 +10,7 @@ import prefixTemplate from '../loglevel-prefix-template'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('WorldMap');
 
-class WorldMap extends Component {
+class WorldMap extends EvoComponent {
   constructor(props) {
     super(props);
   }
@@ -52,4 +55,6 @@ class WorldMap extends Component {
   }
 }
 
-export default connect(state => state)(WorldMap);
+export default connect(state => new State(state)
+  .ignore([ 'events', 'parameters', 'solutions', 'skills', 'globals' ]).state
+)(WorldMap);
