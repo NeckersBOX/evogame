@@ -1,3 +1,5 @@
+import State from './State'
+
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../../loglevel-prefix-template'
@@ -5,17 +7,9 @@ import prefixTemplate from '../../loglevel-prefix-template'
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('core');
 
-export class Core {
+export class Core extends State {
   constructor() {
-    this._state = {};
-  }
-
-  set state(state) {
-    this._state = {...this._state, ...state};
-  }
-
-  get state() {
-    return this._state;
+    super({});
   }
 
   setState(state) {
