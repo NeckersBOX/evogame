@@ -19,7 +19,7 @@ const initialState = {
   globals: {},
   config: {
     label: {
-      time: 'Dispatch Time'
+      time: 'Duration'
     },
     unit: {
       time: 'days'
