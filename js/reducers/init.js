@@ -17,6 +17,14 @@ const initialState = {
   solutions: {},
   parameters: {},
   globals: {},
+  config: {
+    label: {
+      time: 'Dispatch Time'
+    },
+    unit: {
+      time: 'days'
+    }
+  },
   managers: {
     events: null,
     globals: null,
