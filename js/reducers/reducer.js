@@ -53,7 +53,7 @@ const reducer = (state, action) => {
 
     logger.info(logPrefix, 'Updating state');
     nextState = {
-      managers: state.managers,
+      ...state,
       events: state.managers.events.getCurrentState(),
       globals: state.managers.globals.getCurrentState(),
       skills: state.managers.skills.getCurrentState(),
