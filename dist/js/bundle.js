@@ -4634,7 +4634,7 @@ var DamageEvaluate = (_class = function () {
   }]);
 
   return DamageEvaluate;
-}(), (_applyDecoratedDescriptor(_class, 'damageWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageWind'), _class), _applyDecoratedDescriptor(_class, 'damageRain', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageRain'), _class), _applyDecoratedDescriptor(_class, 'damageFire', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageFire'), _class), _applyDecoratedDescriptor(_class, 'damageSnow', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageSnow'), _class), _applyDecoratedDescriptor(_class, 'damageWave', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageWave'), _class), _applyDecoratedDescriptor(_class, 'damageSandstorm', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageSandstorm'), _class), _applyDecoratedDescriptor(_class, 'isFatalCold', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'isFatalCold'), _class), _applyDecoratedDescriptor(_class, 'isFatalHeat', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'isFatalHeat'), _class), _applyDecoratedDescriptor(_class, 'isFatalWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'isFatalWind'), _class), _applyDecoratedDescriptor(_class, 'isFatalWater', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'isFatalWater'), _class)), _class);
+}(), (_applyDecoratedDescriptor(_class, 'damageWind', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageWind'), _class), _applyDecoratedDescriptor(_class, 'damageRain', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageRain'), _class), _applyDecoratedDescriptor(_class, 'damageFire', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageFire'), _class), _applyDecoratedDescriptor(_class, 'damageSnow', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageSnow'), _class), _applyDecoratedDescriptor(_class, 'damageWave', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageWave'), _class), _applyDecoratedDescriptor(_class, 'damageSandstorm', [_decko.memoize], Object.getOwnPropertyDescriptor(_class, 'damageSandstorm'), _class)), _class);
 exports.default = DamageEvaluate;
 
 /***/ }),
@@ -6137,11 +6137,11 @@ var Events = (_class = function (_EvoComponent) {
   }, {
     key: 'render',
     value: function render() {
-      var logPrefix = ':buildStage] ';
+      var logPrefix = ':render] ';
       logger.info(logPrefix, '-->');
 
       logger.debug(logPrefix, 'Get label for current event\'s value');
-      var label = this.props.managers.events.getValueLabel(this.props.events.current.key, this.state.value);
+      var label = this.props.managers.events.getValueLabel(this.props.events.current.key, this.props.events.current.value);
       logger.debug(logPrefix, 'Label retrieved:', label);
 
       var stage = (0, _preact.h)(
@@ -7176,7 +7176,7 @@ var WorldMap = function (_EvoComponent) {
 }(_EvoComponent3.default);
 
 exports.default = (0, _preactRedux.connect)(function (state) {
-  return new _State2.default(state).ignore(['events', 'parameters', 'solutions', 'skills', 'globals']).state;
+  return new _State2.default(state).ignore(['events', 'parameters', 'skills', 'globals']).state;
 })(WorldMap);
 
 /***/ }),

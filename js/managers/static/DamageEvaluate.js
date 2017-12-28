@@ -79,7 +79,6 @@ class DamageEvaluate {
     };
   }
 
-  @memoize
   static isFatalCold(resistance, value) {
     const logPrefix = ':isFatalCold] ';
     logger.debug(logPrefix, '-->');
@@ -88,7 +87,6 @@ class DamageEvaluate {
     return value <= resistance;
   }
 
-  @memoize
   static isFatalHeat(resistance, value) {
     const logPrefix = ':isFatalHeat ] ';
     logger.debug(logPrefix, '-->');
@@ -97,7 +95,6 @@ class DamageEvaluate {
     return value >= resistance;
   }
 
-  @memoize
   static isFatalWind(resistance, value) {
     const logPrefix = ':isFatalWind ] ';
     logger.debug(logPrefix, '-->');
@@ -106,7 +103,6 @@ class DamageEvaluate {
     return value >= resistance;
   }
 
-  @memoize
   static isFatalWater(resistance, value) {
     const logPrefix = ':isFatalWater ] ';
     logger.debug(logPrefix, '-->');
