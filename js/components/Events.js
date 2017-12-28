@@ -57,7 +57,7 @@ class Events extends EvoComponent {
     logger.info(logPrefix, '-->');
 
     logger.debug(logPrefix, 'Get label for current event\'s value');
-    let label = this.props.managers.events.getValueLabel(this.props.events.current.key, this.state.value);
+    let label = this.props.managers.events.getValueLabel(this.props.events.current.key, this.props.events.current.value);
     logger.debug(logPrefix, 'Label retrieved:', label);
 
     let stage = (
