@@ -61,3 +61,30 @@ export const compareObjects = (a, b) => {
 
   return true;
 }
+
+export const sumEqualsKey = (a, b) => {
+  if ( typeof a != 'object' || typeof b != 'object' ) {
+    throw new Error('Invalid arguments (a: ' + (typeof a) + ', b: ' + (typeof b) + ')');
+    return false;
+  }
+
+  let object = {
+    ...b,
+    ...a
+  };
+
+  for ( let key in a ) {
+    if ( !b.hasOwnProperty(key) ) {
+      continue;
+    }
+
+    if ( typeof a[key] != 'object' ) {
+      object[key] = a[key] + b[key];
+    }
+    else {
+      object[key] = sumEqualsKey(a[key], b[key]);
+    }
+  }
+
+  return object;
+}
