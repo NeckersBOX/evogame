@@ -77,6 +77,26 @@ class EventsCore extends CoreList {
     logger.info(logPrefix, '<--');
     return this;
   }
+
+  setCurrentEventTime(dispatchTime) {
+    const logPrefix = ':setCurrentEventTime] ';
+    logger.info(logPrefix, '-->');
+
+    if ( dispatchTime < 0 ) {
+      logger.info(logPrefix, 'Prevent to set a value less than minimum.');
+      value = 0;
+    }
+
+    this.setState({
+      current: {
+        ...this.state.current,
+        dispatchTime
+      }
+    });
+
+    logger.info(logPrefix, '<--');
+    return this;
+  }
 }
 
 export default EventsCore;

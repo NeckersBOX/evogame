@@ -2894,7 +2894,7 @@ var _State = __webpack_require__(4);
 
 var _State2 = _interopRequireDefault(_State);
 
-var _generics = __webpack_require__(9);
+var _generics = __webpack_require__(8);
 
 var _loglevel = __webpack_require__(1);
 
@@ -3021,6 +3021,121 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.sumEqualsKey = exports.compareObjects = exports.getValueInScale = exports.getRandomInt = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _loglevel = __webpack_require__(1);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(2);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(3);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+var logger = _loglevel2.default.getLogger('generics');
+
+var getRandomInt = exports.getRandomInt = function getRandomInt(min, max) {
+  var _ref = [Math.ceil(min), Math.floor(max)];
+  min = _ref[0];
+  max = _ref[1];
+
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var getValueInScale = exports.getValueInScale = function getValueInScale(scale, value) {
+  var logPrefix = ':getValueInScale] ';
+  logger.info(logPrefix, '-->');
+
+  var result = null;
+
+  for (var i in scale) {
+    if (value <= scale[i].value || i == scale.length - 1) {
+      result = scale[i];
+      break;
+    }
+  }
+
+  if (result === null) {
+    logger.info(logPrefix, 'No valid value found');
+    result = { label: '', value: 0 };
+  }
+
+  logger.debug(logPrefix, 'value in scale:', result.value, 'associated with label:', result.label);
+
+  logger.info(logPrefix, '<--');
+  return result;
+};
+
+var compareObjects = exports.compareObjects = function compareObjects(a, b) {
+  if ((typeof a === 'undefined' ? 'undefined' : _typeof(a)) != 'object' || (typeof b === 'undefined' ? 'undefined' : _typeof(b)) != 'object') {
+    throw new Error('Invalid arguments (a: ' + (typeof a === 'undefined' ? 'undefined' : _typeof(a)) + ', b: ' + (typeof b === 'undefined' ? 'undefined' : _typeof(b)) + ')');
+    return false;
+  }
+
+  for (var key in a) {
+    if (!b.hasOwnProperty(key)) {
+      return false;
+    }
+
+    if (_typeof(a[key]) != _typeof(b[key])) {
+      return false;
+    }
+
+    if (_typeof(a[key]) != 'object') {
+      if (a[key] !== b[key]) {
+        return false;
+      }
+    } else if (!compareObjects(a[key], b[key])) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+var sumEqualsKey = exports.sumEqualsKey = function sumEqualsKey(a, b) {
+  if ((typeof a === 'undefined' ? 'undefined' : _typeof(a)) != 'object' || (typeof b === 'undefined' ? 'undefined' : _typeof(b)) != 'object') {
+    throw new Error('Invalid arguments (a: ' + (typeof a === 'undefined' ? 'undefined' : _typeof(a)) + ', b: ' + (typeof b === 'undefined' ? 'undefined' : _typeof(b)) + ')');
+    return false;
+  }
+
+  var object = _extends({}, b, a);
+
+  for (var key in a) {
+    if (!b.hasOwnProperty(key)) {
+      continue;
+    }
+
+    if (_typeof(a[key]) != 'object') {
+      object[key] = a[key] + b[key];
+    } else {
+      object[key] = sumEqualsKey(a[key], b[key]);
+    }
+  }
+
+  return object;
+};
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3219,96 +3334,6 @@ var CoreList = exports.CoreList = function (_Core) {
 
   return CoreList;
 }(Core);
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.compareObjects = exports.getValueInScale = exports.getRandomInt = undefined;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _loglevel = __webpack_require__(1);
-
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('generics');
-
-var getRandomInt = exports.getRandomInt = function getRandomInt(min, max) {
-  var _ref = [Math.ceil(min), Math.floor(max)];
-  min = _ref[0];
-  max = _ref[1];
-
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-var getValueInScale = exports.getValueInScale = function getValueInScale(scale, value) {
-  var logPrefix = ':getValueInScale] ';
-  logger.info(logPrefix, '-->');
-
-  var result = null;
-
-  for (var i in scale) {
-    if (value <= scale[i].value || i == scale.length - 1) {
-      result = scale[i];
-      break;
-    }
-  }
-
-  if (result === null) {
-    logger.info(logPrefix, 'No valid value found');
-    result = { label: '', value: 0 };
-  }
-
-  logger.debug(logPrefix, 'value in scale:', result.value, 'associated with label:', result.label);
-
-  logger.info(logPrefix, '<--');
-  return result;
-};
-
-var compareObjects = exports.compareObjects = function compareObjects(a, b) {
-  if ((typeof a === 'undefined' ? 'undefined' : _typeof(a)) != 'object' || (typeof b === 'undefined' ? 'undefined' : _typeof(b)) != 'object') {
-    throw new Error('Invalid arguments (a: ' + (typeof a === 'undefined' ? 'undefined' : _typeof(a)) + ', b: ' + (typeof b === 'undefined' ? 'undefined' : _typeof(b)) + ')');
-    return false;
-  }
-
-  for (var key in a) {
-    if (!b.hasOwnProperty(key)) {
-      return false;
-    }
-
-    if (_typeof(a[key]) != _typeof(b[key])) {
-      return false;
-    }
-
-    if (_typeof(a[key]) != 'object') {
-      if (a[key] !== b[key]) {
-        return false;
-      }
-    } else if (!compareObjects(a[key], b[key])) {
-      return false;
-    }
-  }
-
-  return true;
-};
 
 /***/ }),
 /* 10 */
@@ -6135,6 +6160,16 @@ var Events = (_class = function (_EvoComponent) {
       });
     }
   }, {
+    key: 'changeTime',
+    value: function changeTime(e) {
+      e.preventDefault();
+
+      this.props.dispatch({
+        type: 'EVENT_SET_TIME',
+        data: e.target.value
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var logPrefix = ':render] ';
@@ -6166,10 +6201,14 @@ var Events = (_class = function (_EvoComponent) {
           { className: 'evogame--event-label mui--text-caption' },
           label
         ),
+        (0, _preact.h)(_input2.default, { type: 'number', floatingLabel: true,
+          label: this.props.config.label.time + ' [ ' + this.props.config.unit.time + ' ]',
+          min: 0, value: this.props.events.current.dispatchTime,
+          onChange: this.changeTime }),
         (0, _preact.h)(
           _button2.default,
           { color: 'primary', style: { width: '100%' }, raised: true,
-            disabled: this.props.globals.status != 'play',
+            disabled: this.props.globals.status != 'play' || this.props.events.status.sended,
             onClick: this.sendEvent },
           'Send Event'
         )
@@ -6181,7 +6220,7 @@ var Events = (_class = function (_EvoComponent) {
   }]);
 
   return Events;
-}(_EvoComponent3.default), (_applyDecoratedDescriptor(_class.prototype, 'changeEvent', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'changeEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'sendEvent', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'sendEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'changeValue', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'changeValue'), _class.prototype)), _class);
+}(_EvoComponent3.default), (_applyDecoratedDescriptor(_class.prototype, 'changeEvent', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'changeEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'sendEvent', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'sendEvent'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'changeValue', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'changeValue'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'changeTime', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'changeTime'), _class.prototype)), _class);
 exports.default = (0, _preactRedux.connect)(function (state) {
   return new _State2.default(state).ignore(['skills', 'parameters', 'solutions']).ignoreGlobals(['day', 'generation', 'timers']).state;
 })(Events);
@@ -7176,7 +7215,7 @@ var WorldMap = function (_EvoComponent) {
 }(_EvoComponent3.default);
 
 exports.default = (0, _preactRedux.connect)(function (state) {
-  return new _State2.default(state).ignore(['events', 'parameters', 'skills', 'globals']).state;
+  return new _State2.default(state).ignore(['parameters', 'skills', 'globals']).ignoreEvents(['current']).state;
 })(WorldMap);
 
 /***/ }),
@@ -7752,6 +7791,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _init = __webpack_require__(58);
 
 var _loglevel = __webpack_require__(1);
@@ -7774,7 +7815,7 @@ var logger = _loglevel2.default.getLogger('reducer');
 var reducerLookup = {
   EVENT_SEND: {
     cb: function cb(state, data) {
-      return state.managers.events.sendEvent(state);
+      return state.managers.events.sendEvent();
     }
   },
   EVENT_SET: {
@@ -7785,6 +7826,11 @@ var reducerLookup = {
   EVENT_SET_VALUE: {
     cb: function cb(state, data) {
       return state.managers.events.setCurrentEventValue(data);
+    }
+  },
+  EVENT_SET_TIME: {
+    cb: function cb(state, data) {
+      return state.managers.events.setCurrentEventTime(data);
     }
   },
   GLOBAL_ADD_DAY: {
@@ -7833,14 +7879,13 @@ var reducer = function reducer(state, action) {
     reducerLookup[action.type].cb(state, action.data);
 
     logger.info(logPrefix, 'Updating state');
-    nextState = {
-      managers: state.managers,
+    nextState = _extends({}, state, {
       events: state.managers.events.getCurrentState(),
       globals: state.managers.globals.getCurrentState(),
       skills: state.managers.skills.getCurrentState(),
       parameters: state.managers.parameters.getCurrentState(),
       solutions: state.managers.solutions.getCurrentState()
-    };
+    });
   } else {
     logger.warn(logPrefix, 'Action not recognized.');
   }
@@ -7909,6 +7954,14 @@ var initialState = {
   solutions: {},
   parameters: {},
   globals: {},
+  config: {
+    label: {
+      time: 'Duration'
+    },
+    unit: {
+      time: 'days'
+    }
+  },
   managers: {
     events: null,
     globals: null,
@@ -8058,7 +8111,7 @@ var _skills = __webpack_require__(20);
 
 var _skills2 = _interopRequireDefault(_skills);
 
-var _Core = __webpack_require__(8);
+var _Core = __webpack_require__(9);
 
 var _loglevel = __webpack_require__(1);
 
@@ -8296,7 +8349,7 @@ var _parameters = __webpack_require__(64);
 
 var _parameters2 = _interopRequireDefault(_parameters);
 
-var _Core = __webpack_require__(8);
+var _Core = __webpack_require__(9);
 
 var _loglevel = __webpack_require__(1);
 
@@ -8433,6 +8486,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _EventsCore2 = __webpack_require__(66);
@@ -8446,6 +8501,8 @@ var _LabelEvaluate2 = _interopRequireDefault(_LabelEvaluate);
 var _DamageEvaluate = __webpack_require__(21);
 
 var _DamageEvaluate2 = _interopRequireDefault(_DamageEvaluate);
+
+var _generics = __webpack_require__(8);
 
 var _loglevel = __webpack_require__(1);
 
@@ -8476,28 +8533,88 @@ var EventsManager = function (_EventsCore) {
   function EventsManager() {
     _classCallCheck(this, EventsManager);
 
-    return _possibleConstructorReturn(this, (EventsManager.__proto__ || Object.getPrototypeOf(EventsManager)).call(this));
+    var _this = _possibleConstructorReturn(this, (EventsManager.__proto__ || Object.getPrototypeOf(EventsManager)).call(this));
+
+    _this.state = {
+      status: {
+        sended: false,
+        damages: {},
+        duration: 0,
+        passed: 0
+      }
+    };
+    return _this;
   }
 
   _createClass(EventsManager, [{
     key: 'sendEvent',
-    value: function sendEvent(state) {
+    value: function sendEvent() {
       var logPrefix = ':sendEvent] ';
       logger.info(logPrefix, '-->');
 
       if (!this.state.current) {
-        logger.info(logPrefix, 'Element not found');
+        logger.warn(logPrefix, 'Element not found');
       } else if (!_DamageEvaluate2.default.hasOwnProperty(this.state.current.damageEvaluate)) {
-        logger.info(logPrefix, 'Method ' + this.state.current.damageEvaluate + ' not found.');
+        logger.warn(logPrefix, 'Method ' + this.state.current.damageEvaluate + ' not found.');
       } else {
-        var damage = _DamageEvaluate2.default[this.state.current.damageEvaluate](this.state.current.value);
-        logger.info(logPrefix, 'damages:', damage);
+        this.setState({
+          status: _extends({}, this.state.status, {
+            sended: true,
+            duration: this.state.current.dispatchTime
+          })
+        });
+      }
 
-        state.managers.solutions.applyDamage(state.managers.skills, damage);
+      logger.info(logPrefix, '<--');
+      return this;
+    }
+  }, {
+    key: 'addDay',
+    value: function addDay(state) {
+      var logPrefix = ':addDay] ';
+      logger.info(logPrefix, '-->');
+
+      if (this.state.status.sended === false) {
+        logger.debug(logPrefix, 'No event sended');
+      } else {
+        if (this.state.status.passed == this.state.status.duration) {
+          logger.info(logPrefix, 'Current event end');
+
+          this.setState({
+            status: {
+              sended: false,
+              passed: 0,
+              duration: 0,
+              damages: {}
+            }
+          });
+        }
+
+        var damages = _DamageEvaluate2.default[this.state.current.damageEvaluate](this.state.current.value);
+
+        this.setState({
+          status: _extends({}, this.state.status, {
+            damages: (0, _generics.sumEqualsKey)(damages, this.state.status.damages),
+            passed: this.state.status.passed + 1
+          })
+        });
+
+        logger.debug(logPrefix, 'damages:', this.state.status.damages);
+
+        state.managers.solutions.applyDamage(state.managers.skills, this.state.status.damages);
 
         if (state.managers.solutions.getList().length == 0) {
           logger.info(logPrefix, 'No solutions left');
           state.managers.globals.pauseGame();
+
+          this.setState({
+            status: {
+              sended: false,
+              passed: 0,
+              duration: 0,
+              damages: {}
+            }
+          });
         }
       }
 
@@ -8514,9 +8631,9 @@ var EventsManager = function (_EventsCore) {
       var valueInfo = 'undefined';
 
       if (!element) {
-        logger.info(logPrefix, 'Element not found');
+        logger.warn(logPrefix, 'Element not found');
       } else if (!_LabelEvaluate2.default.hasOwnProperty(element.labelEvaluate)) {
-        logger.info(logPrefix, 'Method ' + element.labelEvaluate + ' not found.');
+        logger.warn(logPrefix, 'Method ' + element.labelEvaluate + ' not found.');
       } else {
         valueInfo = _LabelEvaluate2.default[element.labelEvaluate](value);
       }
@@ -8546,7 +8663,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Core = __webpack_require__(8);
+var _Core = __webpack_require__(9);
 
 var _events = __webpack_require__(67);
 
@@ -8658,6 +8775,26 @@ var EventsCore = function (_CoreList) {
       logger.info(logPrefix, '<--');
       return this;
     }
+  }, {
+    key: 'setCurrentEventTime',
+    value: function setCurrentEventTime(dispatchTime) {
+      var logPrefix = ':setCurrentEventTime] ';
+      logger.info(logPrefix, '-->');
+
+      if (dispatchTime < 0) {
+        logger.info(logPrefix, 'Prevent to set a value less than minimum.');
+        value = 0;
+      }
+
+      this.setState({
+        current: _extends({}, this.state.current, {
+          dispatchTime: dispatchTime
+        })
+      });
+
+      logger.info(logPrefix, '<--');
+      return this;
+    }
   }]);
 
   return EventsCore;
@@ -8681,6 +8818,7 @@ exports.default = [{
   affect: ['wind'],
   min: 0,
   defaultValue: 20,
+  dispatchTime: 2,
   unit: 'km/h',
   labelEvaluate: 'labelWind',
   damageEvaluate: 'damageWind'
@@ -8690,6 +8828,7 @@ exports.default = [{
   affect: ['water', 'wind'],
   min: 0,
   defaultValue: 5,
+  dispatchTime: 7,
   unit: 'mm/h',
   labelEvaluate: 'labelRain',
   damageEvaluate: 'damageRain'
@@ -8699,6 +8838,7 @@ exports.default = [{
   affect: ['heat', 'cold', 'wind'],
   min: 0,
   defaultValue: 10,
+  dispatchTime: 60,
   unit: 'km/h',
   labelEvaluate: 'labelSandstorm',
   damageEvaluate: 'damageSandstorm'
@@ -8708,6 +8848,7 @@ exports.default = [{
   affect: ['cold', 'heat'],
   min: 0,
   defaultValue: 4,
+  dispatchTime: 3,
   unit: 'cm/h',
   labelEvaluate: 'labelSnow',
   damageEvaluate: 'damageSnow'
@@ -8717,6 +8858,7 @@ exports.default = [{
   affect: ['water'],
   min: 0,
   defaultValue: 4,
+  dispatchTime: 14,
   unit: 'm',
   labelEvaluate: 'labelWave',
   damageEvaluate: 'damageWave'
@@ -8726,6 +8868,7 @@ exports.default = [{
   affect: ['heat', 'cold'],
   min: 0,
   defaultValue: 40,
+  dispatchTime: 30,
   unit: '°C',
   labelEvaluate: 'labelFire',
   damageEvaluate: 'damageFire'
@@ -8758,7 +8901,7 @@ var _loglevelPrefixTemplate = __webpack_require__(3);
 
 var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
-var _generics = __webpack_require__(9);
+var _generics = __webpack_require__(8);
 
 var _decko = __webpack_require__(7);
 
@@ -8904,7 +9047,7 @@ var _GlobalsCore2 = __webpack_require__(70);
 
 var _GlobalsCore3 = _interopRequireDefault(_GlobalsCore2);
 
-var _generics = __webpack_require__(9);
+var _generics = __webpack_require__(8);
 
 var _loglevel = __webpack_require__(1);
 
@@ -9094,6 +9237,8 @@ var GlobalsManager = function (_GlobalsCore) {
         this.setState({
           day: this.state.day + 1
         });
+
+        state.managers.events.addDay(state);
       }
 
       logger.debug(logPrefix, '<--');
@@ -9117,7 +9262,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Core2 = __webpack_require__(8);
+var _Core2 = __webpack_require__(9);
 
 var _loglevel = __webpack_require__(1);
 
@@ -9175,7 +9320,7 @@ var _SolutionsCore2 = __webpack_require__(72);
 
 var _SolutionsCore3 = _interopRequireDefault(_SolutionsCore2);
 
-var _generics = __webpack_require__(9);
+var _generics = __webpack_require__(8);
 
 var _loglevel = __webpack_require__(1);
 
@@ -9399,7 +9544,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Core2 = __webpack_require__(8);
+var _Core2 = __webpack_require__(9);
 
 var _loglevel = __webpack_require__(1);
 

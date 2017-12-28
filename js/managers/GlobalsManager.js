@@ -161,6 +161,8 @@ class GlobalsManager extends GlobalsCore {
       this.setState({
         day: this.state.day + 1
       });
+
+      state.managers.events.addDay(state);
     }
 
     logger.debug(logPrefix, '<--');

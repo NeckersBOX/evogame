@@ -52,6 +52,16 @@ class Events extends EvoComponent {
     });
   }
 
+  @bind
+  changeTime(e) {
+    e.preventDefault();
+
+    this.props.dispatch({
+      type: 'EVENT_SET_TIME',
+      data: e.target.value
+    });
+  }
+
   render() {
     const logPrefix = ':render] ';
     logger.info(logPrefix, '-->');
@@ -77,8 +87,12 @@ class Events extends EvoComponent {
         <label className="evogame--event-label mui--text-caption">
           {label}
         </label>
+        <Input type="number" floatingLabel={true}
+          label={this.props.config.label.time + ' [ ' + this.props.config.unit.time + ' ]'}
+          min={0}  value={this.props.events.current.dispatchTime}
+          onChange={this.changeTime} />
         <Button color="primary" style={{ width: '100%' }} raised={true}
-          disabled={this.props.globals.status != 'play'}
+          disabled={this.props.globals.status != 'play' || this.props.events.status.sended}
           onClick={this.sendEvent}>
           Send Event
         </Button>

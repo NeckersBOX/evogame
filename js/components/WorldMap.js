@@ -56,5 +56,6 @@ class WorldMap extends EvoComponent {
 }
 
 export default connect(state => new State(state)
-  .ignore([ 'events', 'parameters', 'skills', 'globals' ]).state
+  .ignore([ 'parameters', 'skills', 'globals' ])
+  .ignoreEvents([ 'current' ]).state
 )(WorldMap);

@@ -9,13 +9,16 @@ const logger = log.getLogger('reducer');
 
 const reducerLookup = {
   EVENT_SEND: {
-    cb: (state, data) => state.managers.events.sendEvent(state)
+    cb: (state, data) => state.managers.events.sendEvent()
   },
   EVENT_SET: {
     cb: (state, data) => state.managers.events.setEventByKey(data)
   },
   EVENT_SET_VALUE: {
     cb: (state, data) => state.managers.events.setCurrentEventValue(data)
+  },
+  EVENT_SET_TIME: {
+    cb: (state, data) => state.managers.events.setCurrentEventTime(data)
   },
   GLOBAL_ADD_DAY: {
     cb: (state, data) => state.managers.globals.addDay(state)

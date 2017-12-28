@@ -5,6 +5,7 @@ export default [
     affect: [ 'wind' ],
     min: 0,
     defaultValue: 20,
+    dispatchTime: 2,
     unit: 'km/h',
     labelEvaluate: 'labelWind',
     damageEvaluate: 'damageWind'
@@ -15,6 +16,7 @@ export default [
     affect: [ 'water', 'wind' ],
     min: 0,
     defaultValue: 5,
+    dispatchTime: 7,
     unit: 'mm/h',
     labelEvaluate: 'labelRain',
     damageEvaluate: 'damageRain'
@@ -25,6 +27,7 @@ export default [
     affect: [ 'heat', 'cold', 'wind' ],
     min: 0,
     defaultValue: 10,
+    dispatchTime: 60,
     unit: 'km/h',
     labelEvaluate: 'labelSandstorm',
     damageEvaluate: 'damageSandstorm'
@@ -35,6 +38,7 @@ export default [
     affect: [ 'cold', 'heat' ],
     min: 0,
     defaultValue: 4,
+    dispatchTime: 3,
     unit: 'cm/h',
     labelEvaluate: 'labelSnow',
     damageEvaluate: 'damageSnow'
@@ -45,6 +49,7 @@ export default [
     affect: [ 'water' ],
     min: 0,
     defaultValue: 4,
+    dispatchTime: 14,
     unit: 'm',
     labelEvaluate: 'labelWave',
     damageEvaluate: 'damageWave'
@@ -55,6 +60,7 @@ export default [
     affect: [ 'heat', 'cold' ],
     min: 0,
     defaultValue: 40,
+    dispatchTime: 30,
     unit: '°C',
     labelEvaluate: 'labelFire',
     damageEvaluate: 'damageFire'
