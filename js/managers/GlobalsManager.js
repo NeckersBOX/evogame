@@ -62,7 +62,7 @@ class GlobalsManager extends GlobalsCore {
       parameters.getValueByKey('solutions'),
       parameters.getValueByKey('world-width'),
       parameters.getValueByKey('world-height'),
-      parameters.getValueByKey('initial-range') / 100
+      parameters.getValueByKey('day-mutability') / 100
     ];
     logger.debug(logPrefix, 'worldWidth:', worldWidth, 'worldHeight:', worldHeight);
     logger.debug(logPrefix, 'initialRange:', initialRange);
@@ -164,6 +164,11 @@ class GlobalsManager extends GlobalsCore {
 
       state.managers.events.addDay(state);
     }
+
+    state.managers.solutions
+      .mutate(state.managers.parameters.getValueByKey('day-mutability'))
+      .addFitnessEvaluation(state.managers.skills)
+      .addSolutionsColors();
 
     logger.debug(logPrefix, '<--');
     return this;

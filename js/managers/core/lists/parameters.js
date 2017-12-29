@@ -14,8 +14,8 @@ export default [
     label: 'Generation duration',
     unit: 'days',
     min: '1',
-    defaultValue: '365',
-    value: 365
+    defaultValue: '30',
+    value: 30
   },
   {
     key: 'mutability',
@@ -24,8 +24,8 @@ export default [
     unit: '%',
     min: '0',
     max: '100',
-    defaultValue: '2',
-    value: 2
+    defaultValue: '20',
+    value: 20
   },
   {
     key: 'reproductivity',
@@ -61,8 +61,8 @@ export default [
     label: 'Day duration',
     unit: 'ms',
     min: '10',
-    defaultValue: '500',
-    value: 500
+    defaultValue: '300',
+    value: 300
   },
   {
     key: 'reproduction-area',
@@ -74,13 +74,13 @@ export default [
     value: 6
   },
   {
-    key: 'initial-range',
-    dynamic: false,
-    label: 'Initial Mutability Range',
+    key: 'day-mutability',
+    dynamic: true,
+    label: 'Day Mutability Range',
     unit: '%',
     min: '0',
     max: '100',
-    defaultValue: '20',
-    value: 20
+    defaultValue: '2',
+    value: 5
   }
 ];

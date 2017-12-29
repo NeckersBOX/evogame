@@ -23,8 +23,9 @@ class GeneralInfo extends EvoComponent {
     let stage = (
       <List>
         <ListItem label="Generation">{this.props.globals.generation}</ListItem>
-        <ListItem label="Solutions">{this.props.solutions.list.length}</ListItem>
         <ListItem label="Day">{this.props.globals.day}</ListItem>
+        <ListItem label="Current Solutions">{this.props.solutions.list.length}</ListItem>
+        <ListItem label="Dead Solutions">{this.props.solutions.dead}</ListItem>
       </List>
     );
 

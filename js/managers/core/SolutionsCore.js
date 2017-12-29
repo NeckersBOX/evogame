@@ -12,7 +12,8 @@ class SolutionsCore extends Core {
     super();
 
     this.state = {
-      list: []
+      list: [],
+      dead: 0
     };
   }
 
@@ -37,8 +38,8 @@ class SolutionsCore extends Core {
     const logPrefix = ':removeAll] ';
     logger.info(logPrefix, '-->');
 
-    this.setState({ list: [] });
-    
+    this.setState({ list: [], dead: 0 });
+
     logger.info(logPrefix, '<--');
     return this;
   }

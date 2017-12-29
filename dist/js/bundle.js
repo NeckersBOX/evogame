@@ -7111,13 +7111,18 @@ var GeneralInfo = function (_EvoComponent) {
         ),
         (0, _preact.h)(
           _list.ListItem,
-          { label: 'Solutions' },
+          { label: 'Day' },
+          this.props.globals.day
+        ),
+        (0, _preact.h)(
+          _list.ListItem,
+          { label: 'Current Solutions' },
           this.props.solutions.list.length
         ),
         (0, _preact.h)(
           _list.ListItem,
-          { label: 'Day' },
-          this.props.globals.day
+          { label: 'Dead Solutions' },
+          this.props.solutions.dead
         )
       );
 
@@ -8434,8 +8439,8 @@ exports.default = [{
   label: 'Generation duration',
   unit: 'days',
   min: '1',
-  defaultValue: '365',
-  value: 365
+  defaultValue: '30',
+  value: 30
 }, {
   key: 'mutability',
   dynamic: true,
@@ -8443,8 +8448,8 @@ exports.default = [{
   unit: '%',
   min: '0',
   max: '100',
-  defaultValue: '2',
-  value: 2
+  defaultValue: '20',
+  value: 20
 }, {
   key: 'reproductivity',
   dynamic: true,
@@ -8476,8 +8481,8 @@ exports.default = [{
   label: 'Day duration',
   unit: 'ms',
   min: '10',
-  defaultValue: '500',
-  value: 500
+  defaultValue: '300',
+  value: 300
 }, {
   key: 'reproduction-area',
   dynamic: true,
@@ -8487,14 +8492,14 @@ exports.default = [{
   defaultValue: '6',
   value: 6
 }, {
-  key: 'initial-range',
-  dynamic: false,
-  label: 'Initial Mutability Range',
+  key: 'day-mutability',
+  dynamic: true,
+  label: 'Day Mutability Range',
   unit: '%',
   min: '0',
   max: '100',
-  defaultValue: '20',
-  value: 20
+  defaultValue: '2',
+  value: 5
 }];
 
 /***/ }),
@@ -9154,7 +9159,7 @@ var GlobalsManager = function (_GlobalsCore) {
         }
       });
 
-      var _ref2 = [parameters.getValueByKey('solutions'), parameters.getValueByKey('world-width'), parameters.getValueByKey('world-height'), parameters.getValueByKey('initial-range') / 100],
+      var _ref2 = [parameters.getValueByKey('solutions'), parameters.getValueByKey('world-width'), parameters.getValueByKey('world-height'), parameters.getValueByKey('day-mutability') / 100],
           maxSolutions = _ref2[0],
           worldWidth = _ref2[1],
           worldHeight = _ref2[2],
@@ -9262,6 +9267,8 @@ var GlobalsManager = function (_GlobalsCore) {
 
         state.managers.events.addDay(state);
       }
+
+      state.managers.solutions.mutate(state.managers.parameters.getValueByKey('day-mutability')).addFitnessEvaluation(state.managers.skills).addSolutionsColors();
 
       logger.debug(logPrefix, '<--');
       return this;
@@ -9405,6 +9412,31 @@ var SolutionsManager = function (_SolutionsCore) {
       return this;
     }
   }, {
+    key: 'mutate',
+    value: function mutate(mutability) {
+      var logPrefix = ':mutate] ';
+      logger.debug(logPrefix, '-->');
+
+      var list = this.state.list.map(function (solution) {
+        return _extends({}, solution, {
+          skills: solution.skills.map(function (skill) {
+            var rangeValue = skill.value * (mutability / 100);
+            var value = skill.value + (0, _generics.getRandomInt)(-rangeValue, +rangeValue);
+
+            return _extends({}, skill, {
+              value: Math.min(Math.max(value, skill.min ? +skill.min : value), skill.max ? +skill.max : value),
+              fitness: 0
+            });
+          })
+        });
+      });
+
+      this.setState({ list: list });
+
+      logger.debug(logPrefix, '<--');
+      return this;
+    }
+  }, {
     key: 'addFitnessEvaluation',
     value: function addFitnessEvaluation(skillsManager) {
       var _this2 = this;
@@ -9501,8 +9533,6 @@ var SolutionsManager = function (_SolutionsCore) {
           };
         }).filter(function (c) {
           return c.value > 0;
-        }).sort(function (a, b) {
-          return a.value - b.value;
         });
 
         logger.debug(logPrefix, 'colorRanges:', colorRanges);
@@ -9541,7 +9571,7 @@ var SolutionsManager = function (_SolutionsCore) {
       });
       logger.info(logPrefix, 'Filtered solutions:', list.length);
 
-      this.setState({ list: list });
+      this.setState({ list: list, dead: this.state.dead + (this.state.list.length - list.length) });
 
       logger.info(logPrefix, '<--');
       return this;
@@ -9600,7 +9630,8 @@ var SolutionsCore = function (_Core) {
     var _this = _possibleConstructorReturn(this, (SolutionsCore.__proto__ || Object.getPrototypeOf(SolutionsCore)).call(this));
 
     _this.state = {
-      list: []
+      list: [],
+      dead: 0
     };
     return _this;
   }
@@ -9629,7 +9660,7 @@ var SolutionsCore = function (_Core) {
       var logPrefix = ':removeAll] ';
       logger.info(logPrefix, '-->');
 
-      this.setState({ list: [] });
+      this.setState({ list: [], dead: 0 });
 
       logger.info(logPrefix, '<--');
       return this;

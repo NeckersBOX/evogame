@@ -40,6 +40,30 @@ class SolutionsManager extends SolutionsCore {
     return this;
   }
 
+  mutate(mutability) {
+    const logPrefix = ':mutate] ';
+    logger.debug(logPrefix, '-->');
+
+    let list = this.state.list.map(solution => ({
+      ...solution,
+      skills: solution.skills.map(skill => {
+        let rangeValue = skill.value * (mutability / 100);
+        let value = skill.value + getRandomInt(-rangeValue, +rangeValue);
+
+        return {
+          ...skill,
+          value: Math.min(Math.max(value, skill.min ? +skill.min : value), skill.max ? +skill.max : value),
+          fitness: 0
+        }
+      })
+    }));
+
+    this.setState({ list });
+
+    logger.debug(logPrefix, '<--');
+    return this;
+  }
+
   addFitnessEvaluation(skillsManager) {
     const logPrefix = ':addFitnessEvaluation] ';
     logger.info(logPrefix, '-->');
@@ -111,7 +135,7 @@ class SolutionsManager extends SolutionsCore {
       let colorRanges = solution.skills.map((skill, idx) => ({
         color: skill.color,
         value: valuesRanges[idx] * 100
-      })).filter(c => c.value > 0).sort((a, b) => a.value - b.value);
+      })).filter(c => c.value > 0);
 
       logger.debug(logPrefix, 'colorRanges:', colorRanges);
 
@@ -147,7 +171,7 @@ class SolutionsManager extends SolutionsCore {
     );
     logger.info(logPrefix, 'Filtered solutions:', list.length);
 
-    this.setState({ list });
+    this.setState({ list, dead: this.state.dead + (this.state.list.length - list.length) });
 
     logger.info(logPrefix, '<--');
     return this;
