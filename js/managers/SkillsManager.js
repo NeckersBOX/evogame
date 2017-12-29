@@ -15,14 +15,14 @@ class SkillsManager extends SkillsCore {
   }
 
   getFitness(skill, min, max) {
-    const logPrefix = ':getFitnessByKey] ';
-    logger.info(logPrefix, '-->');
+    const logPrefix = ':getFitness] ';
+    logger.debug(logPrefix, '-->');
 
     let element = this.getElementByKey(skill.key);
     let fitness = FitnessEvaluate[element.generateFitness](skill.value, min, max);
     logger.debug(logPrefix, 'fitness:', fitness);
 
-    logger.info(logPrefix, '<--');
+    logger.debug(logPrefix, '<--');
     return fitness;
   }
 

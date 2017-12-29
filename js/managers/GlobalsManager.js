@@ -64,8 +64,6 @@ class GlobalsManager extends GlobalsCore {
       parameters.getValueByKey('world-height'),
       parameters.getValueByKey('day-mutability') / 100
     ];
-    logger.debug(logPrefix, 'worldWidth:', worldWidth, 'worldHeight:', worldHeight);
-    logger.debug(logPrefix, 'initialRange:', initialRange);
 
     maxSolutions = Math.min(worldWidth * worldHeight, maxSolutions);
     logger.info(logPrefix, 'Generating ' + maxSolutions + ' solutions');
@@ -90,8 +88,7 @@ class GlobalsManager extends GlobalsCore {
       solutions.addRandomSolution(state.skills.list, initialRange, position)
     }
 
-    solutions.addFitnessEvaluation(state.managers.skills);
-    solutions.addSolutionsColors();
+    solutions.addFitnessEvaluation(state.managers.skills).addSolutionsColors();
 
     logger.info(logPrefix, '<--');
     return this;
@@ -147,13 +144,23 @@ class GlobalsManager extends GlobalsCore {
     const logPrefix = ':addDay] ';
     logger.debug(logPrefix, '-->');
 
-    if ( this.state.day == state.managers.parameters.getValueByKey('days_per_generation') ) {
+    const [ parameters, solutions ] = [ state.managers.parameters, state.managers.solutions ];
+
+    if ( this.state.day >= parameters.getValueByKey('days_per_generation') ) {
       logger.info('End of generation', this.state.generation);
 
       this.setState({
         day: 1,
         generation: this.state.generation + 1
       });
+
+      solutions.buildGeneration(
+        parameters.getValueByKey('world-width'),
+        parameters.getValueByKey('world-height'),
+        parameters.getValueByKey('reproductivity'),
+        Math.ceil(parameters.getValueByKey('reproduction-area') / 2),
+        parameters.getValueByKey('mutability')
+      );
     }
     else {
       logger.debug('End of day', this.state.day, 'in generation', this.state.generation);
@@ -165,8 +172,8 @@ class GlobalsManager extends GlobalsCore {
       state.managers.events.addDay(state);
     }
 
-    state.managers.solutions
-      .mutate(state.managers.parameters.getValueByKey('day-mutability'))
+    solutions
+      .mutate(parameters.getValueByKey('day-mutability'))
       .addFitnessEvaluation(state.managers.skills)
       .addSolutionsColors();
 

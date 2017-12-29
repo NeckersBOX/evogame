@@ -34,8 +34,8 @@ export default [
     unit: '%',
     min: '0',
     max: '100',
-    defaultValue: '0',
-    value: 0
+    defaultValue: '80',
+    value: 80
   },
   {
     key: 'world-width',

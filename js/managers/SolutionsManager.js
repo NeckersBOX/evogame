@@ -40,6 +40,19 @@ class SolutionsManager extends SolutionsCore {
     return this;
   }
 
+  buildGeneration(worldWidth, worldHeight, repRange, repArea, mutability) {
+    const logPrefix = ':buildGeneration] ';
+    logger.info(logPrefix, '-->');
+
+    this
+      .processOverpopulation(worldWidth, worldHeight, repArea)
+      .reproduceSolutions(worldWidth, worldHeight, repRange, repArea, mutability)
+      .processOverpopulation(worldWidth, worldHeight, repArea);
+
+    logger.info(logPrefix, '<--');
+    return this;
+  }
+
   mutate(mutability) {
     const logPrefix = ':mutate] ';
     logger.debug(logPrefix, '-->');
@@ -47,12 +60,22 @@ class SolutionsManager extends SolutionsCore {
     let list = this.state.list.map(solution => ({
       ...solution,
       skills: solution.skills.map(skill => {
-        let rangeValue = skill.value * (mutability / 100);
-        let value = skill.value + getRandomInt(-rangeValue, +rangeValue);
+        let [ rangeValue, value, mutateBase ] = [ 0, 0, skill.value ];
+
+        if ( skill.hasOwnProperty('mutateBase') ) {
+          rangeValue = skill.mutateBase * (mutability / 100);
+          value = skill.mutateBase + getRandomInt(-rangeValue, +rangeValue);
+          mutateBase = skill.mutateBase;
+        }
+        else {
+          rangeValue = skill.value * (mutability / 100);
+          value = skill.value + getRandomInt(-rangeValue, +rangeValue);
+        }
 
         return {
           ...skill,
           value: Math.min(Math.max(value, skill.min ? +skill.min : value), skill.max ? +skill.max : value),
+          mutateBase,
           fitness: 0
         }
       })
