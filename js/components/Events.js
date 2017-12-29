@@ -10,6 +10,7 @@ import Button from 'preact-mui/lib/button'
 
 import { bind } from 'decko'
 import { Badges } from './extra-mui/badges'
+import { List, ListItem } from './extra-mui/list'
 import State from '../managers/core/State'
 
 import log from 'loglevel'
@@ -18,6 +19,15 @@ import prefixTemplate from '../loglevel-prefix-template'
 
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('Events');
+
+const EventStatus = props => (
+  <List>
+    <ListItem label="Day Passed">{props.status.passed}</ListItem>
+    {Object.keys(props.status.damages).map(key =>
+      <ListItem label={'Damage ' + key}>{props.status.damages[key]}</ListItem>
+    )}
+  </List>
+);
 
 class Events extends EvoComponent {
   constructor(props) {
@@ -48,7 +58,7 @@ class Events extends EvoComponent {
 
     this.props.dispatch({
       type: 'EVENT_SET_VALUE',
-      data: e.target.value
+      data: +e.target.value
     });
   }
 
@@ -58,7 +68,7 @@ class Events extends EvoComponent {
 
     this.props.dispatch({
       type: 'EVENT_SET_TIME',
-      data: e.target.value
+      data: +e.target.value
     });
   }
 
@@ -91,6 +101,7 @@ class Events extends EvoComponent {
           label={this.props.config.label.time + ' [ ' + this.props.config.unit.time + ' ]'}
           min={0}  value={this.props.events.current.dispatchTime}
           onChange={this.changeTime} />
+        {this.props.events.status.sended ? <EventStatus status={this.props.events.status} /> : null}
         <Button color="primary" style={{ width: '100%' }} raised={true}
           disabled={this.props.globals.status != 'play' || this.props.events.status.sended}
           onClick={this.sendEvent}>

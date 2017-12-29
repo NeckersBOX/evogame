@@ -73,9 +73,9 @@ class DamageEvaluate {
 
     logger.info(logPrefix, '<--');
     return {
-      wind: value,
-      heat: 50 - (value / 10),
-      cold: 50 - (value / 10)
+      wind: value / 5,
+      heat: (value / 10),
+      cold: (value / 10)
     };
   }
 
