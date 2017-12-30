@@ -4738,10 +4738,10 @@ var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log('Log level:', "debug" || 'info');
+console.log('Log level:', "silent" || 'info');
 
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-(0, _loglevel.setLevel)("debug" || 'info');
+(0, _loglevel.setLevel)("silent" || 'info');
 
 window.addEventListener('load', function () {
   var logPrefix = ':loadEvent] ';
@@ -5556,13 +5556,17 @@ var Layout = function (_EvoComponent) {
             ),
             (0, _preact.h)(
               _col2.default,
-              { md: '9' },
+              { md: '6' },
               (0, _preact.h)(
                 _panel2.default,
                 null,
                 (0, _preact.h)(_panel3.PanelHeader, { label: 'World Map' }),
                 (0, _preact.h)(_WorldMap2.default, null)
-              ),
+              )
+            ),
+            (0, _preact.h)(
+              _col2.default,
+              { md: '3' },
               (0, _preact.h)(
                 _panel2.default,
                 null,
@@ -7387,7 +7391,7 @@ var Parameters = (_class = function (_EvoComponent) {
           this.props.parameters.list.map(function (property) {
             return (0, _preact.h)(
               _col2.default,
-              { md: '3', sm: '6' },
+              { md: '6', sm: '12' },
               (0, _preact.h)(_input2.default, _extends({}, _extends({}, property, {
                 label: (property.dynamic ? '' : '* ') + property.label + ' [ ' + property.unit + ' ]'
               }), { type: 'number', floatingLabel: true,
@@ -7562,7 +7566,7 @@ var Skills = (_class = function (_EvoComponent) {
 
             return (0, _preact.h)(
               _col2.default,
-              { key: property.key, md: '3', sm: '6' },
+              { key: property.key, md: '6', sm: '12' },
               (0, _preact.h)(_input2.default, { type: 'number', floatingLabel: true,
                 label: property.label + ' [ ' + property.unit + ' ]',
                 min: property.min || null,
@@ -8403,7 +8407,7 @@ exports.default = [{
   value: 16
 }, {
   key: 'days_per_generation',
-  dynamic: true,
+  dynamic: false,
   label: 'Generation duration',
   unit: 'days',
   min: '1',
@@ -8429,15 +8433,15 @@ exports.default = [{
   value: 80
 }, {
   key: 'world-width',
-  dynamic: true,
+  dynamic: false,
   label: 'World Width',
   unit: 'cell',
   min: '1',
-  defaultValue: '32',
-  value: 32
+  defaultValue: '24',
+  value: 24
 }, {
   key: 'world-height',
-  dynamic: true,
+  dynamic: false,
   label: 'World Height',
   unit: 'cell',
   min: '1',
@@ -8445,7 +8449,7 @@ exports.default = [{
   value: 12
 }, {
   key: 'day_time',
-  dynamic: true,
+  dynamic: false,
   label: 'Day duration',
   unit: 'ms',
   min: '10',

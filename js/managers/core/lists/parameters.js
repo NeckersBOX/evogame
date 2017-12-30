@@ -10,7 +10,7 @@ export default [
   },
   {
     key: 'days_per_generation',
-    dynamic: true,
+    dynamic: false,
     label: 'Generation duration',
     unit: 'days',
     min: '1',
@@ -39,16 +39,16 @@ export default [
   },
   {
     key: 'world-width',
-    dynamic: true,
+    dynamic: false,
     label: 'World Width',
     unit: 'cell',
     min: '1',
-    defaultValue: '32',
-    value: 32
+    defaultValue: '24',
+    value: 24
   },
   {
     key: 'world-height',
-    dynamic: true,
+    dynamic: false,
     label: 'World Height',
     unit: 'cell',
     min: '1',
@@ -57,7 +57,7 @@ export default [
   },
   {
     key: 'day_time',
-    dynamic: true,
+    dynamic: false,
     label: 'Day duration',
     unit: 'ms',
     min: '10',

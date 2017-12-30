@@ -51,7 +51,7 @@ class Parameters extends EvoComponent {
       <div>
         <Row>
           {this.props.parameters.list.map(property =>
-            <Col md="3" sm="6">
+            <Col md="6" sm="12">
               <Input {...{
                 ...property,
                 label: (property.dynamic ? '' : '* ') + property.label + ' [ ' + property.unit + ' ]'

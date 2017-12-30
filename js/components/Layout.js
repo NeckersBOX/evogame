@@ -47,11 +47,13 @@ class Layout extends EvoComponent {
                 <GeneralInfo />
               </Panel>
             </Col>
-            <Col md="9">
+            <Col md="6">
               <Panel>
                 <PanelHeader label="World Map" />
                 <WorldMap />
               </Panel>
+            </Col>
+            <Col md="3">
               <Panel>
                 <Tabs>
                   <Tab selected={true} label="Parameters">
