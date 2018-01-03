@@ -199,6 +199,21 @@ class SolutionsManager extends SolutionsCore {
     logger.info(logPrefix, '<--');
     return this;
   }
+
+  getBestSolution() {
+    const logPrefix = ':getBestSolution] ';
+    logger.info(logPrefix, '-->');
+
+    let bestSolution = null;
+    if ( this.state.list.length > 0 ) {
+      bestSolution = this.state.list.reduce((p, curr) =>
+        p.fitness > curr.fitness ? p : curr
+      );
+    }
+
+    logger.info(logPrefix, '<--');
+    return bestSolution;
+  }
 }
 
 export default SolutionsManager;

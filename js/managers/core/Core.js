@@ -4,6 +4,8 @@ import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../../loglevel-prefix-template'
 
+import { bind } from 'decko'
+
 prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('core');
 
@@ -12,11 +14,13 @@ export class Core extends State {
     super({});
   }
 
+  @bind
   setState(state) {
     this.state = state;
     return this;
   }
 
+  @bind
   getCurrentState() {
     const logPrefix = ':getCurrentState] ';
     logger.debug(logPrefix, '-->');
@@ -35,6 +39,7 @@ export class CoreList extends Core {
     };
   }
 
+  @bind
   getList() {
     const logPrefix = ':getList] ';
     logger.debug(logPrefix, '-->');
@@ -43,6 +48,7 @@ export class CoreList extends Core {
     return this.state.list;
   }
 
+  @bind
   getElementByKey(key) {
     const logPrefix = ':getElementByKey] ';
     logger.debug(logPrefix, '-->');
@@ -54,6 +60,18 @@ export class CoreList extends Core {
     return elem;
   }
 
+  @bind
+  getLabelByKey(key) {
+    const logPrefix = ':getLabelByKey] ';
+    logger.debug(logPrefix, '-->');
+
+    let label = this.getElementByKey(key).label;
+
+    logger.debug(logPrefix, '<--');
+    return label;
+  }
+
+  @bind
   getValueByKey(key) {
     const logPrefix = ':getValueByKey] ';
     logger.debug(logPrefix, '-->');
@@ -64,6 +82,7 @@ export class CoreList extends Core {
     return value;
   }
 
+  @bind
   setValueByKey(key, value) {
     const logPrefix = ':setValueByKey] ';
     logger.debug(logPrefix, '-->');
@@ -121,6 +140,7 @@ export class CoreList extends Core {
     return this;
   }
 
+  @bind
   isDynamic(key) {
     const logPrefix = ':isDynamic] ';
     logger.debug(logPrefix, '-->');
