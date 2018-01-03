@@ -25,6 +25,7 @@ const initialState = {
       time: 'days'
     }
   },
+  history: [],
   managers: {
     events: null,
     globals: null,

@@ -54,9 +54,14 @@ const reducer = (state, action) => {
     logger.info(logPrefix, 'Executing action received');
     reducerLookup[action.type].cb(state, action.data);
 
+    logger.info(logPrefix, 'Saving previous state');
+    let history = state.history.slice(0);
+    history.push(state);
+
     logger.info(logPrefix, 'Updating state');
     nextState = {
       ...state,
+      history,
       events: state.managers.events.getCurrentState(),
       globals: state.managers.globals.getCurrentState(),
       skills: state.managers.skills.getCurrentState(),

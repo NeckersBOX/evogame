@@ -2934,7 +2934,7 @@ var EvoComponent = function (_Component) {
       var logPrefix = ':shouldComponentUpdate] ';
       logger.debug(logPrefix, '-->');
 
-      var ignoreProps = ['dispatch', 'managers', 'children'];
+      var ignoreProps = ['dispatch', 'managers', 'children', 'history'];
       var _ref = [new _State2.default(this.props).ignore(ignoreProps), new _State2.default(nextProps).ignore(ignoreProps)],
           oldProps = _ref[0],
           newProps = _ref[1];
@@ -8014,8 +8014,13 @@ var reducer = function reducer(state, action) {
     logger.info(logPrefix, 'Executing action received');
     reducerLookup[action.type].cb(state, action.data);
 
+    logger.info(logPrefix, 'Saving previous state');
+    var history = state.history.slice(0);
+    history.push(state);
+
     logger.info(logPrefix, 'Updating state');
     nextState = _extends({}, state, {
+      history: history,
       events: state.managers.events.getCurrentState(),
       globals: state.managers.globals.getCurrentState(),
       skills: state.managers.skills.getCurrentState(),
@@ -8098,6 +8103,7 @@ var initialState = {
       time: 'days'
     }
   },
+  history: [],
   managers: {
     events: null,
     globals: null,

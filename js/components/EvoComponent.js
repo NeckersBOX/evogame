@@ -18,7 +18,7 @@ export default class EvoComponent extends Component {
     const logPrefix = ':shouldComponentUpdate] ';
     logger.debug(logPrefix, '-->');
 
-    const ignoreProps = [ 'dispatch', 'managers', 'children' ];
+    const ignoreProps = [ 'dispatch', 'managers', 'children', 'history' ];
     let [oldProps, newProps] = [
       new State(this.props).ignore(ignoreProps),
       new State(nextProps).ignore(ignoreProps)
