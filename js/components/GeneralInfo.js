@@ -6,6 +6,7 @@ import { connect } from 'preact-redux'
 import { List, ListItem } from './extra-mui/list'
 import Solution from './Solution'
 
+import { bind } from 'decko'
 import log from 'loglevel'
 import prefix from 'loglevel-plugin-prefix'
 import prefixTemplate from '../loglevel-prefix-template'
@@ -16,6 +17,11 @@ const logger = log.getLogger('GeneralInfo');
 class GeneralInfo extends EvoComponent {
   constructor(props) {
     super(props);
+  }
+
+  @bind
+  labelCb(key) {
+    return this.props.managers.skills.getLabelByKey(key);
   }
 
   render() {
@@ -35,7 +41,7 @@ class GeneralInfo extends EvoComponent {
         { bestSolution ?
           <div>
             <h2>Best Solution ( Fitness: {bestSolution.fitness.toFixed(3)} )</h2>
-            <Solution solution={bestSolution} labelCb={this.props.managers.skills.getLabelByKey} />
+            <Solution solution={bestSolution} labelCb={this.labelCb} />
           </div> : null }
       </div>
     );

@@ -3150,8 +3150,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _desc, _value, _class, _desc2, _value2, _class2;
-
 var _State2 = __webpack_require__(4);
 
 var _State3 = _interopRequireDefault(_State2);
@@ -3168,8 +3166,6 @@ var _loglevelPrefixTemplate = __webpack_require__(3);
 
 var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
-var _decko = __webpack_require__(7);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3178,39 +3174,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
-  var desc = {};
-  Object['ke' + 'ys'](descriptor).forEach(function (key) {
-    desc[key] = descriptor[key];
-  });
-  desc.enumerable = !!desc.enumerable;
-  desc.configurable = !!desc.configurable;
-
-  if ('value' in desc || desc.initializer) {
-    desc.writable = true;
-  }
-
-  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
-    return decorator(target, property, desc) || desc;
-  }, desc);
-
-  if (context && desc.initializer !== void 0) {
-    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
-    desc.initializer = undefined;
-  }
-
-  if (desc.initializer === void 0) {
-    Object['define' + 'Property'](target, property, desc);
-    desc = null;
-  }
-
-  return desc;
-}
-
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
 var logger = _loglevel2.default.getLogger('core');
 
-var Core = exports.Core = (_class = function (_State) {
+var Core = exports.Core = function (_State) {
   _inherits(Core, _State);
 
   function Core() {
@@ -3237,8 +3204,9 @@ var Core = exports.Core = (_class = function (_State) {
   }]);
 
   return Core;
-}(_State3.default), (_applyDecoratedDescriptor(_class.prototype, 'setState', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'setState'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'getCurrentState', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'getCurrentState'), _class.prototype)), _class);
-var CoreList = exports.CoreList = (_class2 = function (_Core) {
+}(_State3.default);
+
+var CoreList = exports.CoreList = function (_Core) {
   _inherits(CoreList, _Core);
 
   function CoreList(list) {
@@ -3376,7 +3344,7 @@ var CoreList = exports.CoreList = (_class2 = function (_Core) {
   }]);
 
   return CoreList;
-}(Core), (_applyDecoratedDescriptor(_class2.prototype, 'getList', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'getList'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'getElementByKey', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'getElementByKey'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'getLabelByKey', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'getLabelByKey'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'getValueByKey', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'getValueByKey'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'setValueByKey', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'setValueByKey'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'isDynamic', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'isDynamic'), _class2.prototype)), _class2);
+}(Core);
 
 /***/ }),
 /* 10 */
@@ -7096,6 +7064,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _desc, _value, _class;
+
 var _preact = __webpack_require__(0);
 
 var _EvoComponent2 = __webpack_require__(6);
@@ -7113,6 +7083,8 @@ var _list = __webpack_require__(14);
 var _Solution = __webpack_require__(51);
 
 var _Solution2 = _interopRequireDefault(_Solution);
+
+var _decko = __webpack_require__(7);
 
 var _loglevel = __webpack_require__(1);
 
@@ -7134,10 +7106,39 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+  var desc = {};
+  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+    desc[key] = descriptor[key];
+  });
+  desc.enumerable = !!desc.enumerable;
+  desc.configurable = !!desc.configurable;
+
+  if ('value' in desc || desc.initializer) {
+    desc.writable = true;
+  }
+
+  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+    return decorator(target, property, desc) || desc;
+  }, desc);
+
+  if (context && desc.initializer !== void 0) {
+    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+    desc.initializer = undefined;
+  }
+
+  if (desc.initializer === void 0) {
+    Object['define' + 'Property'](target, property, desc);
+    desc = null;
+  }
+
+  return desc;
+}
+
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
 var logger = _loglevel2.default.getLogger('GeneralInfo');
 
-var GeneralInfo = function (_EvoComponent) {
+var GeneralInfo = (_class = function (_EvoComponent) {
   _inherits(GeneralInfo, _EvoComponent);
 
   function GeneralInfo(props) {
@@ -7147,6 +7148,11 @@ var GeneralInfo = function (_EvoComponent) {
   }
 
   _createClass(GeneralInfo, [{
+    key: 'labelCb',
+    value: function labelCb(key) {
+      return this.props.managers.skills.getLabelByKey(key);
+    }
+  }, {
     key: 'render',
     value: function render() {
       var logPrefix = ':render] ';
@@ -7191,7 +7197,7 @@ var GeneralInfo = function (_EvoComponent) {
             bestSolution.fitness.toFixed(3),
             ' )'
           ),
-          (0, _preact.h)(_Solution2.default, { solution: bestSolution, labelCb: this.props.managers.skills.getLabelByKey })
+          (0, _preact.h)(_Solution2.default, { solution: bestSolution, labelCb: this.labelCb })
         ) : null
       );
 
@@ -7201,8 +7207,7 @@ var GeneralInfo = function (_EvoComponent) {
   }]);
 
   return GeneralInfo;
-}(_EvoComponent3.default);
-
+}(_EvoComponent3.default), (_applyDecoratedDescriptor(_class.prototype, 'labelCb', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'labelCb'), _class.prototype)), _class);
 exports.default = (0, _preactRedux.connect)(function (state) {
   return new _State2.default(state).ignore(['events', 'parameters', 'skills']).ignoreGlobals(['timers', 'status']).state;
 })(GeneralInfo);
