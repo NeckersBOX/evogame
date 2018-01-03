@@ -2,11 +2,7 @@ import { Component } from 'preact'
 import State from '../managers/core/State'
 import { compareObjects } from '../generics'
 
-import log from 'loglevel'
-import prefix from 'loglevel-plugin-prefix'
-import prefixTemplate from '../loglevel-prefix-template'
-
-prefix.apply(log, prefixTemplate);
+import log from '../loglevel-custom'
 const logger = log.getLogger('EvoComponent');
 
 export default class EvoComponent extends Component {

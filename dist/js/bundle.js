@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 23);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1092,424 +1092,125 @@ exports.default = preact;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-/*
-* loglevel - https://github.com/pimterry/loglevel
-*
-* Copyright (c) 2013 Tim Perry
-* Licensed under the MIT license.
-*/
-(function (root, definition) {
-    "use strict";
-
-    if (true) {
-        !(__WEBPACK_AMD_DEFINE_FACTORY__ = (definition),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
-				__WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
-        module.exports = definition();
-    } else {
-        root.log = definition();
-    }
-})(undefined, function () {
-    "use strict";
-
-    // Slightly dubious tricks to cut down minimized file size
-
-    var noop = function noop() {};
-    var undefinedType = "undefined";
-
-    var logMethods = ["trace", "debug", "info", "warn", "error"];
-
-    // Cross-browser bind equivalent that works at least back to IE6
-    function bindMethod(obj, methodName) {
-        var method = obj[methodName];
-        if (typeof method.bind === 'function') {
-            return method.bind(obj);
-        } else {
-            try {
-                return Function.prototype.bind.call(method, obj);
-            } catch (e) {
-                // Missing bind shim or IE8 + Modernizr, fallback to wrapping
-                return function () {
-                    return Function.prototype.apply.apply(method, [obj, arguments]);
-                };
-            }
-        }
-    }
-
-    // Build the best logging method possible for this env
-    // Wherever possible we want to bind, not wrap, to preserve stack traces
-    function realMethod(methodName) {
-        if (methodName === 'debug') {
-            methodName = 'log';
-        }
-
-        if ((typeof console === 'undefined' ? 'undefined' : _typeof(console)) === undefinedType) {
-            return false; // No method possible, for now - fixed later by enableLoggingWhenConsoleArrives
-        } else if (console[methodName] !== undefined) {
-            return bindMethod(console, methodName);
-        } else if (console.log !== undefined) {
-            return bindMethod(console, 'log');
-        } else {
-            return noop;
-        }
-    }
-
-    // These private functions always need `this` to be set properly
-
-    function replaceLoggingMethods(level, loggerName) {
-        /*jshint validthis:true */
-        for (var i = 0; i < logMethods.length; i++) {
-            var methodName = logMethods[i];
-            this[methodName] = i < level ? noop : this.methodFactory(methodName, level, loggerName);
-        }
-
-        // Define log.log as an alias for log.debug
-        this.log = this.debug;
-    }
-
-    // In old IE versions, the console isn't present until you first open it.
-    // We build realMethod() replacements here that regenerate logging methods
-    function enableLoggingWhenConsoleArrives(methodName, level, loggerName) {
-        return function () {
-            if ((typeof console === 'undefined' ? 'undefined' : _typeof(console)) !== undefinedType) {
-                replaceLoggingMethods.call(this, level, loggerName);
-                this[methodName].apply(this, arguments);
-            }
-        };
-    }
-
-    // By default, we use closely bound real methods wherever possible, and
-    // otherwise we wait for a console to appear, and then try again.
-    function defaultMethodFactory(methodName, level, loggerName) {
-        /*jshint validthis:true */
-        return realMethod(methodName) || enableLoggingWhenConsoleArrives.apply(this, arguments);
-    }
-
-    function Logger(name, defaultLevel, factory) {
-        var self = this;
-        var currentLevel;
-        var storageKey = "loglevel";
-        if (name) {
-            storageKey += ":" + name;
-        }
-
-        function persistLevelIfPossible(levelNum) {
-            var levelName = (logMethods[levelNum] || 'silent').toUpperCase();
-
-            if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === undefinedType) return;
-
-            // Use localStorage if available
-            try {
-                window.localStorage[storageKey] = levelName;
-                return;
-            } catch (ignore) {}
-
-            // Use session cookie as fallback
-            try {
-                window.document.cookie = encodeURIComponent(storageKey) + "=" + levelName + ";";
-            } catch (ignore) {}
-        }
-
-        function getPersistedLevel() {
-            var storedLevel;
-
-            if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === undefinedType) return;
-
-            try {
-                storedLevel = window.localStorage[storageKey];
-            } catch (ignore) {}
-
-            // Fallback to cookies if local storage gives us nothing
-            if ((typeof storedLevel === 'undefined' ? 'undefined' : _typeof(storedLevel)) === undefinedType) {
-                try {
-                    var cookie = window.document.cookie;
-                    var location = cookie.indexOf(encodeURIComponent(storageKey) + "=");
-                    if (location !== -1) {
-                        storedLevel = /^([^;]+)/.exec(cookie.slice(location))[1];
-                    }
-                } catch (ignore) {}
-            }
-
-            // If the stored level is not valid, treat it as if nothing was stored.
-            if (self.levels[storedLevel] === undefined) {
-                storedLevel = undefined;
-            }
-
-            return storedLevel;
-        }
-
-        /*
-         *
-         * Public logger API - see https://github.com/pimterry/loglevel for details
-         *
-         */
-
-        self.name = name;
-
-        self.levels = { "TRACE": 0, "DEBUG": 1, "INFO": 2, "WARN": 3,
-            "ERROR": 4, "SILENT": 5 };
-
-        self.methodFactory = factory || defaultMethodFactory;
-
-        self.getLevel = function () {
-            return currentLevel;
-        };
-
-        self.setLevel = function (level, persist) {
-            if (typeof level === "string" && self.levels[level.toUpperCase()] !== undefined) {
-                level = self.levels[level.toUpperCase()];
-            }
-            if (typeof level === "number" && level >= 0 && level <= self.levels.SILENT) {
-                currentLevel = level;
-                if (persist !== false) {
-                    // defaults to true
-                    persistLevelIfPossible(level);
-                }
-                replaceLoggingMethods.call(self, level, name);
-                if ((typeof console === 'undefined' ? 'undefined' : _typeof(console)) === undefinedType && level < self.levels.SILENT) {
-                    return "No console available for logging";
-                }
-            } else {
-                throw "log.setLevel() called with invalid level: " + level;
-            }
-        };
-
-        self.setDefaultLevel = function (level) {
-            if (!getPersistedLevel()) {
-                self.setLevel(level, false);
-            }
-        };
-
-        self.enableAll = function (persist) {
-            self.setLevel(self.levels.TRACE, persist);
-        };
-
-        self.disableAll = function (persist) {
-            self.setLevel(self.levels.SILENT, persist);
-        };
-
-        // Initialize with the right level
-        var initialLevel = getPersistedLevel();
-        if (initialLevel == null) {
-            initialLevel = defaultLevel == null ? "WARN" : defaultLevel;
-        }
-        self.setLevel(initialLevel, false);
-    }
-
-    /*
-     *
-     * Top-level API
-     *
-     */
-
-    var defaultLogger = new Logger();
-
-    var _loggersByName = {};
-    defaultLogger.getLogger = function getLogger(name) {
-        if (typeof name !== "string" || name === "") {
-            throw new TypeError("You must supply a name when creating a logger.");
-        }
-
-        var logger = _loggersByName[name];
-        if (!logger) {
-            logger = _loggersByName[name] = new Logger(name, defaultLogger.getLevel(), defaultLogger.methodFactory);
-        }
-        return logger;
-    };
-
-    // Grab the current global log variable in case of overwrite
-    var _log = (typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== undefinedType ? window.log : undefined;
-    defaultLogger.noConflict = function () {
-        if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== undefinedType && window.log === defaultLogger) {
-            window.log = _log;
-        }
-
-        return defaultLogger;
-    };
-
-    defaultLogger.getLoggers = function getLoggers() {
-        return _loggersByName;
-    };
-
-    return defaultLogger;
-});
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-(function (root, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
-				__WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
-    module.exports = factory();
-  } else {
-    root.prefix = factory(root);
-  }
-})(undefined, function (root) {
-  'use strict';
-
-  var merge = function merge(target) {
-    var i = 1;
-    var length = arguments.length;
-    var key;
-    for (; i < length; i++) {
-      for (key in arguments[i]) {
-        if (Object.prototype.hasOwnProperty.call(arguments[i], key)) {
-          target[key] = arguments[i][key];
-        }
-      }
-    }
-    return target;
-  };
-
-  var defaults = {
-    template: '[%t] %l:',
-    timestampFormatter: function timestampFormatter(date) {
-      return date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
-    },
-    levelFormatter: function levelFormatter(level) {
-      return level.toUpperCase();
-    },
-    nameFormatter: function nameFormatter(name) {
-      return name || 'root';
-    }
-  };
-
-  var loglevel;
-  var originalFactory;
-  var pluginFactory;
-
-  var apply = function apply(logger, options) {
-    if (!logger || !logger.getLogger) {
-      throw new TypeError('Argument is not a root loglevel object');
-    }
-
-    if (loglevel && pluginFactory !== logger.methodFactory) {
-      throw new Error("You can't reassign a plugin after appling another plugin");
-    }
-
-    loglevel = logger;
-
-    options = merge({}, defaults, options);
-
-    originalFactory = originalFactory || logger.methodFactory;
-
-    pluginFactory = function methodFactory(methodName, logLevel, loggerName) {
-      var rawMethod = originalFactory(methodName, logLevel, loggerName);
-
-      var hasTimestamp = options.template.indexOf('%t') !== -1;
-      var hasLevel = options.template.indexOf('%l') !== -1;
-      var hasName = options.template.indexOf('%n') !== -1;
-
-      return function () {
-        var content = options.template;
-
-        var length = arguments.length;
-        var args = Array(length);
-        var key = 0;
-        for (; key < length; key++) {
-          args[key] = arguments[key];
-        }
-
-        if (hasTimestamp) content = content.replace(/%t/, options.timestampFormatter(new Date()));
-        if (hasLevel) content = content.replace(/%l/, options.levelFormatter(methodName));
-        if (hasName) content = content.replace(/%n/, options.nameFormatter(loggerName));
-
-        if (args.length && typeof args[0] === 'string') {
-          // concat prefix with first argument to support string substitutions
-          args[0] = '' + content + ' ' + args[0];
-        } else {
-          args.unshift(content);
-        }
-
-        rawMethod.apply(undefined, args);
-      };
-    };
-
-    logger.methodFactory = pluginFactory;
-    logger.setLevel(logger.getLevel());
-    return logger;
-  };
-
-  var disable = function disable() {
-    if (!loglevel) {
-      throw new Error("You can't disable a not appled plugin");
-    }
-
-    if (pluginFactory !== loglevel.methodFactory) {
-      throw new Error("You can't disable a plugin after appling another plugin");
-    }
-
-    loglevel.methodFactory = originalFactory;
-    loglevel.setLevel(loglevel.getLevel());
-    originalFactory = undefined;
-    loglevel = undefined;
-  };
-
-  var api = {
-    apply: apply,
-    disable: disable
-  };
-
-  var save;
-  if (root) {
-    save = root.prefix;
-    api.noConflict = function () {
-      if (root.prefix === api) {
-        root.prefix = save;
-      }
-      return api;
-    };
-  }
-
-  return api;
-});
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var f2 = function f2(n) {
-  return (n + '').length < 2 ? '0' + n : (n + '').length > 2 ? (n + '').substr(-2) : n;
-};
-var f3 = function f3(n) {
-  return (n + '').length < 2 ? '00' + n : (n + '').length < 3 ? '0' + n : n;
-};
+exports.default = undefined;
 
-var prefixTemplate = {
-  template: '[%t] [%l] [%n',
-  timestampFormatter: function timestampFormatter(date) {
-    return f2(date.getDate()) + '/' + f2(date.getMonth() + 1) + '/' + f2(date.getFullYear()) + ' ' + f2(date.getHours()) + ':' + f2(date.getMinutes()) + ':' + f2(date.getSeconds()) + ':' + f3(date.getMilliseconds());
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _loglevel = __webpack_require__(19);
+
+var _loglevel2 = _interopRequireDefault(_loglevel);
+
+var _loglevelPluginPrefix = __webpack_require__(20);
+
+var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
+
+var _loglevelPrefixTemplate = __webpack_require__(21);
+
+var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
+
+var CustomLog = function () {
+  function CustomLog(logger) {
+    _classCallCheck(this, CustomLog);
+
+    this.logger = logger;
   }
-};
 
-exports.default = prefixTemplate;
+  _createClass(CustomLog, [{
+    key: 'stringify',
+    value: function stringify(args) {
+      var msgtok = args.slice(0);
+      msgtok.shift();
+
+      return msgtok.map(function (arg) {
+        if (typeof arg == 'array' || (typeof arg === 'undefined' ? 'undefined' : _typeof(arg)) == 'object') {
+          return ' ' + JSON.stringify(arg);
+        }
+
+        return arg;
+      }).join('');
+    }
+  }, {
+    key: 'info',
+    value: function info(prefix) {
+      if (false) {
+        this.logger.info(prefix, this.stringify(Array.from(arguments)));
+      } else {
+        this.logger.info.apply(this, arguments);
+      }
+    }
+  }, {
+    key: 'warn',
+    value: function warn(prefix) {
+      if (false) {
+        this.logger.warn(prefix, this.stringify(Array.from(arguments)));
+      } else {
+        this.logger.warn.apply(this, arguments);
+      }
+    }
+  }, {
+    key: 'debug',
+    value: function debug(prefix) {
+      if (false) {
+        this.logger.debug(prefix, this.stringify(Array.from(arguments)));
+      } else {
+        this.logger.debug.apply(this, arguments);
+      }
+    }
+  }, {
+    key: 'error',
+    value: function error(prefix) {
+      if (false) {
+        this.logger.error(prefix, this.stringify(Array.from(arguments)));
+      } else {
+        this.logger.error.apply(this, arguments);
+      }
+    }
+  }, {
+    key: 'trace',
+    value: function trace(prefix) {
+      if (false) {
+        this.logger.trace(prefix, this.stringify(Array.from(arguments)));
+      } else {
+        this.logger.trace.apply(this, arguments);
+      }
+    }
+  }]);
+
+  return CustomLog;
+}();
+
+var _default = function () {
+  function _default() {
+    _classCallCheck(this, _default);
+  }
+
+  _createClass(_default, null, [{
+    key: 'getLogger',
+    value: function getLogger(moduleName) {
+      return new CustomLog(_loglevel2.default.getLogger(moduleName));
+    }
+  }]);
+
+  return _default;
+}();
+
+exports.default = _default;
 
 /***/ }),
-/* 4 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1661,7 +1362,7 @@ var State = function () {
 exports.default = State;
 
 /***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1676,7 +1377,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 var _preact = __webpack_require__(0);
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(13);
 
 var Children = {
   only: function only(children) {
@@ -2872,10 +2573,10 @@ exports.connect = connect;
 exports.connectAdvanced = connectAdvanced;
 exports.default = index;
 //# sourceMappingURL=preact-redux.esm.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2890,23 +2591,15 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
-var _State = __webpack_require__(4);
+var _State = __webpack_require__(2);
 
 var _State2 = _interopRequireDefault(_State);
 
-var _generics = __webpack_require__(8);
+var _generics = __webpack_require__(6);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2916,8 +2609,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('EvoComponent');
+var logger = _loglevelCustom2.default.getLogger('EvoComponent');
 
 var EvoComponent = function (_Component) {
   _inherits(EvoComponent, _Component);
@@ -2954,7 +2646,7 @@ var EvoComponent = function (_Component) {
 exports.default = EvoComponent;
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3020,7 +2712,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 //# sourceMappingURL=decko.js.map
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3035,22 +2727,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('generics');
+var logger = _loglevelCustom2.default.getLogger('generics');
 
 var getRandomInt = exports.getRandomInt = function getRandomInt(min, max) {
   var _ref = [Math.ceil(min), Math.floor(max)];
@@ -3135,7 +2818,7 @@ var sumEqualsKey = exports.sumEqualsKey = function sumEqualsKey(a, b) {
 };
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3150,21 +2833,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _State2 = __webpack_require__(4);
+var _State2 = __webpack_require__(2);
 
 var _State3 = _interopRequireDefault(_State2);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3174,8 +2849,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('core');
+var logger = _loglevelCustom2.default.getLogger('core');
 
 var Core = exports.Core = function (_State) {
   _inherits(Core, _State);
@@ -3347,7 +3021,7 @@ var CoreList = exports.CoreList = function (_Core) {
 }(Core);
 
 /***/ }),
-/* 10 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3377,7 +3051,7 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3547,7 +3221,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 12 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3738,7 +3412,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 13 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3925,7 +3599,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 14 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3968,7 +3642,7 @@ var ListItem = exports.ListItem = function ListItem(props) {
 };
 
 /***/ }),
-/* 15 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3979,27 +3653,27 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
 
-var _createStore = __webpack_require__(16);
+var _createStore = __webpack_require__(14);
 
 var _createStore2 = _interopRequireDefault(_createStore);
 
-var _combineReducers = __webpack_require__(36);
+var _combineReducers = __webpack_require__(37);
 
 var _combineReducers2 = _interopRequireDefault(_combineReducers);
 
-var _bindActionCreators = __webpack_require__(37);
+var _bindActionCreators = __webpack_require__(38);
 
 var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 
-var _applyMiddleware = __webpack_require__(38);
+var _applyMiddleware = __webpack_require__(39);
 
 var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 
-var _compose = __webpack_require__(20);
+var _compose = __webpack_require__(18);
 
 var _compose2 = _interopRequireDefault(_compose);
 
-var _warning = __webpack_require__(19);
+var _warning = __webpack_require__(17);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -4022,7 +3696,7 @@ exports.applyMiddleware = _applyMiddleware2.default;
 exports.compose = _compose2.default;
 
 /***/ }),
-/* 16 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4037,11 +3711,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = createStore;
 
-var _isPlainObject = __webpack_require__(17);
+var _isPlainObject = __webpack_require__(15);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-var _symbolObservable = __webpack_require__(32);
+var _symbolObservable = __webpack_require__(33);
 
 var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 
@@ -4294,7 +3968,7 @@ var ActionTypes = exports.ActionTypes = {
 }
 
 /***/ }),
-/* 17 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4304,15 +3978,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _baseGetTag = __webpack_require__(24);
+var _baseGetTag = __webpack_require__(25);
 
 var _baseGetTag2 = _interopRequireDefault(_baseGetTag);
 
-var _getPrototype = __webpack_require__(29);
+var _getPrototype = __webpack_require__(30);
 
 var _getPrototype2 = _interopRequireDefault(_getPrototype);
 
-var _isObjectLike = __webpack_require__(31);
+var _isObjectLike = __webpack_require__(32);
 
 var _isObjectLike2 = _interopRequireDefault(_isObjectLike);
 
@@ -4377,7 +4051,7 @@ function isPlainObject(value) {
 exports.default = isPlainObject;
 
 /***/ }),
-/* 18 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4387,7 +4061,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _root = __webpack_require__(25);
+var _root = __webpack_require__(26);
 
 var _root2 = _interopRequireDefault(_root);
 
@@ -4399,7 +4073,7 @@ var _Symbol = _root2.default.Symbol;
 exports.default = _Symbol;
 
 /***/ }),
-/* 19 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4432,7 +4106,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 20 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4476,7 +4150,428 @@ function compose() {
 }
 
 /***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*
+* loglevel - https://github.com/pimterry/loglevel
+*
+* Copyright (c) 2013 Tim Perry
+* Licensed under the MIT license.
+*/
+(function (root, definition) {
+    "use strict";
+
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_FACTORY__ = (definition),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+        module.exports = definition();
+    } else {
+        root.log = definition();
+    }
+})(undefined, function () {
+    "use strict";
+
+    // Slightly dubious tricks to cut down minimized file size
+
+    var noop = function noop() {};
+    var undefinedType = "undefined";
+
+    var logMethods = ["trace", "debug", "info", "warn", "error"];
+
+    // Cross-browser bind equivalent that works at least back to IE6
+    function bindMethod(obj, methodName) {
+        var method = obj[methodName];
+        if (typeof method.bind === 'function') {
+            return method.bind(obj);
+        } else {
+            try {
+                return Function.prototype.bind.call(method, obj);
+            } catch (e) {
+                // Missing bind shim or IE8 + Modernizr, fallback to wrapping
+                return function () {
+                    return Function.prototype.apply.apply(method, [obj, arguments]);
+                };
+            }
+        }
+    }
+
+    // Build the best logging method possible for this env
+    // Wherever possible we want to bind, not wrap, to preserve stack traces
+    function realMethod(methodName) {
+        if (methodName === 'debug') {
+            methodName = 'log';
+        }
+
+        if ((typeof console === 'undefined' ? 'undefined' : _typeof(console)) === undefinedType) {
+            return false; // No method possible, for now - fixed later by enableLoggingWhenConsoleArrives
+        } else if (console[methodName] !== undefined) {
+            return bindMethod(console, methodName);
+        } else if (console.log !== undefined) {
+            return bindMethod(console, 'log');
+        } else {
+            return noop;
+        }
+    }
+
+    // These private functions always need `this` to be set properly
+
+    function replaceLoggingMethods(level, loggerName) {
+        /*jshint validthis:true */
+        for (var i = 0; i < logMethods.length; i++) {
+            var methodName = logMethods[i];
+            this[methodName] = i < level ? noop : this.methodFactory(methodName, level, loggerName);
+        }
+
+        // Define log.log as an alias for log.debug
+        this.log = this.debug;
+    }
+
+    // In old IE versions, the console isn't present until you first open it.
+    // We build realMethod() replacements here that regenerate logging methods
+    function enableLoggingWhenConsoleArrives(methodName, level, loggerName) {
+        return function () {
+            if ((typeof console === 'undefined' ? 'undefined' : _typeof(console)) !== undefinedType) {
+                replaceLoggingMethods.call(this, level, loggerName);
+                this[methodName].apply(this, arguments);
+            }
+        };
+    }
+
+    // By default, we use closely bound real methods wherever possible, and
+    // otherwise we wait for a console to appear, and then try again.
+    function defaultMethodFactory(methodName, level, loggerName) {
+        /*jshint validthis:true */
+        return realMethod(methodName) || enableLoggingWhenConsoleArrives.apply(this, arguments);
+    }
+
+    function Logger(name, defaultLevel, factory) {
+        var self = this;
+        var currentLevel;
+        var storageKey = "loglevel";
+        if (name) {
+            storageKey += ":" + name;
+        }
+
+        function persistLevelIfPossible(levelNum) {
+            var levelName = (logMethods[levelNum] || 'silent').toUpperCase();
+
+            if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === undefinedType) return;
+
+            // Use localStorage if available
+            try {
+                window.localStorage[storageKey] = levelName;
+                return;
+            } catch (ignore) {}
+
+            // Use session cookie as fallback
+            try {
+                window.document.cookie = encodeURIComponent(storageKey) + "=" + levelName + ";";
+            } catch (ignore) {}
+        }
+
+        function getPersistedLevel() {
+            var storedLevel;
+
+            if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === undefinedType) return;
+
+            try {
+                storedLevel = window.localStorage[storageKey];
+            } catch (ignore) {}
+
+            // Fallback to cookies if local storage gives us nothing
+            if ((typeof storedLevel === 'undefined' ? 'undefined' : _typeof(storedLevel)) === undefinedType) {
+                try {
+                    var cookie = window.document.cookie;
+                    var location = cookie.indexOf(encodeURIComponent(storageKey) + "=");
+                    if (location !== -1) {
+                        storedLevel = /^([^;]+)/.exec(cookie.slice(location))[1];
+                    }
+                } catch (ignore) {}
+            }
+
+            // If the stored level is not valid, treat it as if nothing was stored.
+            if (self.levels[storedLevel] === undefined) {
+                storedLevel = undefined;
+            }
+
+            return storedLevel;
+        }
+
+        /*
+         *
+         * Public logger API - see https://github.com/pimterry/loglevel for details
+         *
+         */
+
+        self.name = name;
+
+        self.levels = { "TRACE": 0, "DEBUG": 1, "INFO": 2, "WARN": 3,
+            "ERROR": 4, "SILENT": 5 };
+
+        self.methodFactory = factory || defaultMethodFactory;
+
+        self.getLevel = function () {
+            return currentLevel;
+        };
+
+        self.setLevel = function (level, persist) {
+            if (typeof level === "string" && self.levels[level.toUpperCase()] !== undefined) {
+                level = self.levels[level.toUpperCase()];
+            }
+            if (typeof level === "number" && level >= 0 && level <= self.levels.SILENT) {
+                currentLevel = level;
+                if (persist !== false) {
+                    // defaults to true
+                    persistLevelIfPossible(level);
+                }
+                replaceLoggingMethods.call(self, level, name);
+                if ((typeof console === 'undefined' ? 'undefined' : _typeof(console)) === undefinedType && level < self.levels.SILENT) {
+                    return "No console available for logging";
+                }
+            } else {
+                throw "log.setLevel() called with invalid level: " + level;
+            }
+        };
+
+        self.setDefaultLevel = function (level) {
+            if (!getPersistedLevel()) {
+                self.setLevel(level, false);
+            }
+        };
+
+        self.enableAll = function (persist) {
+            self.setLevel(self.levels.TRACE, persist);
+        };
+
+        self.disableAll = function (persist) {
+            self.setLevel(self.levels.SILENT, persist);
+        };
+
+        // Initialize with the right level
+        var initialLevel = getPersistedLevel();
+        if (initialLevel == null) {
+            initialLevel = defaultLevel == null ? "WARN" : defaultLevel;
+        }
+        self.setLevel(initialLevel, false);
+    }
+
+    /*
+     *
+     * Top-level API
+     *
+     */
+
+    var defaultLogger = new Logger();
+
+    var _loggersByName = {};
+    defaultLogger.getLogger = function getLogger(name) {
+        if (typeof name !== "string" || name === "") {
+            throw new TypeError("You must supply a name when creating a logger.");
+        }
+
+        var logger = _loggersByName[name];
+        if (!logger) {
+            logger = _loggersByName[name] = new Logger(name, defaultLogger.getLevel(), defaultLogger.methodFactory);
+        }
+        return logger;
+    };
+
+    // Grab the current global log variable in case of overwrite
+    var _log = (typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== undefinedType ? window.log : undefined;
+    defaultLogger.noConflict = function () {
+        if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) !== undefinedType && window.log === defaultLogger) {
+            window.log = _log;
+        }
+
+        return defaultLogger;
+    };
+
+    defaultLogger.getLoggers = function getLoggers() {
+        return _loggersByName;
+    };
+
+    return defaultLogger;
+});
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    module.exports = factory();
+  } else {
+    root.prefix = factory(root);
+  }
+})(undefined, function (root) {
+  'use strict';
+
+  var merge = function merge(target) {
+    var i = 1;
+    var length = arguments.length;
+    var key;
+    for (; i < length; i++) {
+      for (key in arguments[i]) {
+        if (Object.prototype.hasOwnProperty.call(arguments[i], key)) {
+          target[key] = arguments[i][key];
+        }
+      }
+    }
+    return target;
+  };
+
+  var defaults = {
+    template: '[%t] %l:',
+    timestampFormatter: function timestampFormatter(date) {
+      return date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
+    },
+    levelFormatter: function levelFormatter(level) {
+      return level.toUpperCase();
+    },
+    nameFormatter: function nameFormatter(name) {
+      return name || 'root';
+    }
+  };
+
+  var loglevel;
+  var originalFactory;
+  var pluginFactory;
+
+  var apply = function apply(logger, options) {
+    if (!logger || !logger.getLogger) {
+      throw new TypeError('Argument is not a root loglevel object');
+    }
+
+    if (loglevel && pluginFactory !== logger.methodFactory) {
+      throw new Error("You can't reassign a plugin after appling another plugin");
+    }
+
+    loglevel = logger;
+
+    options = merge({}, defaults, options);
+
+    originalFactory = originalFactory || logger.methodFactory;
+
+    pluginFactory = function methodFactory(methodName, logLevel, loggerName) {
+      var rawMethod = originalFactory(methodName, logLevel, loggerName);
+
+      var hasTimestamp = options.template.indexOf('%t') !== -1;
+      var hasLevel = options.template.indexOf('%l') !== -1;
+      var hasName = options.template.indexOf('%n') !== -1;
+
+      return function () {
+        var content = options.template;
+
+        var length = arguments.length;
+        var args = Array(length);
+        var key = 0;
+        for (; key < length; key++) {
+          args[key] = arguments[key];
+        }
+
+        if (hasTimestamp) content = content.replace(/%t/, options.timestampFormatter(new Date()));
+        if (hasLevel) content = content.replace(/%l/, options.levelFormatter(methodName));
+        if (hasName) content = content.replace(/%n/, options.nameFormatter(loggerName));
+
+        if (args.length && typeof args[0] === 'string') {
+          // concat prefix with first argument to support string substitutions
+          args[0] = '' + content + ' ' + args[0];
+        } else {
+          args.unshift(content);
+        }
+
+        rawMethod.apply(undefined, args);
+      };
+    };
+
+    logger.methodFactory = pluginFactory;
+    logger.setLevel(logger.getLevel());
+    return logger;
+  };
+
+  var disable = function disable() {
+    if (!loglevel) {
+      throw new Error("You can't disable a not appled plugin");
+    }
+
+    if (pluginFactory !== loglevel.methodFactory) {
+      throw new Error("You can't disable a plugin after appling another plugin");
+    }
+
+    loglevel.methodFactory = originalFactory;
+    loglevel.setLevel(loglevel.getLevel());
+    originalFactory = undefined;
+    loglevel = undefined;
+  };
+
+  var api = {
+    apply: apply,
+    disable: disable
+  };
+
+  var save;
+  if (root) {
+    save = root.prefix;
+    api.noConflict = function () {
+      if (root.prefix === api) {
+        root.prefix = save;
+      }
+      return api;
+    };
+  }
+
+  return api;
+});
+
+/***/ }),
 /* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var f2 = function f2(n) {
+  return (n + '').length < 2 ? '0' + n : (n + '').length > 2 ? (n + '').substr(-2) : n;
+};
+var f3 = function f3(n) {
+  return (n + '').length < 2 ? '00' + n : (n + '').length < 3 ? '0' + n : n;
+};
+
+var prefixTemplate = {
+  template: '[%t] [%l] [%n',
+  timestampFormatter: function timestampFormatter(date) {
+    return f2(date.getDate()) + '/' + f2(date.getMonth() + 1) + '/' + f2(date.getFullYear()) + ' ' + f2(date.getHours()) + ':' + f2(date.getMinutes()) + ':' + f2(date.getSeconds()) + ':' + f3(date.getMilliseconds());
+  }
+};
+
+exports.default = prefixTemplate;
+
+/***/ }),
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4534,7 +4629,7 @@ exports.default = [{
 }];
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4548,19 +4643,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _desc, _value, _class;
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
-
-var _decko = __webpack_require__(7);
+var _decko = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4595,8 +4682,7 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('damageEvaluate');
+var logger = _loglevelCustom2.default.getLogger('damageEvaluate');
 
 var DamageEvaluate = (_class = function () {
   function DamageEvaluate() {
@@ -4717,7 +4803,7 @@ var DamageEvaluate = (_class = function () {
 exports.default = DamageEvaluate;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4725,34 +4811,34 @@ exports.default = DamageEvaluate;
 
 var _preact = __webpack_require__(0);
 
-var _preactRedux = __webpack_require__(5);
+var _preactRedux = __webpack_require__(3);
 
-var _Layout = __webpack_require__(39);
+var _Layout = __webpack_require__(40);
 
 var _Layout2 = _interopRequireDefault(_Layout);
 
-var _store = __webpack_require__(57);
+var _store = __webpack_require__(58);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _loglevel = __webpack_require__(1);
+var _loglevel = __webpack_require__(19);
 
 var _loglevel2 = _interopRequireDefault(_loglevel);
 
-var _loglevelPluginPrefix = __webpack_require__(2);
+var _loglevelPluginPrefix = __webpack_require__(20);
 
 var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
 
-var _loglevelPrefixTemplate = __webpack_require__(3);
+var _loglevelPrefixTemplate = __webpack_require__(21);
 
 var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log('Log level:', 'info' || 'info');
+console.log('Log level:', 'debug' || 'info');
 
 _loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-(0, _loglevel.setLevel)('info' || 'info');
+(0, _loglevel.setLevel)('debug' || 'info');
 
 window.addEventListener('load', function () {
   var logPrefix = ':loadEvent] ';
@@ -4768,7 +4854,7 @@ window.addEventListener('load', function () {
 });
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4778,15 +4864,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(18);
+var _Symbol2 = __webpack_require__(16);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
-var _getRawTag = __webpack_require__(27);
+var _getRawTag = __webpack_require__(28);
 
 var _getRawTag2 = _interopRequireDefault(_getRawTag);
 
-var _objectToString = __webpack_require__(28);
+var _objectToString = __webpack_require__(29);
 
 var _objectToString2 = _interopRequireDefault(_objectToString);
 
@@ -4816,7 +4902,7 @@ function baseGetTag(value) {
 exports.default = baseGetTag;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4828,7 +4914,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _freeGlobal = __webpack_require__(26);
+var _freeGlobal = __webpack_require__(27);
 
 var _freeGlobal2 = _interopRequireDefault(_freeGlobal);
 
@@ -4843,7 +4929,7 @@ var root = _freeGlobal2.default || freeSelf || Function('return this')();
 exports.default = root;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4859,10 +4945,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var freeGlobal = (typeof global === 'undefined' ? 'undefined' : _typeof(global)) == 'object' && global && global.Object === Object && global;
 
 exports.default = freeGlobal;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4872,7 +4958,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Symbol2 = __webpack_require__(18);
+var _Symbol2 = __webpack_require__(16);
 
 var _Symbol3 = _interopRequireDefault(_Symbol2);
 
@@ -4924,7 +5010,7 @@ function getRawTag(value) {
 exports.default = getRawTag;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4957,7 +5043,7 @@ function objectToString(value) {
 exports.default = objectToString;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4967,7 +5053,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _overArg = __webpack_require__(30);
+var _overArg = __webpack_require__(31);
 
 var _overArg2 = _interopRequireDefault(_overArg);
 
@@ -4979,7 +5065,7 @@ var getPrototype = (0, _overArg2.default)(Object.getPrototypeOf, Object);
 exports.default = getPrototype;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5005,7 +5091,7 @@ function overArg(func, transform) {
 exports.default = overArg;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5048,16 +5134,16 @@ function isObjectLike(value) {
 exports.default = isObjectLike;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(33);
+module.exports = __webpack_require__(34);
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5067,7 +5153,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _ponyfill = __webpack_require__(35);
+var _ponyfill = __webpack_require__(36);
 
 var _ponyfill2 = _interopRequireDefault(_ponyfill);
 
@@ -5091,10 +5177,10 @@ if (typeof self !== 'undefined') {
 
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10), __webpack_require__(34)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(35)(module)))
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5124,7 +5210,7 @@ module.exports = function (module) {
 };
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5153,7 +5239,7 @@ function symbolObservablePonyfill(root) {
 };
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5164,13 +5250,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = combineReducers;
 
-var _createStore = __webpack_require__(16);
+var _createStore = __webpack_require__(14);
 
-var _isPlainObject = __webpack_require__(17);
+var _isPlainObject = __webpack_require__(15);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-var _warning = __webpack_require__(19);
+var _warning = __webpack_require__(17);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -5304,7 +5390,7 @@ function combineReducers(reducers) {
 }
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5366,7 +5452,7 @@ function bindActionCreators(actionCreators, dispatch) {
 }
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5377,7 +5463,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = applyMiddleware;
 
-var _compose = __webpack_require__(20);
+var _compose = __webpack_require__(18);
 
 var _compose2 = _interopRequireDefault(_compose);
 
@@ -5439,7 +5525,7 @@ function applyMiddleware() {
 }
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5453,65 +5539,57 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
-var _EvoComponent2 = __webpack_require__(6);
+var _EvoComponent2 = __webpack_require__(4);
 
 var _EvoComponent3 = _interopRequireDefault(_EvoComponent2);
 
-var _container = __webpack_require__(40);
+var _container = __webpack_require__(41);
 
 var _container2 = _interopRequireDefault(_container);
 
-var _row = __webpack_require__(11);
+var _row = __webpack_require__(9);
 
 var _row2 = _interopRequireDefault(_row);
 
-var _col = __webpack_require__(12);
+var _col = __webpack_require__(10);
 
 var _col2 = _interopRequireDefault(_col);
 
-var _panel = __webpack_require__(41);
+var _panel = __webpack_require__(42);
 
 var _panel2 = _interopRequireDefault(_panel);
 
-var _panel3 = __webpack_require__(42);
+var _panel3 = __webpack_require__(43);
 
-var _tab = __webpack_require__(43);
+var _tab = __webpack_require__(44);
 
-var _Events = __webpack_require__(44);
+var _Events = __webpack_require__(45);
 
 var _Events2 = _interopRequireDefault(_Events);
 
-var _GeneralInfo = __webpack_require__(50);
+var _GeneralInfo = __webpack_require__(51);
 
 var _GeneralInfo2 = _interopRequireDefault(_GeneralInfo);
 
-var _WorldMap = __webpack_require__(52);
+var _WorldMap = __webpack_require__(53);
 
 var _WorldMap2 = _interopRequireDefault(_WorldMap);
 
-var _Parameters = __webpack_require__(53);
+var _Parameters = __webpack_require__(54);
 
 var _Parameters2 = _interopRequireDefault(_Parameters);
 
-var _Skills = __webpack_require__(54);
+var _Skills = __webpack_require__(55);
 
 var _Skills2 = _interopRequireDefault(_Skills);
 
-var _Controller = __webpack_require__(55);
+var _Controller = __webpack_require__(56);
 
 var _Controller2 = _interopRequireDefault(_Controller);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5521,8 +5599,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('Layout');
+var logger = _loglevelCustom2.default.getLogger('Layout');
 
 var Layout = function (_EvoComponent) {
   _inherits(Layout, _EvoComponent);
@@ -5612,7 +5689,7 @@ var Layout = function (_EvoComponent) {
 exports.default = Layout;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5785,7 +5862,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5955,7 +6032,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5979,7 +6056,7 @@ var PanelHeader = function PanelHeader(props) {
 exports.PanelHeader = PanelHeader;
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6078,7 +6155,7 @@ exports.Tabs = Tabs;
 exports.Tab = Tab;
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6094,53 +6171,45 @@ var _desc, _value, _class;
 
 var _preact = __webpack_require__(0);
 
-var _preactRedux = __webpack_require__(5);
+var _preactRedux = __webpack_require__(3);
 
-var _EvoComponent2 = __webpack_require__(6);
+var _EvoComponent2 = __webpack_require__(4);
 
 var _EvoComponent3 = _interopRequireDefault(_EvoComponent2);
 
-var _form = __webpack_require__(45);
+var _form = __webpack_require__(46);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _select = __webpack_require__(46);
+var _select = __webpack_require__(47);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _option = __webpack_require__(47);
+var _option = __webpack_require__(48);
 
 var _option2 = _interopRequireDefault(_option);
 
-var _input = __webpack_require__(13);
+var _input = __webpack_require__(11);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _button = __webpack_require__(48);
+var _button = __webpack_require__(49);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _decko = __webpack_require__(7);
+var _decko = __webpack_require__(5);
 
-var _badges = __webpack_require__(49);
+var _badges = __webpack_require__(50);
 
-var _list = __webpack_require__(14);
+var _list = __webpack_require__(12);
 
-var _State = __webpack_require__(4);
+var _State = __webpack_require__(2);
 
 var _State2 = _interopRequireDefault(_State);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6179,8 +6248,7 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('Events');
+var logger = _loglevelCustom2.default.getLogger('Events');
 
 var EventStatus = function EventStatus(props) {
   return (0, _preact.h)(
@@ -6306,7 +6374,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(Events);
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6480,7 +6548,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6656,7 +6724,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6827,7 +6895,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7007,7 +7075,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7052,7 +7120,7 @@ var Badges = function Badges(props) {
 exports.Badges = Badges;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7068,35 +7136,27 @@ var _desc, _value, _class;
 
 var _preact = __webpack_require__(0);
 
-var _EvoComponent2 = __webpack_require__(6);
+var _EvoComponent2 = __webpack_require__(4);
 
 var _EvoComponent3 = _interopRequireDefault(_EvoComponent2);
 
-var _State = __webpack_require__(4);
+var _State = __webpack_require__(2);
 
 var _State2 = _interopRequireDefault(_State);
 
-var _preactRedux = __webpack_require__(5);
+var _preactRedux = __webpack_require__(3);
 
-var _list = __webpack_require__(14);
+var _list = __webpack_require__(12);
 
-var _Solution = __webpack_require__(51);
+var _Solution = __webpack_require__(52);
 
 var _Solution2 = _interopRequireDefault(_Solution);
 
-var _decko = __webpack_require__(7);
+var _decko = __webpack_require__(5);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7135,8 +7195,7 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('GeneralInfo');
+var logger = _loglevelCustom2.default.getLogger('GeneralInfo');
 
 var GeneralInfo = (_class = function (_EvoComponent) {
   _inherits(GeneralInfo, _EvoComponent);
@@ -7213,7 +7272,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(GeneralInfo);
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7225,7 +7284,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _preact = __webpack_require__(0);
 
-var _list = __webpack_require__(14);
+var _list = __webpack_require__(12);
 
 var Solution = function Solution(props) {
   return (0, _preact.h)(
@@ -7253,7 +7312,7 @@ var Solution = function Solution(props) {
 exports.default = Solution;
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7267,27 +7326,19 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _preact = __webpack_require__(0);
 
-var _EvoComponent2 = __webpack_require__(6);
+var _EvoComponent2 = __webpack_require__(4);
 
 var _EvoComponent3 = _interopRequireDefault(_EvoComponent2);
 
-var _State = __webpack_require__(4);
+var _State = __webpack_require__(2);
 
 var _State2 = _interopRequireDefault(_State);
 
-var _preactRedux = __webpack_require__(5);
+var _preactRedux = __webpack_require__(3);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7297,8 +7348,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('WorldMap');
+var logger = _loglevelCustom2.default.getLogger('WorldMap');
 
 var WorldMap = function (_EvoComponent) {
   _inherits(WorldMap, _EvoComponent);
@@ -7360,7 +7410,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(WorldMap);
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7378,41 +7428,33 @@ var _desc, _value, _class;
 
 var _preact = __webpack_require__(0);
 
-var _EvoComponent2 = __webpack_require__(6);
+var _EvoComponent2 = __webpack_require__(4);
 
 var _EvoComponent3 = _interopRequireDefault(_EvoComponent2);
 
-var _State = __webpack_require__(4);
+var _State = __webpack_require__(2);
 
 var _State2 = _interopRequireDefault(_State);
 
-var _preactRedux = __webpack_require__(5);
+var _preactRedux = __webpack_require__(3);
 
-var _decko = __webpack_require__(7);
+var _decko = __webpack_require__(5);
 
-var _input = __webpack_require__(13);
+var _input = __webpack_require__(11);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _row = __webpack_require__(11);
+var _row = __webpack_require__(9);
 
 var _row2 = _interopRequireDefault(_row);
 
-var _col = __webpack_require__(12);
+var _col = __webpack_require__(10);
 
 var _col2 = _interopRequireDefault(_col);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7451,8 +7493,7 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('Parameters');
+var logger = _loglevelCustom2.default.getLogger('Parameters');
 
 var Parameters = (_class = function (_EvoComponent) {
   _inherits(Parameters, _EvoComponent);
@@ -7535,7 +7576,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(Parameters);
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7551,41 +7592,33 @@ var _desc, _value, _class;
 
 var _preact = __webpack_require__(0);
 
-var _EvoComponent2 = __webpack_require__(6);
+var _EvoComponent2 = __webpack_require__(4);
 
 var _EvoComponent3 = _interopRequireDefault(_EvoComponent2);
 
-var _State = __webpack_require__(4);
+var _State = __webpack_require__(2);
 
 var _State2 = _interopRequireDefault(_State);
 
-var _preactRedux = __webpack_require__(5);
+var _preactRedux = __webpack_require__(3);
 
-var _decko = __webpack_require__(7);
+var _decko = __webpack_require__(5);
 
-var _input = __webpack_require__(13);
+var _input = __webpack_require__(11);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _row = __webpack_require__(11);
+var _row = __webpack_require__(9);
 
 var _row2 = _interopRequireDefault(_row);
 
-var _col = __webpack_require__(12);
+var _col = __webpack_require__(10);
 
 var _col2 = _interopRequireDefault(_col);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7624,8 +7657,7 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('Skills');
+var logger = _loglevelCustom2.default.getLogger('Skills');
 
 var Skills = (_class = function (_EvoComponent) {
   _inherits(Skills, _EvoComponent);
@@ -7708,7 +7740,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 ;
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7724,31 +7756,23 @@ var _desc, _value, _class;
 
 var _preact = __webpack_require__(0);
 
-var _EvoComponent2 = __webpack_require__(6);
+var _EvoComponent2 = __webpack_require__(4);
 
 var _EvoComponent3 = _interopRequireDefault(_EvoComponent2);
 
-var _State = __webpack_require__(4);
+var _State = __webpack_require__(2);
 
 var _State2 = _interopRequireDefault(_State);
 
-var _preactRedux = __webpack_require__(5);
+var _preactRedux = __webpack_require__(3);
 
-var _buttonsGroup = __webpack_require__(56);
+var _buttonsGroup = __webpack_require__(57);
 
-var _decko = __webpack_require__(7);
+var _decko = __webpack_require__(5);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7787,8 +7811,7 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('Controller');
+var logger = _loglevelCustom2.default.getLogger('Controller');
 
 var Controller = (_class = function (_EvoComponent) {
   _inherits(Controller, _EvoComponent);
@@ -7868,7 +7891,7 @@ exports.default = (0, _preactRedux.connect)(function (state) {
 })(Controller);
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7901,7 +7924,7 @@ exports.ButtonsGroup = ButtonsGroup;
 exports.ButtonItem = ButtonItem;
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7911,9 +7934,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(13);
 
-var _reducer = __webpack_require__(58);
+var _reducer = __webpack_require__(59);
 
 var _reducer2 = _interopRequireDefault(_reducer);
 
@@ -7922,7 +7945,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = (0, _redux.createStore)(_reducer2.default);
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7934,24 +7957,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _init = __webpack_require__(59);
+var _init = __webpack_require__(60);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('reducer');
+var logger = _loglevelCustom2.default.getLogger('reducer');
 
 var reducerLookup = {
   EVENT_SEND: {
@@ -8044,7 +8058,7 @@ var reducer = function reducer(state, action) {
 exports.default = reducer;
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8057,42 +8071,33 @@ exports.initState = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _SkillsManager = __webpack_require__(60);
+var _SkillsManager = __webpack_require__(61);
 
 var _SkillsManager2 = _interopRequireDefault(_SkillsManager);
 
-var _ParametersManager = __webpack_require__(63);
+var _ParametersManager = __webpack_require__(64);
 
 var _ParametersManager2 = _interopRequireDefault(_ParametersManager);
 
-var _EventsManager = __webpack_require__(66);
+var _EventsManager = __webpack_require__(67);
 
 var _EventsManager2 = _interopRequireDefault(_EventsManager);
 
-var _GlobalsManager = __webpack_require__(70);
+var _GlobalsManager = __webpack_require__(71);
 
 var _GlobalsManager2 = _interopRequireDefault(_GlobalsManager);
 
-var _SolutionsManager = __webpack_require__(72);
+var _SolutionsManager = __webpack_require__(73);
 
 var _SolutionsManager2 = _interopRequireDefault(_SolutionsManager);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('init');
+var logger = _loglevelCustom2.default.getLogger('init');
 
 var initialState = {
   events: {},
@@ -8151,7 +8156,7 @@ var initState = function initState() {
 exports.initState = initState;
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8163,29 +8168,21 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _SkillsCore2 = __webpack_require__(61);
+var _SkillsCore2 = __webpack_require__(62);
 
 var _SkillsCore3 = _interopRequireDefault(_SkillsCore2);
 
-var _DamageEvaluate = __webpack_require__(22);
+var _DamageEvaluate = __webpack_require__(23);
 
 var _DamageEvaluate2 = _interopRequireDefault(_DamageEvaluate);
 
-var _FitnessEvaluate = __webpack_require__(62);
+var _FitnessEvaluate = __webpack_require__(63);
 
 var _FitnessEvaluate2 = _interopRequireDefault(_FitnessEvaluate);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8195,8 +8192,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('skills');
+var logger = _loglevelCustom2.default.getLogger('skills');
 
 var SkillsManager = function (_SkillsCore) {
   _inherits(SkillsManager, _SkillsCore);
@@ -8244,7 +8240,7 @@ var SkillsManager = function (_SkillsCore) {
 exports.default = SkillsManager;
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8254,23 +8250,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _skills = __webpack_require__(21);
+var _skills = __webpack_require__(22);
 
 var _skills2 = _interopRequireDefault(_skills);
 
-var _Core = __webpack_require__(9);
+var _Core = __webpack_require__(7);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8280,8 +8268,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('skills');
+var logger = _loglevelCustom2.default.getLogger('skills');
 
 var SkillsCore = function (_CoreList) {
   _inherits(SkillsCore, _CoreList);
@@ -8298,7 +8285,7 @@ var SkillsCore = function (_CoreList) {
 exports.default = SkillsCore;
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8310,24 +8297,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('fitnessEvaluate');
+var logger = _loglevelCustom2.default.getLogger('fitnessEvaluate');
 
 var FitnessEvaluate = function () {
   function FitnessEvaluate() {
@@ -8398,7 +8376,7 @@ var FitnessEvaluate = function () {
 exports.default = FitnessEvaluate;
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8408,21 +8386,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _ParametersCore2 = __webpack_require__(64);
+var _ParametersCore2 = __webpack_require__(65);
 
 var _ParametersCore3 = _interopRequireDefault(_ParametersCore2);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8432,8 +8402,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('parameters');
+var logger = _loglevelCustom2.default.getLogger('parameters');
 
 var ParametersManager = function (_ParametersCore) {
   _inherits(ParametersManager, _ParametersCore);
@@ -8450,7 +8419,7 @@ var ParametersManager = function (_ParametersCore) {
 exports.default = ParametersManager;
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8460,23 +8429,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _parameters = __webpack_require__(65);
+var _parameters = __webpack_require__(66);
 
 var _parameters2 = _interopRequireDefault(_parameters);
 
-var _Core = __webpack_require__(9);
+var _Core = __webpack_require__(7);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8486,8 +8447,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('parameters');
+var logger = _loglevelCustom2.default.getLogger('parameters');
 
 var ParametersCore = function (_CoreList) {
   _inherits(ParametersCore, _CoreList);
@@ -8504,7 +8464,7 @@ var ParametersCore = function (_CoreList) {
 exports.default = ParametersCore;
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8591,7 +8551,7 @@ exports.default = [{
 }];
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8605,31 +8565,23 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _EventsCore2 = __webpack_require__(67);
+var _EventsCore2 = __webpack_require__(68);
 
 var _EventsCore3 = _interopRequireDefault(_EventsCore2);
 
-var _LabelEvaluate = __webpack_require__(69);
+var _LabelEvaluate = __webpack_require__(70);
 
 var _LabelEvaluate2 = _interopRequireDefault(_LabelEvaluate);
 
-var _DamageEvaluate = __webpack_require__(22);
+var _DamageEvaluate = __webpack_require__(23);
 
 var _DamageEvaluate2 = _interopRequireDefault(_DamageEvaluate);
 
-var _generics = __webpack_require__(8);
+var _generics = __webpack_require__(6);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8639,8 +8591,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('events');
+var logger = _loglevelCustom2.default.getLogger('events');
 
 var EventsManager = function (_EventsCore) {
   _inherits(EventsManager, _EventsCore);
@@ -8764,7 +8715,7 @@ var EventsManager = function (_EventsCore) {
 exports.default = EventsManager;
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8778,27 +8729,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Core = __webpack_require__(9);
+var _Core = __webpack_require__(7);
 
-var _events = __webpack_require__(68);
+var _events = __webpack_require__(69);
 
 var _events2 = _interopRequireDefault(_events);
 
-var _skills = __webpack_require__(21);
+var _skills = __webpack_require__(22);
 
 var _skills2 = _interopRequireDefault(_skills);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8808,8 +8751,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('events');
+var logger = _loglevelCustom2.default.getLogger('events');
 
 var EventsCore = function (_CoreList) {
   _inherits(EventsCore, _CoreList);
@@ -8918,7 +8860,7 @@ var EventsCore = function (_CoreList) {
 exports.default = EventsCore;
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8990,7 +8932,7 @@ exports.default = [{
 }];
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9004,21 +8946,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _desc, _value, _class;
 
-var _loglevel = __webpack_require__(1);
+var _generics = __webpack_require__(6);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
+var _decko = __webpack_require__(5);
 
-var _loglevelPluginPrefix = __webpack_require__(2);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
-
-var _generics = __webpack_require__(8);
-
-var _decko = __webpack_require__(7);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9053,8 +8987,7 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   return desc;
 }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('labelEvaluate');
+var logger = _loglevelCustom2.default.getLogger('labelEvaluate');
 
 var LabelEvaluate = (_class = function () {
   function LabelEvaluate() {
@@ -9146,7 +9079,7 @@ var LabelEvaluate = (_class = function () {
 exports.default = LabelEvaluate;
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9158,23 +9091,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _GlobalsCore2 = __webpack_require__(71);
+var _GlobalsCore2 = __webpack_require__(72);
 
 var _GlobalsCore3 = _interopRequireDefault(_GlobalsCore2);
 
-var _generics = __webpack_require__(8);
+var _generics = __webpack_require__(6);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9184,8 +9109,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('globals');
+var logger = _loglevelCustom2.default.getLogger('globals');
 
 var GlobalsManager = function (_GlobalsCore) {
   _inherits(GlobalsManager, _GlobalsCore);
@@ -9373,7 +9297,7 @@ var GlobalsManager = function (_GlobalsCore) {
 exports.default = GlobalsManager;
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9383,19 +9307,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Core2 = __webpack_require__(9);
+var _Core2 = __webpack_require__(7);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9405,8 +9321,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('globals');
+var logger = _loglevelCustom2.default.getLogger('globals');
 
 var GlobalsCore = function (_Core) {
   _inherits(GlobalsCore, _Core);
@@ -9423,7 +9338,7 @@ var GlobalsCore = function (_Core) {
 exports.default = GlobalsCore;
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9437,23 +9352,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _SolutionsCore2 = __webpack_require__(73);
+var _SolutionsCore2 = __webpack_require__(74);
 
 var _SolutionsCore3 = _interopRequireDefault(_SolutionsCore2);
 
-var _generics = __webpack_require__(8);
+var _generics = __webpack_require__(6);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9463,8 +9370,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('solutions');
+var logger = _loglevelCustom2.default.getLogger('solutions');
 
 var SolutionsManager = function (_SolutionsCore) {
   _inherits(SolutionsManager, _SolutionsCore);
@@ -9716,7 +9622,7 @@ var SolutionsManager = function (_SolutionsCore) {
 exports.default = SolutionsManager;
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9730,21 +9636,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Core2 = __webpack_require__(9);
+var _Core2 = __webpack_require__(7);
 
-var _generics = __webpack_require__(8);
+var _generics = __webpack_require__(6);
 
-var _loglevel = __webpack_require__(1);
+var _loglevelCustom = __webpack_require__(1);
 
-var _loglevel2 = _interopRequireDefault(_loglevel);
-
-var _loglevelPluginPrefix = __webpack_require__(2);
-
-var _loglevelPluginPrefix2 = _interopRequireDefault(_loglevelPluginPrefix);
-
-var _loglevelPrefixTemplate = __webpack_require__(3);
-
-var _loglevelPrefixTemplate2 = _interopRequireDefault(_loglevelPrefixTemplate);
+var _loglevelCustom2 = _interopRequireDefault(_loglevelCustom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9754,8 +9652,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-_loglevelPluginPrefix2.default.apply(_loglevel2.default, _loglevelPrefixTemplate2.default);
-var logger = _loglevel2.default.getLogger('solutions');
+var logger = _loglevelCustom2.default.getLogger('solutions');
 
 var SolutionsCore = function (_Core) {
   _inherits(SolutionsCore, _Core);

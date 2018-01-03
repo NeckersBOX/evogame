@@ -16,11 +16,7 @@ import Parameters from './Parameters'
 import Skills from './Skills'
 import Controller from './Controller'
 
-import log from 'loglevel'
-import prefix from 'loglevel-plugin-prefix'
-import prefixTemplate from '../loglevel-prefix-template'
-
-prefix.apply(log, prefixTemplate);
+import log from '../loglevel-custom'
 const logger = log.getLogger('Layout');
 
 class Layout extends EvoComponent {

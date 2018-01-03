@@ -2,11 +2,7 @@ import { CoreList } from './Core'
 import events from './lists/events'
 import skills from './lists/skills'
 
-import log from 'loglevel'
-import prefix from 'loglevel-plugin-prefix'
-import prefixTemplate from '../../loglevel-prefix-template'
-
-prefix.apply(log, prefixTemplate);
+import log from '../../loglevel-custom'
 const logger = log.getLogger('events');
 
 class EventsCore extends CoreList {

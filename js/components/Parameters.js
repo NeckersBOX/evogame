@@ -9,11 +9,7 @@ import Input from 'preact-mui/lib/input'
 import Row from 'preact-mui/lib/row'
 import Col from 'preact-mui/lib/col'
 
-import log from 'loglevel'
-import prefix from 'loglevel-plugin-prefix'
-import prefixTemplate from '../loglevel-prefix-template'
-
-prefix.apply(log, prefixTemplate);
+import log from '../loglevel-custom'
 const logger = log.getLogger('Parameters');
 
 class Parameters extends EvoComponent {

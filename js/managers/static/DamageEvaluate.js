@@ -1,10 +1,6 @@
-import log from 'loglevel'
-import prefix from 'loglevel-plugin-prefix'
-import prefixTemplate from '../../loglevel-prefix-template'
-
+import log from '../../loglevel-custom'
 import { memoize } from 'decko'
 
-prefix.apply(log, prefixTemplate);
 const logger = log.getLogger('damageEvaluate');
 
 class DamageEvaluate {

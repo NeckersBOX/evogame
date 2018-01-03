@@ -2,11 +2,7 @@ import SkillsCore from './core/SkillsCore'
 import DamageEvaluate from './static/DamageEvaluate'
 import FitnessEvaluate from './static/FitnessEvaluate'
 
-import log from 'loglevel'
-import prefix from 'loglevel-plugin-prefix'
-import prefixTemplate from '../loglevel-prefix-template'
-
-prefix.apply(log, prefixTemplate);
+import log from '../loglevel-custom'
 const logger = log.getLogger('skills');
 
 class SkillsManager extends SkillsCore {
